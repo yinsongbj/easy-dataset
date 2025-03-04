@@ -10,3 +10,4 @@ mock-login-callback.ts
 .env.local
 /src/test/crawler
 /src/test/mock
+/local-db

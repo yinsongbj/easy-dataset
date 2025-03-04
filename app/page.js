@@ -15,41 +15,21 @@ import {
   useTheme,
   CardActionArea,
   Chip,
-  Avatar
+  Avatar,
+  CircularProgress
 } from '@mui/material';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import CreateProjectDialog from '@/components/CreateProjectDialog';
 
 // 图标
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import DatasetIcon from '@mui/icons-material/Dataset';
 import DataObjectIcon from '@mui/icons-material/DataObject';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
-// 模拟数据
-const mockProjects = [
-  { 
-    id: 'project1', 
-    name: '常见问答数据集', 
-    description: '包含各种领域的问答对，用于训练问答型助手', 
-    questionsCount: 120,
-    lastUpdated: '2025-03-01'
-  },
-  { 
-    id: 'project2', 
-    name: 'AI系统接口文档', 
-    description: '人工智能系统接口和使用文档的数据集', 
-    questionsCount: 85,
-    lastUpdated: '2025-02-25'
-  },
-  { 
-    id: 'project3', 
-    name: '产品知识库', 
-    description: '产品相关的知识库和常见问题整理', 
-    questionsCount: 64,
-    lastUpdated: '2025-03-03'
-  }
-];
-
+// 默认模型列表
 const mockModels = [
   { id: 'deepseek-r1', provider: 'Ollama', name: 'DeepSeek-R1' },
   { id: 'gpt-3.5-turbo-openai', provider: 'OpenAI', name: 'gpt-3.5-turbo' },
@@ -59,10 +39,39 @@ const mockModels = [
 
 export default function Home() {
   const theme = useTheme();
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/projects');
+        
+        if (!response.ok) {
+          throw new Error('获取项目列表失败');
+        }
+        
+        const data = await response.json();
+        setProjects(data);
+      } catch (error) {
+        console.error('获取项目列表出错:', error);
+        setError(error.message);
+        // 出错时使用演示数据
+        setProjects(demoProjects);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    fetchProjects();
+  }, []);
   
   return (
     <main>
-      <Navbar projects={mockProjects} models={mockModels} />
+      <Navbar projects={projects} models={mockModels} />
       
       {/* 英雄区 */}
       <Box 
@@ -115,8 +124,7 @@ export default function Home() {
             <Button 
               variant="contained" 
               size="large" 
-              component={Link} 
-              href="/projects/new"
+              onClick={() => setCreateDialogOpen(true)}
               startIcon={<AddCircleOutlineIcon />}
               sx={{ 
                 mt: 3,
@@ -154,7 +162,7 @@ export default function Home() {
               <Grid item xs={12} sm={6} md={3}>
                 <Box textAlign="center">
                   <Typography color="primary" variant="h2" fontWeight="bold">
-                    {mockProjects.length}
+                    {projects.length}
                   </Typography>
                   <Typography variant="subtitle1" color="text.secondary">
                     进行中的项目
@@ -164,7 +172,7 @@ export default function Home() {
               <Grid item xs={12} sm={6} md={3}>
                 <Box textAlign="center">
                   <Typography color="secondary" variant="h2" fontWeight="bold">
-                    {mockProjects.reduce((sum, project) => sum + project.questionsCount, 0)}
+                    {projects.reduce((sum, project) => sum + (project.questionsCount || 0), 0)}
                   </Typography>
                   <Typography variant="subtitle1" color="text.secondary">
                     问题数量
@@ -174,7 +182,7 @@ export default function Home() {
               <Grid item xs={12} sm={6} md={3}>
                 <Box textAlign="center">
                   <Typography sx={{ color: theme.palette.success.main }} variant="h2" fontWeight="bold">
-                    12
+                    {projects.reduce((sum, project) => sum + (project.datasetsCount || 0), 0)}
                   </Typography>
                   <Typography variant="subtitle1" color="text.secondary">
                     生成的数据集
@@ -184,7 +192,7 @@ export default function Home() {
               <Grid item xs={12} sm={6} md={3}>
                 <Box textAlign="center">
                   <Typography sx={{ color: theme.palette.warning.main }} variant="h2" fontWeight="bold">
-                    4
+                    {mockModels.length}
                   </Typography>
                   <Typography variant="subtitle1" color="text.secondary">
                     支持的模型
@@ -208,18 +216,49 @@ export default function Home() {
             您的项目
           </Typography>
           
-          <Button 
-            variant="outlined" 
-            component={Link} 
-            href="/projects/new"
-            startIcon={<AddCircleOutlineIcon />}
-          >
-            创建项目
-          </Button>
+
         </Box>
         
-        <Grid container spacing={3}>
-          {mockProjects.map((project) => (
+        {/* 加载状态 */}
+        {loading && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', mt: 6 }}>
+            <CircularProgress />
+          </Box>
+        )}
+        
+        {/* 错误提示 */}
+        {error && !loading && (
+          <Box sx={{ mt: 4, p: 3, bgcolor: 'error.light', borderRadius: 2 }}>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <ErrorOutlineIcon color="error" />
+              <Typography color="error.dark">
+                获取项目列表失败: {error}
+              </Typography>
+            </Stack>
+          </Box>
+        )}
+        
+        {/* 项目列表 */}
+        {!loading && (
+          <Grid container spacing={3}>
+            {projects.length === 0 ? (
+              <Grid item xs={12}>
+                <Paper sx={{ p: 4, textAlign: 'center' }}>
+                  <Typography variant="h6" color="text.secondary" gutterBottom>
+                    还没有创建任何项目
+                  </Typography>
+                  <Button 
+                    variant="contained" 
+                    onClick={() => setCreateDialogOpen(true)}
+                    startIcon={<AddCircleOutlineIcon />}
+                    sx={{ mt: 2 }}
+                  >
+                    创建第一个项目
+                  </Button>
+                </Paper>
+              </Grid>
+            ) : (
+              projects.map((project) => (
             <Grid item xs={12} sm={6} md={4} key={project.id}>
               <Card 
                 className="hover-card"
@@ -336,9 +375,16 @@ export default function Home() {
                 </CardActionArea>
               </Card>
             </Grid>
-          ))}
-        </Grid>
+          )))
+            }
+          </Grid>
+        )}
       </Container>
+      
+      <CreateProjectDialog
+        open={createDialogOpen}
+        onClose={() => setCreateDialogOpen(false)}
+      />
     </main>
   );
 }
