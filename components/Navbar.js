@@ -25,6 +25,7 @@ import { useTheme } from 'next-themes';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import DataObjectIcon from '@mui/icons-material/DataObject';
+import StorageIcon from '@mui/icons-material/Storage';
 
 export default function Navbar({ projects = [], currentProject, models = [] }) {
   const [selectedProject, setSelectedProject] = useState(currentProject || '');
@@ -222,6 +223,25 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
 
         {/* 右侧操作区 */}
         <Box sx={{ display: 'flex', flexGrow: 0, alignItems: 'center', gap: 2 }} style={{ position: 'absolute', right: '20px' }}>
+          {/* 数据集广场链接 */}
+          <Tooltip title="数据集广场">
+            <Chip
+              icon={<StorageIcon fontSize="small" />}
+              label="数据集广场"
+              component={Link}
+              href="/dataset-square"
+              clickable
+              color="secondary"
+              variant={pathname === '/dataset-square' ? 'filled' : 'outlined'}
+              sx={{
+                borderColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.4)',
+                color: theme.palette.mode === 'dark' ? 'inherit' : 'white',
+                '&:hover': {
+                  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.2)'
+                }
+              }}
+            />
+          </Tooltip>
           {/* 模型选择 */}
           <FormControl size="small" sx={{ minWidth: 180 }}>
             <Select
