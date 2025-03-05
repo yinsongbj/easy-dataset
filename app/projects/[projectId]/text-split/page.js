@@ -1,15 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { 
-  Container, 
-  Typography, 
-  Box, 
-  Button, 
-  Paper, 
-  List, 
-  ListItem, 
-  ListItemText, 
+import {
+  Container,
+  Typography,
+  Box,
+  Button,
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
   Divider,
   CircularProgress
 } from '@mui/material';
@@ -21,24 +21,24 @@ export default function TextSplitPage({ params }) {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [splitStatus, setSplitStatus] = useState(null);
-  
+
   const handleFileUpload = (event) => {
     const uploadedFiles = Array.from(event.target.files);
     setFiles(prev => [...prev, ...uploadedFiles]);
   };
-  
+
   const handleSplitText = async () => {
     if (files.length === 0) return;
-    
+
     setLoading(true);
     setSplitStatus('正在处理...');
-    
+
     // 这里模拟文本分割处理
     setTimeout(() => {
       setLoading(false);
       setSplitStatus('文本分割完成！共生成 25 个文本片段。');
     }, 2000);
-    
+
     // 实际项目中，这里应该有上传文件和处理的逻辑
     // const formData = new FormData();
     // files.forEach(file => formData.append('files', file));
@@ -47,7 +47,7 @@ export default function TextSplitPage({ params }) {
     //   body: formData
     // });
   };
-  
+
   const removeFile = (index) => {
     setFiles(prev => prev.filter((_, i) => i !== index));
   };
@@ -55,9 +55,9 @@ export default function TextSplitPage({ params }) {
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        文本分割
+        文献处理
       </Typography>
-      
+
       <Paper sx={{ p: 3, mb: 3 }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3, border: '2px dashed #ccc' }}>
           <Button
@@ -78,7 +78,7 @@ export default function TextSplitPage({ params }) {
             支持上传 TXT, PDF, DOCX, MD 等格式文件
           </Typography>
         </Box>
-        
+
         {files.length > 0 && (
           <Box sx={{ mt: 3 }}>
             <Typography variant="h6" gutterBottom>
@@ -89,9 +89,9 @@ export default function TextSplitPage({ params }) {
                 <Box key={index}>
                   <ListItem
                     secondaryAction={
-                      <Button 
-                        size="small" 
-                        color="error" 
+                      <Button
+                        size="small"
+                        color="error"
                         onClick={() => removeFile(index)}
                       >
                         删除
@@ -107,7 +107,7 @@ export default function TextSplitPage({ params }) {
                 </Box>
               ))}
             </List>
-            
+
             <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
               <Button
                 variant="contained"
@@ -121,7 +121,7 @@ export default function TextSplitPage({ params }) {
             </Box>
           </Box>
         )}
-        
+
         {splitStatus && (
           <Box sx={{ mt: 3, p: 2, bgcolor: 'background.default', borderRadius: 1 }}>
             <Typography>{splitStatus}</Typography>

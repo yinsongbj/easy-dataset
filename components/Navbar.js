@@ -189,7 +189,7 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
               }}
             >
               <Tab
-                label="文本分割"
+                label="文献处理"
                 value={`/projects/${selectedProject}/text-split`}
                 component={Link}
                 href={`/projects/${selectedProject}/text-split`}
