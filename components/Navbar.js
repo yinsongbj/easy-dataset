@@ -204,6 +204,12 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
                 component={Link}
                 href={`/projects/${selectedProject}/settings`}
               />
+              <Tab
+                label="模型测试"
+                value={`/projects/${selectedProject}/playground`}
+                component={Link}
+                href={`/projects/${selectedProject}/playground`}
+              />
             </Tabs>
           </Box>
         )}
