@@ -82,7 +82,13 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
             alignItems: 'center',
             mr: 2,
             '&:hover': { opacity: 0.9 }
-          }}>
+          }}
+            // 鼠标悬浮放大、动画效果
+            style={{ cursor: 'pointer', '&:hover': { opacity: 0.9 } }}
+            onClick={() => {
+              window.location.href = '/';
+            }}
+          >
             <Avatar
               sx={{
                 bgcolor: 'secondary.main',
