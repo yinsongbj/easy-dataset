@@ -9,7 +9,9 @@ import {
   Tab,
   Alert,
   CircularProgress,
-  Snackbar
+  Snackbar,
+  Backdrop,
+  Paper
 } from '@mui/material';
 import FileUploader from '@/components/text-split/FileUploader';
 import ChunkList from '@/components/text-split/ChunkList';
@@ -163,7 +165,7 @@ export default function TextSplitPage({ params }) {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 8 }}>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 8, position: 'relative' }}>
 
       {/* 文件上传组件 */}
       <FileUploader
@@ -207,13 +209,63 @@ export default function TextSplitPage({ params }) {
         )}
       </Box>
 
-      {/* 处理中提示 */}
-      {processing && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', my: 4 }}>
-          <CircularProgress size={24} sx={{ mr: 2 }} />
-          <Typography>正在处理文献，请稍候...</Typography>
-        </Box>
-      )}
+      {/* 加载中蒙版 */}
+      <Backdrop
+        sx={{
+          color: '#fff',
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          position: 'fixed',
+          backdropFilter: 'blur(3px)'
+        }}
+        open={loading}
+      >
+        <Paper
+          elevation={3}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            p: 3,
+            borderRadius: 2,
+            bgcolor: 'background.paper',
+            minWidth: 200
+          }}
+        >
+          <CircularProgress size={40} sx={{ mb: 2 }} />
+          <Typography variant="h6">加载中...</Typography>
+          <Typography variant="body2" color="text.secondary">正在获取文献数据</Typography>
+        </Paper>
+      </Backdrop>
+
+      {/* 处理中蒙版 */}
+      <Backdrop
+        sx={{
+          color: '#fff',
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          position: 'fixed',
+          backdropFilter: 'blur(3px)'
+        }}
+        open={processing}
+      >
+        <Paper
+          elevation={3}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            p: 3,
+            borderRadius: 2,
+            bgcolor: 'background.paper',
+            minWidth: 200
+          }}
+        >
+          <CircularProgress size={40} sx={{ mb: 2 }} />
+          <Typography variant="h6">处理中...</Typography>
+          <Typography variant="body2" color="text.secondary">正在处理文献，请稍候</Typography>
+        </Paper>
+      </Backdrop>
 
       {/* 错误提示 */}
       <Snackbar open={!!error} autoHideDuration={6000} onClose={handleCloseError}>
