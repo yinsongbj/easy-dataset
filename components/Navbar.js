@@ -48,8 +48,10 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
   const isProjectDetail = pathname.includes('/projects/') && pathname.split('/').length > 3;
 
   const handleProjectChange = (event) => {
-    setSelectedProject(event.target.value);
-    // 这里可以添加项目切换的导航逻辑
+    const newProjectId = event.target.value;
+    setSelectedProject(newProjectId);
+    // 跳转到新选择的项目页面
+    window.location.href = `/projects/${newProjectId}/text-split`;
   };
 
   const handleModelChange = (event) => {
