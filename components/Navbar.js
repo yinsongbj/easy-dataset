@@ -72,10 +72,11 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
         bgcolor: theme.palette.mode === 'dark'
           ? 'background.paper'
           : 'primary.main',
+
       }}
-      style={{ borderRadius: 0 }}
+      style={{ borderRadius: 0, zIndex: 99000 }}
     >
-      <Toolbar sx={{ minHeight: '64px' }}>
+      <Toolbar sx={{ minHeight: '64px' }} style={{ zIndex: 99000 }}>
         {/* 左侧Logo和项目选择 */}
         <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 0 }}>
           <Box sx={{

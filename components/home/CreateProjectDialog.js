@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { 
-  Dialog, 
-  DialogTitle, 
-  DialogContent, 
-  DialogActions, 
-  Button, 
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
   TextField,
   Box,
   Typography,
@@ -52,7 +52,7 @@ export default function CreateProjectDialog({ open, onClose }) {
       }
 
       const data = await response.json();
-      router.push(`/projects/${data.id}/settings`);
+      router.push(`/projects/${data.id}/settings?tab=model`);
     } catch (err) {
       console.error('创建项目出错:', err);
       setError(err.message);
@@ -62,8 +62,8 @@ export default function CreateProjectDialog({ open, onClose }) {
   };
 
   return (
-    <Dialog 
-      open={open} 
+    <Dialog
+      open={open}
       onClose={onClose}
       maxWidth="sm"
       fullWidth

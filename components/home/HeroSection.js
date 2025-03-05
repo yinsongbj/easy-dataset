@@ -2,6 +2,7 @@
 
 import { Box, Container, Typography, Button } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import SearchIcon from '@mui/icons-material/Search';
 import { styles } from '@/styles/home';
 import { useTheme } from '@mui/material';
 
@@ -35,6 +36,18 @@ export default function HeroSection({ onCreateProject }) {
                         sx={styles.createButton(theme)}
                     >
                         创建新项目
+                    </Button>
+                    <Button
+                        variant="contained"
+                        size="large"
+                        onClick={() => {
+                            window.location.href = '/dataset-square'
+                        }}
+                        startIcon={<SearchIcon />}
+                        sx={styles.createButton(theme)}
+                        style={{ marginLeft: '24px' }}
+                    >
+                        搜索公开数据集
                     </Button>
                 </Box>
             </Container>
