@@ -19,7 +19,8 @@ export default function TextSplitPage({ params }) {
   const { projectId } = params;
   const [activeTab, setActiveTab] = useState(0);
   const [chunks, setChunks] = useState([]);
-  const [tocData, setTocData] = useState([]);
+  const [tocData, setTocData] = useState('');
+  const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState(null);
@@ -49,6 +50,11 @@ export default function TextSplitPage({ params }) {
         // 如果有目录结构，设置目录数据
         setTocData(data.toc);
       }
+
+      // 如果有标签，设置标签数据
+      if (data.tags) {
+        setTags(data.tags);
+      }
     } catch (error) {
       console.error('获取文本块出错:', error);
       setError(error.message);
@@ -68,12 +74,12 @@ export default function TextSplitPage({ params }) {
     console.log(`文件上传成功:`, fileNames);
     // 如果有文件上传成功，自动处理第一个文件
     if (fileNames && fileNames.length > 0) {
-      handleSplitText(fileNames[0]);
+      handleSplitText(fileNames[0], model);
     }
   };
 
   // 处理文本分割
-  const handleSplitText = async (fileName) => {
+  const handleSplitText = async (fileName, model) => {
     try {
       setProcessing(true);
 
@@ -82,7 +88,7 @@ export default function TextSplitPage({ params }) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ fileName })
+        body: JSON.stringify({ fileName, model })
       });
 
       if (!response.ok) {
@@ -196,6 +202,7 @@ export default function TextSplitPage({ params }) {
             projectId={projectId}
             toc={tocData}
             loading={loading}
+            tags={tags}
           />
         )}
       </Box>
