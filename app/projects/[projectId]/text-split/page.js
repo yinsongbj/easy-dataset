@@ -63,7 +63,8 @@ export default function TextSplitPage({ params }) {
   };
 
   // 处理文件上传成功
-  const handleUploadSuccess = (fileNames) => {
+  const handleUploadSuccess = (fileNames, model) => {
+    console.log(111, model);
     console.log(`文件上传成功:`, fileNames);
     // 如果有文件上传成功，自动处理第一个文件
     if (fileNames && fileNames.length > 0) {
