@@ -28,7 +28,16 @@ import DataObjectIcon from '@mui/icons-material/DataObject';
 
 export default function Navbar({ projects = [], currentProject, models = [] }) {
   const [selectedProject, setSelectedProject] = useState(currentProject || '');
-  const [selectedModel, setSelectedModel] = useState(models[0]?.id || '');
+  const [selectedModel, setSelectedModel] = useState(() => {
+    // 从 localStorage 获取上次选择的模型
+    const savedModel = localStorage.getItem('selectedModel');
+    // 如果保存的模型在当前模型列表中存在，则使用它
+    if (savedModel && models.some(m => m.id === savedModel)) {
+      return savedModel;
+    }
+    // 否则使用第一个可用的模型
+    return models[0]?.id || '';
+  });
   const pathname = usePathname();
   const theme = useMuiTheme();
   const { resolvedTheme, setTheme } = useTheme();
@@ -42,16 +51,15 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
   };
 
   const handleModelChange = (event) => {
-    setSelectedModel(event.target.value);
-    // 这里可以添加模型切换的逻辑
+    const newModel = event.target.value;
+    setSelectedModel(newModel);
+    // 将选择保存到 localStorage
+    localStorage.setItem('selectedModel', newModel);
   };
 
   const toggleTheme = () => {
     setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
   };
-
-  // 获取当前选中的模型信息
-  const currentModel = models.find(m => m.id === selectedModel) || null;
 
   return (
     <AppBar
@@ -203,66 +211,46 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
         {/* 右侧操作区 */}
         <Box sx={{ display: 'flex', flexGrow: 0, alignItems: 'center', gap: 2 }} style={{ position: 'absolute', right: '20px' }}>
           {/* 模型选择 */}
-          {currentModel ? (
-            <Chip
-              label={`${currentModel.provider}: ${currentModel.name}`}
+          <FormControl size="small" sx={{ minWidth: 180 }}>
+            <Select
+              value={selectedModel}
+              onChange={handleModelChange}
+              displayEmpty
               variant="outlined"
-              color="secondary"
-              size="medium"
               sx={{
-                borderRadius: '16px',
-                height: '32px',
-                border: `1px solid ${theme.palette.mode === 'dark' ? theme.palette.secondary.main : 'white'}`,
-                bgcolor: theme.palette.mode === 'dark' ? 'rgba(139, 92, 246, 0.1)' : 'rgba(255, 255, 255, 0.15)',
-                color: theme.palette.mode === 'dark' ? theme.palette.secondary.main : 'white',
-                '& .MuiChip-label': { px: 1 }
+                bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.15)',
+                color: theme.palette.mode === 'dark' ? 'inherit' : 'white',
+                borderRadius: '8px',
+                '& .MuiSelect-icon': {
+                  color: theme.palette.mode === 'dark' ? 'inherit' : 'white'
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'transparent'
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'transparent'
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'primary.main'
+                }
               }}
-              onClick={() => {
-                // 打开模型选择
+              MenuProps={{
+                PaperProps: {
+                  elevation: 2,
+                  sx: { mt: 1, borderRadius: 2 }
+                }
               }}
-            />
-          ) : (
-            <FormControl size="small" sx={{ minWidth: 180 }}>
-              <Select
-                value={selectedModel}
-                onChange={handleModelChange}
-                displayEmpty
-                variant="outlined"
-                sx={{
-                  bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.15)',
-                  color: theme.palette.mode === 'dark' ? 'inherit' : 'white',
-                  borderRadius: '8px',
-                  '& .MuiSelect-icon': {
-                    color: theme.palette.mode === 'dark' ? 'inherit' : 'white'
-                  },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'transparent'
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'transparent'
-                  },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'primary.main'
-                  }
-                }}
-                MenuProps={{
-                  PaperProps: {
-                    elevation: 2,
-                    sx: { mt: 1, borderRadius: 2 }
-                  }
-                }}
-              >
-                <MenuItem value="" disabled>
-                  选择模型
+            >
+              <MenuItem value="" disabled>
+                选择模型
+              </MenuItem>
+              {models.map((model) => (
+                <MenuItem key={model.id} value={model.id}>
+                  {model.provider}: {model.name}
                 </MenuItem>
-                {models.map((model) => (
-                  <MenuItem key={model.id} value={model.id}>
-                    {model.provider}: {model.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
+              ))}
+            </Select>
+          </FormControl>
 
           {/* 主题切换按钮 */}
           <Tooltip title={resolvedTheme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'}>
