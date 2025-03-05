@@ -210,6 +210,7 @@ export default function FileUploader({ projectId, onUploadSuccess, onProcessStar
 
       setSuccessMessage(`成功删除文件 ${fileToDelete}`);
       setSuccess(true);
+      location.reload();
     } catch (error) {
       console.error('删除文件出错:', error);
       setError(error.message);

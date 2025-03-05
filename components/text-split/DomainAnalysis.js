@@ -140,13 +140,25 @@ export default function DomainAnalysis({ projectId, toc = '', tags = [], loading
           value={activeTab}
           onChange={handleTabChange}
           variant="fullWidth"
-          sx={{ borderBottom: 1, borderColor: 'divider' }}
+          sx={{
+            borderBottom: 1,
+            borderColor: 'divider',
+            bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
+            borderTopLeftRadius: 2,
+            borderTopRightRadius: 2
+          }}
         >
           <Tab label="领域树" />
           <Tab label="目录结构" />
         </Tabs>
 
-        <Box sx={{ p: 3 }}>
+        <Box sx={{
+          p: 3,
+          bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.02)' : 'rgba(255, 255, 255, 0.8)',
+          borderBottomLeftRadius: 2,
+          borderBottomRightRadius: 2,
+          boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.03)'
+        }}>
           <TabPanel value={activeTab} index={0}>
             <Box>
               <Typography variant="h6" gutterBottom>
