@@ -145,7 +145,7 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
 
         {/* 中间的功能模块导航 */}
         {isProjectDetail && (
-          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }} style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
             <Tabs
               value={pathname}
               textColor="inherit"
