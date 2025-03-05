@@ -1,15 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import { 
-  AppBar, 
-  Toolbar, 
-  Typography, 
-  Box, 
-  MenuItem, 
-  FormControl, 
-  Select, 
-  Tabs, 
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  MenuItem,
+  FormControl,
+  Select,
+  Tabs,
   Tab,
   IconButton,
   useTheme as useMuiTheme,
@@ -32,15 +32,15 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
   const pathname = usePathname();
   const theme = useMuiTheme();
   const { resolvedTheme, setTheme } = useTheme();
-  
+
   // 只在项目详情页显示模块选项卡
   const isProjectDetail = pathname.includes('/projects/') && pathname.split('/').length > 3;
-  
+
   const handleProjectChange = (event) => {
     setSelectedProject(event.target.value);
     // 这里可以添加项目切换的导航逻辑
   };
-  
+
   const handleModelChange = (event) => {
     setSelectedModel(event.target.value);
     // 这里可以添加模型切换的逻辑
@@ -54,43 +54,44 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
   const currentModel = models.find(m => m.id === selectedModel) || null;
 
   return (
-    <AppBar 
-      position="static" 
+    <AppBar
+      position="static"
       elevation={0}
       color={theme.palette.mode === 'dark' ? 'transparent' : 'primary'}
-      sx={{ 
+      sx={{
         borderBottom: `1px solid ${theme.palette.divider}`,
-        bgcolor: theme.palette.mode === 'dark' 
-          ? 'background.paper' 
+        bgcolor: theme.palette.mode === 'dark'
+          ? 'background.paper'
           : 'primary.main',
       }}
+      style={{ borderRadius: 0 }}
     >
       <Toolbar sx={{ minHeight: '64px' }}>
         {/* 左侧Logo和项目选择 */}
         <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 0 }}>
-          <Box sx={{ 
-            display: 'flex', 
-            alignItems: 'center', 
+          <Box sx={{
+            display: 'flex',
+            alignItems: 'center',
             mr: 2,
             '&:hover': { opacity: 0.9 }
           }}>
-            <Avatar 
-              sx={{ 
-                bgcolor: 'secondary.main', 
+            <Avatar
+              sx={{
+                bgcolor: 'secondary.main',
                 mr: 1.5,
-                width: 36, 
-                height: 36 
+                width: 36,
+                height: 36
               }}
               variant="rounded"
             >
               <DataObjectIcon fontSize="small" />
             </Avatar>
-            <Typography 
-              variant="h6" 
-              component="div" 
-              sx={{ 
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{
                 fontWeight: 600,
-                letterSpacing: '-0.5px' 
+                letterSpacing: '-0.5px'
               }}
               className={theme.palette.mode === 'dark' ? 'gradient-text' : ''}
               color={theme.palette.mode === 'dark' ? 'inherit' : 'white'}
@@ -98,28 +99,28 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
               Easy DataSet
             </Typography>
           </Box>
-          
-          <FormControl size="small" sx={{ minWidth: 160 }}>
+
+          {isProjectDetail && (<FormControl size="small" sx={{ minWidth: 160 }}>
             <Select
               value={selectedProject}
               onChange={handleProjectChange}
               displayEmpty
               variant="outlined"
-              sx={{ 
+              sx={{
                 bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.15)',
                 borderRadius: '8px',
                 color: theme.palette.mode === 'dark' ? 'inherit' : 'white',
-                '& .MuiSelect-icon': { 
-                  color: theme.palette.mode === 'dark' ? 'inherit' : 'white' 
+                '& .MuiSelect-icon': {
+                  color: theme.palette.mode === 'dark' ? 'inherit' : 'white'
                 },
-                '& .MuiOutlinedInput-notchedOutline': { 
-                  borderColor: 'transparent' 
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'transparent'
                 },
-                '&:hover .MuiOutlinedInput-notchedOutline': { 
-                  borderColor: 'transparent' 
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'transparent'
                 },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { 
-                  borderColor: 'primary.main' 
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'primary.main'
                 }
               }}
               MenuProps={{
@@ -138,13 +139,14 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
                 </MenuItem>
               ))}
             </Select>
-          </FormControl>
+          </FormControl>)}
+
         </Box>
-        
+
         {/* 中间的功能模块导航 */}
         {isProjectDetail && (
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-            <Tabs 
+            <Tabs
               value={pathname}
               textColor="inherit"
               indicatorColor="secondary"
@@ -170,26 +172,26 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
                 }
               }}
             >
-              <Tab 
-                label="文本分割" 
+              <Tab
+                label="文本分割"
                 value={`/projects/${selectedProject}/text-split`}
                 component={Link}
                 href={`/projects/${selectedProject}/text-split`}
               />
-              <Tab 
-                label="问题列表" 
+              <Tab
+                label="问题列表"
                 value={`/projects/${selectedProject}/questions`}
                 component={Link}
                 href={`/projects/${selectedProject}/questions`}
               />
-              <Tab 
-                label="数据集" 
+              <Tab
+                label="数据集"
                 value={`/projects/${selectedProject}/datasets`}
                 component={Link}
                 href={`/projects/${selectedProject}/datasets`}
               />
-              <Tab 
-                label="项目设置" 
+              <Tab
+                label="项目设置"
                 value={`/projects/${selectedProject}/settings`}
                 component={Link}
                 href={`/projects/${selectedProject}/settings`}
@@ -197,9 +199,9 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
             </Tabs>
           </Box>
         )}
-        
+
         {/* 右侧操作区 */}
-        <Box sx={{ display: 'flex', flexGrow: 0, alignItems: 'center', gap: 2 }}>
+        <Box sx={{ display: 'flex', flexGrow: 0, alignItems: 'center', gap: 2 }} style={{ position: 'absolute', right: '20px' }}>
           {/* 模型选择 */}
           {currentModel ? (
             <Chip
@@ -226,21 +228,21 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
                 onChange={handleModelChange}
                 displayEmpty
                 variant="outlined"
-                sx={{ 
+                sx={{
                   bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.15)',
                   color: theme.palette.mode === 'dark' ? 'inherit' : 'white',
                   borderRadius: '8px',
-                  '& .MuiSelect-icon': { 
-                    color: theme.palette.mode === 'dark' ? 'inherit' : 'white' 
+                  '& .MuiSelect-icon': {
+                    color: theme.palette.mode === 'dark' ? 'inherit' : 'white'
                   },
-                  '& .MuiOutlinedInput-notchedOutline': { 
-                    borderColor: 'transparent' 
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'transparent'
                   },
-                  '&:hover .MuiOutlinedInput-notchedOutline': { 
-                    borderColor: 'transparent' 
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'transparent'
                   },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': { 
-                    borderColor: 'primary.main' 
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'primary.main'
                   }
                 }}
                 MenuProps={{
@@ -264,10 +266,10 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
 
           {/* 主题切换按钮 */}
           <Tooltip title={resolvedTheme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'}>
-            <IconButton 
-              onClick={toggleTheme} 
+            <IconButton
+              onClick={toggleTheme}
               size="small"
-              sx={{ 
+              sx={{
                 bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.15)',
                 color: theme.palette.mode === 'dark' ? 'inherit' : 'white',
                 p: 1,
