@@ -18,7 +18,12 @@ import {
   Alert,
   TextField,
   InputAdornment,
-  Stack
+  Stack,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
@@ -43,6 +48,14 @@ export default function QuestionsPage({ params }) {
     open: false,
     message: '',
     severity: 'success'
+  });
+
+  // 确认对话框状态
+  const [confirmDialog, setConfirmDialog] = useState({
+    open: false,
+    title: '',
+    content: '',
+    confirmAction: null
   });
 
   // 获取所有数据
@@ -150,13 +163,74 @@ export default function QuestionsPage({ params }) {
   };
 
   // 处理删除问题
-  const handleDeleteQuestion = async (questionId, chunkId) => {
-    // 这里是删除问题的逻辑，暂时留空
-    console.log('删除问题:', questionId, chunkId);
+  const confirmDeleteQuestion = (questionId, chunkId) => {
+    // 根据 questionId 找到对应的问题对象
+    const question = questions.find(q => q.question === questionId && q.chunkId === chunkId);
+    const questionText = question ? question.question : questionId;
+    
+    // 显示确认对话框
+    setConfirmDialog({
+      open: true,
+      title: '确认删除问题',
+      content: `您确定要删除问题“${questionText.substring(0, 50)}${questionText.length > 50 ? '...' : ''}”吗？此操作不可恢复。`,
+      confirmAction: () => executeDeleteQuestion(questionId, chunkId)
+    });
+  };
+  
+  // 执行删除问题的操作
+  const executeDeleteQuestion = async (questionId, chunkId) => {
+    try {
+      // 显示删除中的提示
+      setSnackbar({
+        open: true,
+        message: '正在删除问题...',
+        severity: 'info'
+      });
+      
+      // 调用删除问题的 API
+      const response = await fetch(`/api/projects/${projectId}/questions/${encodeURIComponent(questionId)}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ chunkId })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || '删除问题失败');
+      }
+      
+      // 从列表中移除已删除的问题
+      setQuestions(prev => prev.filter(q => !(q.question === questionId && q.chunkId === chunkId)));
+      
+      // 从选中列表中移除已删除的问题
+      const questionKey = `${chunkId}-${questionId}`;
+      setSelectedQuestions(prev => prev.filter(id => id !== questionKey));
+      
+      // 显示成功提示
+      setSnackbar({
+        open: true,
+        message: '问题删除成功',
+        severity: 'success'
+      });
+    } catch (error) {
+      console.error('删除问题失败:', error);
+      setSnackbar({
+        open: true,
+        message: error.message || '删除问题失败',
+        severity: 'error'
+      });
+    }
+  };
+  
+  // 处理删除问题的入口函数
+  const handleDeleteQuestion = (questionId, chunkId) => {
+    confirmDeleteQuestion(questionId, chunkId);
   };
 
-  // 处理批量删除问题
-  const handleBatchDeleteQuestions = async () => {
+  // 确认批量删除问题
+  const confirmBatchDeleteQuestions = () => {
     if (selectedQuestions.length === 0) {
       setSnackbar({
         open: true,
@@ -166,8 +240,94 @@ export default function QuestionsPage({ params }) {
       return;
     }
 
-    // 这里是批量删除问题的逻辑，暂时留空
-    console.log('批量删除问题:', selectedQuestions);
+    // 显示确认对话框
+    setConfirmDialog({
+      open: true,
+      title: '确认批量删除问题',
+      content: `您确定要删除选中的 ${selectedQuestions.length} 个问题吗？此操作不可恢复。`,
+      confirmAction: executeBatchDeleteQuestions
+    });
+  };
+
+  // 执行批量删除问题
+  const executeBatchDeleteQuestions = async () => {
+    try {
+      // 显示删除中的提示
+      setSnackbar({
+        open: true,
+        message: `正在删除 ${selectedQuestions.length} 个问题...`,
+        severity: 'info'
+      });
+      
+      // 存储成功删除的问题数量
+      let successCount = 0;
+      
+      // 逐个删除问题，完全模仿单个删除的逻辑
+      for (const key of selectedQuestions) {
+        try {
+          // 从问题键中提取 chunkId 和 questionId
+          // 问题键的格式是: "chunkId-question"
+          // 注意：chunkId 可能包含短横线，所以我们需要找到最后一个短横线
+          const lastDashIndex = key.lastIndexOf('-');
+          if (lastDashIndex === -1) {
+            console.error('无法解析问题键:', key);
+            continue;
+          }
+          
+          const chunkId = key.substring(0, lastDashIndex);
+          const questionId = key.substring(lastDashIndex + 1);
+          
+          console.log('开始删除问题:', { chunkId, questionId });
+          
+          // 调用删除问题的 API
+          const response = await fetch(`/api/projects/${projectId}/questions/${encodeURIComponent(questionId)}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ chunkId })
+          });
+          
+          if (!response.ok) {
+            const errorData = await response.json();
+            console.error(`删除问题失败:`, errorData.error || '删除问题失败');
+            continue;
+          }
+          
+          // 从列表中移除已删除的问题，完全复制单个删除的逻辑
+          setQuestions(prev => prev.filter(q => !(q.question === questionId && q.chunkId === chunkId)));
+          
+          successCount++;
+          console.log(`问题删除成功: ${questionId}`);
+        } catch (error) {
+          console.error('删除问题失败:', error);
+        }
+      }
+      
+      // 清空选中列表
+      setSelectedQuestions([]);
+      
+      // 显示成功提示
+      setSnackbar({
+        open: true,
+        message: successCount === selectedQuestions.length
+          ? `成功删除 ${successCount} 个问题`
+          : `删除完成，成功: ${successCount}, 失败: ${selectedQuestions.length - successCount}`,
+        severity: successCount === selectedQuestions.length ? 'success' : 'warning'
+      });
+    } catch (error) {
+      console.error('批量删除问题失败:', error);
+      setSnackbar({
+        open: true,
+        message: error.message || '批量删除问题失败',
+        severity: 'error'
+      });
+    }
+  };
+  
+  // 处理批量删除问题的入口函数
+  const handleBatchDeleteQuestions = () => {
+    confirmBatchDeleteQuestions();
   };
 
   // 获取文本块内容
@@ -324,6 +484,42 @@ export default function QuestionsPage({ params }) {
           {snackbar.message}
         </Alert>
       </Snackbar>
+      
+      {/* 确认对话框 */}
+      <Dialog
+        open={confirmDialog.open}
+        onClose={() => setConfirmDialog({ ...confirmDialog, open: false })}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{confirmDialog.title}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {confirmDialog.content}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button 
+            onClick={() => setConfirmDialog({ ...confirmDialog, open: false })} 
+            color="primary"
+          >
+            取消
+          </Button>
+          <Button 
+            onClick={() => {
+              setConfirmDialog({ ...confirmDialog, open: false });
+              if (confirmDialog.confirmAction) {
+                confirmDialog.confirmAction();
+              }
+            }} 
+            color="error" 
+            variant="contained"
+            autoFocus
+          >
+            确认删除
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }

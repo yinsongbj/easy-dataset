@@ -367,7 +367,7 @@ export default function TextSplitPage({ params }) {
         >
           <CircularProgress size={40} sx={{ mb: 2 }} />
           <Typography variant="h6">处理中...</Typography>
-          <Typography variant="body2" color="text.secondary">正在努力分析中，请稍候！</Typography>
+          <Typography variant="body2" color="text.secondary">正在努力处理中，请稍候！</Typography>
         </Paper>
       </Backdrop>
 
