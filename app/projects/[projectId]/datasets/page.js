@@ -574,7 +574,11 @@ export default function DatasetsPage({ params }) {
               数据集管理
             </Typography>
             <Typography variant="body1" color="text.secondary">
-              共 {datasets.length} 个数据集
+              共 {datasets.length} 个数据集，
+              已确认 {datasets.filter(d => d.confirmed).length} 个
+              （{datasets.length > 0 
+                ? Math.round((datasets.filter(d => d.confirmed).length / datasets.length) * 100) 
+                : 0}%）
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 2 }}>

@@ -230,7 +230,25 @@ export default function DatasetDetailsPage({ params }) {
         throw new Error('删除失败');
       }
 
-      router.push(`/projects/${projectId}/datasets`);
+      // 找到当前数据集的索引
+      const currentIndex = datasets.findIndex(d => d.id === datasetId);
+
+      // 如果这是最后一个数据集，返回列表页
+      if (datasets.length === 1) {
+        router.push(`/projects/${projectId}/datasets`);
+        return;
+      }
+
+      // 计算下一个数据集的索引
+      const nextIndex = (currentIndex + 1) % datasets.length;
+      // 如果是最后一个，就去第一个
+      const nextDataset = datasets[nextIndex] || datasets[0];
+
+      // 导航到下一个数据集
+      router.push(`/projects/${projectId}/datasets/${nextDataset.id}`);
+
+      // 更新本地数据集列表
+      setDatasets(prev => prev.filter(d => d.id !== datasetId));
     } catch (error) {
       setSnackbar({
         open: true,
@@ -272,6 +290,9 @@ export default function DatasetDetailsPage({ params }) {
             </Button>
             <Divider orientation="vertical" flexItem />
             <Typography variant="h6">数据集详情</Typography>
+            <Typography variant="body2" color="text.secondary">
+              （共 {datasets.length} 个，当前第 {datasets.findIndex(d => d.id === datasetId) + 1} 个）
+            </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 1 }}>
             <IconButton onClick={() => handleNavigate('prev')}>
