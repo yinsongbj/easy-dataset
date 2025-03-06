@@ -104,7 +104,7 @@ const DatasetList = ({
                   borderBottom: `2px solid ${theme.palette.divider}`,
                 }}
               >
-                标签
+                领域标签
               </TableCell>
               <TableCell
                 sx={{
@@ -162,7 +162,7 @@ const DatasetList = ({
                   }}
                 >
                   <Typography variant="body2" fontWeight="medium">
-                    {dataset.question}
+
                     {dataset.confirmed && (
                       <Chip
                         label={'已确认'}
@@ -171,9 +171,12 @@ const DatasetList = ({
                           backgroundColor: alpha(theme.palette.success.main, 0.1),
                           color: theme.palette.success.dark,
                           fontWeight: 'medium',
+                          verticalAlign: 'baseline',
+                          marginRight: '2px',
                         }}
                       />
                     )}
+                    {dataset.question}
                   </Typography>
                 </TableCell>
                 <TableCell>

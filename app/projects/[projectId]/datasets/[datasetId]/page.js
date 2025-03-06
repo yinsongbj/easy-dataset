@@ -14,6 +14,8 @@ import {
   Paper,
   Chip,
   Divider,
+  alpha,
+  useTheme
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
@@ -32,6 +34,7 @@ const EditableField = ({
   onSave,
   onCancel
 }) => {
+
   return (
     <Box sx={{ mb: 3 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -91,7 +94,7 @@ export default function DatasetDetailsPage({ params }) {
     severity: 'success'
   });
   const [confirming, setConfirming] = useState(false);
-
+  const theme = useTheme();
   // 获取数据集列表（用于导航）
   const [datasets, setDatasets] = useState([]);
 
@@ -356,6 +359,16 @@ export default function DatasetDetailsPage({ params }) {
               label={`创建时间: ${new Date(dataset.createdAt).toLocaleString('zh-CN')}`}
               variant="outlined"
             />
+            {dataset.confirmed && (
+              <Chip
+                label={'已确认'}
+                sx={{
+                  backgroundColor: alpha(theme.palette.success.main, 0.1),
+                  color: theme.palette.success.dark,
+                  fontWeight: 'medium',
+                }}
+              />
+            )}
           </Box>
         </Box>
       </Paper>
