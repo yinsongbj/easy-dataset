@@ -35,6 +35,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import SearchIcon from '@mui/icons-material/Search';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { useRouter } from 'next/navigation';
+import ExportDatasetDialog from '@/components/ExportDatasetDialog';
+
 
 // 数据集列表组件
 const DatasetList = ({
@@ -384,6 +386,18 @@ export default function DatasetsPage({ params }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState('');
+  const [exportDialog, setExportDialog] = useState({ open: false });
+
+
+  // 3. 添加打开导出对话框的处理函数
+  const handleOpenExportDialog = () => {
+    setExportDialog({ open: true });
+  };
+
+  // 4. 添加关闭导出对话框的处理函数
+  const handleCloseExportDialog = () => {
+    setExportDialog({ open: false });
+  };
 
   // 获取数据集列表
   const fetchDatasets = async () => {
@@ -480,25 +494,77 @@ export default function DatasetsPage({ params }) {
   };
 
   // 导出数据集
-  const handleExportDatasets = () => {
+  const handleExportDatasets = (exportOptions) => {
     try {
-      // 准备导出数据
-      const dataToExport = filteredDatasets.map(({ question, answer, cot, model, questionLabel }) => ({
-        question,
-        answer,
-        cot: cot || '',
-        model,
-        label: questionLabel || ''
-      }));
+      // 根据选项筛选数据
+      let dataToExport = [...filteredDatasets];
+
+      // 如果只导出已确认的数据集
+      if (exportOptions.confirmedOnly) {
+        dataToExport = dataToExport.filter(dataset => dataset.confirmed);
+      }
+
+      // 根据选择的格式转换数据
+      let formattedData;
+
+      if (exportOptions.formatType === 'alpaca') {
+        formattedData = dataToExport.map(({ question, answer, cot }) => ({
+          instruction: question,
+          input: "",
+          output: cot ? `${cot}\n\n${answer}` : answer,
+          system: exportOptions.systemPrompt || ""
+        }));
+      } else if (exportOptions.formatType === 'sharegpt') {
+        formattedData = dataToExport.map(({ question, answer, cot }) => {
+          const messages = [];
+
+          // 添加系统提示词（如果有）
+          if (exportOptions.systemPrompt) {
+            messages.push({
+              role: "system",
+              content: exportOptions.systemPrompt
+            });
+          }
+
+          // 添加用户问题
+          messages.push({
+            role: "user",
+            content: question
+          });
+
+          // 添加助手回答
+          messages.push({
+            role: "assistant",
+            content: cot ? `${cot}\n\n${answer}` : answer
+          });
+
+          return { messages };
+        });
+      }
+
+      // 处理不同的文件格式
+      let content;
+      let fileExtension;
+
+      if (exportOptions.fileFormat === 'jsonl') {
+        // JSONL 格式：每行一个 JSON 对象
+        content = formattedData.map(item => JSON.stringify(item)).join('\n');
+        fileExtension = 'jsonl';
+      } else {
+        // 默认 JSON 格式
+        content = JSON.stringify(formattedData, null, 2);
+        fileExtension = 'json';
+      }
 
       // 创建 Blob 对象
-      const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
+      const blob = new Blob([content], { type: 'application/json' });
 
       // 创建下载链接
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `datasets-${projectId}-${new Date().toISOString().slice(0, 10)}.json`;
+      const formatSuffix = exportOptions.formatType === 'alpaca' ? 'alpaca' : 'sharegpt';
+      a.download = `datasets-${projectId}-${formatSuffix}-${new Date().toISOString().slice(0, 10)}.${fileExtension}`;
 
       // 触发下载
       document.body.appendChild(a);
@@ -507,6 +573,9 @@ export default function DatasetsPage({ params }) {
       // 清理
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+
+      // 关闭导出对话框
+      handleCloseExportDialog();
 
       setSnackbar({
         open: true,
@@ -521,7 +590,6 @@ export default function DatasetsPage({ params }) {
       });
     }
   };
-
   // 查看详情
   const handleViewDetails = (id) => {
     router.push(`/projects/${projectId}/datasets/${id}`);
@@ -576,8 +644,8 @@ export default function DatasetsPage({ params }) {
             <Typography variant="body1" color="text.secondary">
               共 {datasets.length} 个数据集，
               已确认 {datasets.filter(d => d.confirmed).length} 个
-              （{datasets.length > 0 
-                ? Math.round((datasets.filter(d => d.confirmed).length / datasets.length) * 100) 
+              （{datasets.length > 0
+                ? Math.round((datasets.filter(d => d.confirmed).length / datasets.length) * 100)
                 : 0}%）
             </Typography>
           </Box>
@@ -609,7 +677,7 @@ export default function DatasetsPage({ params }) {
               variant="outlined"
               startIcon={<FileDownloadIcon />}
               sx={{ borderRadius: 2 }}
-              onClick={handleExportDatasets}
+              onClick={handleOpenExportDialog}
             >
               导出数据集
             </Button>
@@ -650,6 +718,12 @@ export default function DatasetsPage({ params }) {
           {snackbar.message}
         </Alert>
       </Snackbar>
+
+      <ExportDatasetDialog
+        open={exportDialog.open}
+        onClose={handleCloseExportDialog}
+        onExport={handleExportDatasets}
+      />
     </Container>
   );
 }
