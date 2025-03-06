@@ -34,6 +34,9 @@ export default function ChunkCard({
       : content;
   };
 
+  // 检查是否有已生成的问题
+  const hasQuestions = chunk.questions && chunk.questions.length > 0;
+  
   return (
     <Card
       variant="outlined"
@@ -108,6 +111,33 @@ export default function ChunkCard({
                     '& .MuiChip-label': { px: 1 }
                   }}
                 />
+                {hasQuestions && (
+                  <Tooltip 
+                    title={
+                      <Box sx={{ p: 1 }}>
+                        {chunk.questions.map((q, index) => (
+                          <Typography key={index} variant="body2" sx={{ mb: 0.5 }}>
+                            {index + 1}. {q.question}
+                          </Typography>
+                        ))}
+                      </Box>
+                    }
+                    arrow
+                    placement="top"
+                  >
+                    <Chip
+                      label={`已生成 ${chunk.questions.length} 个问题`}
+                      size="small"
+                      color="success"
+                      variant="outlined"
+                      sx={{
+                        borderRadius: 1,
+                        fontWeight: 500,
+                        '& .MuiChip-label': { px: 1 }
+                      }}
+                    />
+                  </Tooltip>
+                )}
               </Box>
             </Box>
 

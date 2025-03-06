@@ -25,7 +25,7 @@ export default function TextSplitPage({ params }) {
   const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null); // 可以是字符串或对象 { severity, message }
 
   // 加载文本块数据
   useEffect(() => {
@@ -72,7 +72,6 @@ export default function TextSplitPage({ params }) {
 
   // 处理文件上传成功
   const handleUploadSuccess = (fileNames, model) => {
-    console.log(111, model);
     console.log(`文件上传成功:`, fileNames);
     // 如果有文件上传成功，自动处理第一个文件
     if (fileNames && fileNames.length > 0) {
@@ -147,9 +146,94 @@ export default function TextSplitPage({ params }) {
   };
 
   // 处理生成问题
-  const handleGenerateQuestions = (chunkIds) => {
-    console.log('生成问题:', chunkIds);
-    // TODO: 实现生成问题功能
+  const handleGenerateQuestions = async (chunkIds) => {
+    try {
+      setProcessing(true);
+      setError(null);
+
+      // 从 localStorage 获取当前选择的模型信息
+      const selectedModelId = localStorage.getItem('selectedModelId');
+      let model = null;
+
+      // 尝试从 localStorage 获取完整的模型信息
+      const modelInfoStr = localStorage.getItem('selectedModelInfo');
+
+      if (modelInfoStr) {
+        try {
+          model = JSON.parse(modelInfoStr);
+        } catch (e) {
+          console.error('解析模型信息出错:', e);
+          // 继续执行，将在下面尝试获取模型信息
+        }
+      }
+
+      // 如果仍然没有模型信息，抛出错误
+      if (!selectedModelId) {
+        throw new Error('请先选择一个模型，可以在顶部导航栏选择');
+      }
+
+      if (!model) {
+        throw new Error('选择的模型不可用，请重新选择');
+      }
+
+      // 如果是单个文本块，直接调用单个生成接口
+      if (chunkIds.length === 1) {
+        const chunkId = chunkIds[0];
+        const response = await fetch(`/api/projects/${projectId}/chunks/${chunkId}/questions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ model })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `为文本块 ${chunkId} 生成问题失败`);
+        }
+
+        const data = await response.json();
+        console.log(`为文本块 ${chunkId} 生成了 ${data.total} 个问题`);
+        setError({ severity: 'success', message: `成功为文本块生成了 ${data.total} 个问题` });
+      } else {
+        // 如果是多个文本块，调用批量生成接口
+        const response = await fetch(`/api/projects/${projectId}/generate-questions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ model, chunkIds })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || '批量生成问题失败');
+        }
+
+        const data = await response.json();
+        console.log(`批量生成问题成功: ${data.totalSuccess} 个成功，${data.totalErrors} 个失败`);
+
+        if (data.totalErrors > 0) {
+          setError({
+            severity: 'warning',
+            message: `部分文本块生成问题成功 (${data.totalSuccess}/${data.totalChunks})，${data.totalErrors} 个文本块失败`
+          });
+        } else {
+          setError({
+            severity: 'success',
+            message: `成功为 ${data.totalSuccess} 个文本块生成问题`
+          });
+        }
+      }
+
+      // 刷新文本块列表
+      fetchChunks();
+    } catch (error) {
+      console.error('生成问题出错:', error);
+      setError({ severity: 'error', message: error.message });
+    } finally {
+      setProcessing(false);
+    }
   };
 
   // 处理文件删除
@@ -164,9 +248,29 @@ export default function TextSplitPage({ params }) {
     setError(null);
   };
 
+  // 处理错误或成功提示
+  const renderAlert = () => {
+    if (!error) return null;
+
+    const severity = error.severity || 'error';
+    const message = typeof error === 'string' ? error : error.message;
+
+    return (
+      <Snackbar
+        open={Boolean(error)}
+        autoHideDuration={6000}
+        onClose={handleCloseError}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseError} severity={severity} sx={{ width: '100%' }}>
+          {message}
+        </Alert>
+      </Snackbar>
+    );
+  };
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 8, position: 'relative' }}>
-
       {/* 文件上传组件 */}
       <FileUploader
         projectId={projectId}
@@ -263,16 +367,12 @@ export default function TextSplitPage({ params }) {
         >
           <CircularProgress size={40} sx={{ mb: 2 }} />
           <Typography variant="h6">处理中...</Typography>
-          <Typography variant="body2" color="text.secondary">正在处理文献，请稍候</Typography>
+          <Typography variant="body2" color="text.secondary">正在生成问题，请稍候</Typography>
         </Paper>
       </Backdrop>
 
-      {/* 错误提示 */}
-      <Snackbar open={!!error} autoHideDuration={6000} onClose={handleCloseError}>
-        <Alert onClose={handleCloseError} severity="error" sx={{ width: '100%' }}>
-          {error}
-        </Alert>
-      </Snackbar>
+      {/* 错误或成功提示 */}
+      {renderAlert()}
     </Container>
   );
 }

@@ -41,7 +41,6 @@ export async function POST(request, { params }) {
     });
     // 生成领域树
     const llmRes = await llmClient.chat(getLabelPrompt(toc));
-    console.log(111, llmRes, toc);
     const response = llmRes.choices?.[0]?.message?.content ||
       llmRes.response ||
       '';

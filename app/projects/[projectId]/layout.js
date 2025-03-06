@@ -49,7 +49,8 @@ export default function ProjectLayout({ children, params }) {
             const formattedModels = modelsData.map(model => ({
               id: `${model.name}-${model.providerId}`,
               provider: model.provider,
-              name: model.name
+              name: model.name,
+              ...model
             }));
             setModels(formattedModels);
           }

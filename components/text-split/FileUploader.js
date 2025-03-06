@@ -5,18 +5,12 @@ import {
   Paper,
   Alert,
   Snackbar,
-  Grid,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button
+  Grid
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import UploadArea from './components/UploadArea';
 import FileList from './components/FileList';
 import DeleteConfirmDialog from './components/DeleteConfirmDialog';
-import ModelSelect from '@/components/ModelSelect';
 
 /**
  * 文件上传组件
@@ -36,27 +30,6 @@ export default function FileUploader({ projectId, onUploadSuccess, onProcessStar
   const [successMessage, setSuccessMessage] = useState('');
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [fileToDelete, setFileToDelete] = useState(null);
-  const [modelDialogOpen, setModelDialogOpen] = useState(false);
-  const [selectedModel, setSelectedModel] = useState('');
-  const [models, setModels] = useState([]);
-
-  // 加载模型列表
-  useEffect(() => {
-    async function fetchModels() {
-      try {
-        const response = await fetch(`/api/projects/${projectId}/models`);
-        if (!response.ok) {
-          throw new Error('获取模型列表失败');
-        }
-        const data = await response.json();
-        setModels(data);
-      } catch (error) {
-        console.error('获取模型列表出错:', error);
-        setError(error.message);
-      }
-    }
-    fetchModels();
-  }, [projectId]);
 
   // 加载已上传的文件列表
   useEffect(() => {
@@ -115,22 +88,35 @@ export default function FileUploader({ projectId, onUploadSuccess, onProcessStar
   const uploadFiles = async () => {
     if (files.length === 0) return;
 
-    // 打开模型选择对话框
-    setModelDialogOpen(true);
+    // 直接开始上传文件，不再打开模型选择对话框
+    handleStartUpload();
   };
 
-  // 处理模型选择
-  const handleModelSelect = async (event) => {
-    setSelectedModel(event.target.value);
-  };
-
-  // 确认模型选择并开始上传
-  const handleConfirmModelSelect = async () => {
-    setModelDialogOpen(false);
+  // 开始上传文件
+  const handleStartUpload = async () => {
     setUploading(true);
     setError(null);
 
     try {
+      // 从 localStorage 获取当前选择的模型信息
+      const selectedModelId = localStorage.getItem('selectedModelId');
+      let selectedModelInfo = null;
+
+      if (!selectedModelId) {
+        throw new Error('未选择模型，请先在顶部导航栏选择一个模型');
+      }
+
+      // 尝试从 localStorage 获取完整的模型信息
+      const modelInfoStr = localStorage.getItem('selectedModelInfo');
+
+      if (modelInfoStr) {
+        try {
+          selectedModelInfo = JSON.parse(modelInfoStr);
+        } catch (e) {
+          throw new Error('解析模型信息出错!');
+        }
+      }
+
       const uploadedFileNames = [];
 
       for (const file of files) {
@@ -156,9 +142,6 @@ export default function FileUploader({ projectId, onUploadSuccess, onProcessStar
       setFiles([]);
 
       await fetchUploadedFiles();
-
-      // 获取选中模型的详细信息
-      const selectedModelInfo = models.find(m => m.id === selectedModel);
 
       // 上传成功后，返回文件名列表和选中的模型信息
       if (onUploadSuccess) {
@@ -277,54 +260,7 @@ export default function FileUploader({ projectId, onUploadSuccess, onProcessStar
         </Alert>
       </Snackbar>
 
-      <Dialog
-        open={modelDialogOpen}
-        onClose={() => setModelDialogOpen(false)}
-        PaperProps={{
-          sx: {
-            bgcolor: '#2A5CAA',
-            color: 'white',
-            minHeight: '200px',
-            minWidth: '100px',
-            '& .MuiDialogTitle-root': {
-              color: 'white',
-              padding: '20px 24px'
-            },
-            '& .MuiDialogContent-root': {
-              color: 'white',
-              padding: '20px 24px'
-            },
-            '& .MuiDialogActions-root': {
-              padding: '20px 24px'
-            }
-          }
-        }}>
-        <DialogTitle>选择模型（用于构建领域标签）</DialogTitle>
-        <DialogContent>
-          <ModelSelect
-            models={models}
-            selectedModel={selectedModel}
-            onChange={handleModelSelect}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setModelDialogOpen(false)} sx={{ color: 'white' }}>取消</Button>
-          <Button
-            onClick={handleConfirmModelSelect}
-            variant="contained"
-            disabled={!selectedModel}
-            sx={{
-              bgcolor: 'white',
-              color: '#2A5CAA',
-              '&:hover': {
-                bgcolor: 'rgba(255, 255, 255, 0.9)'
-              }
-            }}
-          >
-            确认并上传
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {/* 删除模型选择对话框，直接从 localStorage 获取模型信息 */}
 
       <DeleteConfirmDialog
         open={deleteConfirmOpen}
