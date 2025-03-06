@@ -66,12 +66,20 @@ export default function ProjectList({ projects, onCreateProject }) {
                                         <Typography variant="h5" component="div" fontWeight="600" sx={{ mt: 1 }}>
                                             {project.name}
                                         </Typography>
-                                        <Chip
-                                            size="small"
-                                            label={`${project.questionsCount} 问题`}
-                                            color="primary"
-                                            variant="outlined"
-                                        />
+                                        <Box sx={{ display: 'flex', gap: 1 }}>
+                                            <Chip
+                                                size="small"
+                                                label={`${project.questionsCount || 0} 问题`}
+                                                color="primary"
+                                                variant="outlined"
+                                            />
+                                            <Chip
+                                                size="small"
+                                                label={`${project.datasetsCount || 0} 数据集`}
+                                                color="secondary"
+                                                variant="outlined"
+                                            />
+                                        </Box>
                                     </Box>
 
                                     <Typography variant="body2" color="text.secondary" sx={styles.projectDescription}>
