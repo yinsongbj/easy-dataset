@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useRef, useEffect } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Paper, 
+import {
+  Box,
+  Typography,
+  Paper,
   Grid,
   CircularProgress
 } from '@mui/material';
@@ -12,22 +12,22 @@ import { useTheme } from '@mui/material/styles';
 import ChatMessage from './ChatMessage';
 import { playgroundStyles } from '@/styles/playground';
 
-const ChatArea = ({ 
-  selectedModels, 
-  conversations, 
-  loading, 
-  getModelName 
+const ChatArea = ({
+  selectedModels,
+  conversations,
+  loading,
+  getModelName
 }) => {
   const theme = useTheme();
   const styles = playgroundStyles(theme);
-  
+
   // 为每个模型创建独立的引用
   const chatContainerRefs = {
     model1: useRef(null),
     model2: useRef(null),
     model3: useRef(null)
   };
-  
+
   // 为每个模型的聊天容器自动滚动到底部
   useEffect(() => {
     Object.values(chatContainerRefs).forEach(ref => {
@@ -36,7 +36,7 @@ const ChatArea = ({
       }
     });
   }, [conversations]);
-  
+
   if (selectedModels.length === 0) {
     return (
       <Box sx={styles.emptyStateBox}>
@@ -46,20 +46,21 @@ const ChatArea = ({
       </Box>
     );
   }
-  
+
   return (
     <Grid container spacing={2} sx={styles.chatContainer}>
       {selectedModels.map((modelId, index) => {
         const modelConversation = conversations[modelId] || [];
         const isLoading = loading[modelId];
         const refKey = `model${index + 1}`;
-        
+
         return (
-          <Grid 
-            item 
-            xs={12} 
-            md={selectedModels.length > 1 ? 12 / selectedModels.length : 12} 
+          <Grid
+            item
+            xs={12}
+            md={selectedModels.length > 1 ? 12 / selectedModels.length : 12}
             key={modelId}
+            style={{ maxHeight: 'calc(100vh - 300px)' }}
           >
             <Paper elevation={1} sx={styles.modelPaper}>
               <Box sx={styles.modelHeader}>
@@ -70,7 +71,7 @@ const ChatArea = ({
                   <CircularProgress size={16} sx={{ ml: 1 }} color="inherit" />
                 )}
               </Box>
-              
+
               <Box
                 ref={chatContainerRefs[refKey]}
                 sx={styles.modelChatBox}
@@ -84,8 +85,8 @@ const ChatArea = ({
                 ) : (
                   modelConversation.map((message, msgIndex) => (
                     <React.Fragment key={msgIndex}>
-                      <ChatMessage 
-                        message={message} 
+                      <ChatMessage
+                        message={message}
                         modelName={null}
                       />
                     </React.Fragment>
