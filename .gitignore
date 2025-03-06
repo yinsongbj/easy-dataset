@@ -11,3 +11,4 @@ mock-login-callback.ts
 /src/test/crawler
 /src/test/mock
 /local-db
+/test
