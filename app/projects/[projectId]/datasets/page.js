@@ -511,7 +511,7 @@ export default function DatasetsPage({ params }) {
         formattedData = dataToExport.map(({ question, answer, cot }) => ({
           instruction: question,
           input: "",
-          output: cot ? `${cot}\n\n${answer}` : answer,
+          output: cot ? `<Thinking>${cot}</Thinking>\n${answer}` : answer,
           system: exportOptions.systemPrompt || ""
         }));
       } else if (exportOptions.formatType === 'sharegpt') {
@@ -535,7 +535,7 @@ export default function DatasetsPage({ params }) {
           // 添加助手回答
           messages.push({
             role: "assistant",
-            content: cot ? `${cot}\n\n${answer}` : answer
+            content: cot ? `<Thinking>${cot}</Thinking>\n${answer}` : answer
           });
 
           return { messages };

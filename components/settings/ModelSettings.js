@@ -21,11 +21,18 @@ import {
   FormControl,
   Alert,
   Snackbar,
-  Autocomplete
+  Autocomplete,
+  Paper,
+  Chip,
+  Avatar,
+  Stack,
+  Tooltip
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ErrorIcon from '@mui/icons-material/Error';
 import { MODEL_PROVIDERS } from '@/constant/model';
 
 const providerOptions = MODEL_PROVIDERS.map(provider => ({
@@ -344,7 +351,7 @@ export default function ModelSettings({ projectId }) {
         console.log('触发模型配置变化事件');
         const event = new CustomEvent('model-config-changed');
         window.dispatchEvent(event);
-        
+
         // 如果有选中的模型，需要检查它是否还存在
         const selectedModelId = localStorage.getItem('selectedModelId');
         if (selectedModelId) {
@@ -365,6 +372,42 @@ export default function ModelSettings({ projectId }) {
     setError(null);
   };
 
+  // 获取模型状态图标和颜色
+  const getModelStatusInfo = (model) => {
+    if (model.provider === 'Ollama') {
+      return {
+        icon: <CheckCircleIcon fontSize="small" />,
+        color: 'success',
+        text: '本地模型'
+      };
+    } else if (model.apiKey) {
+      return {
+        icon: <CheckCircleIcon fontSize="small" />,
+        color: 'success',
+        text: 'API Key 已配置'
+      };
+    } else {
+      return {
+        icon: <ErrorIcon fontSize="small" />,
+        color: 'warning',
+        text: '未配置 API Key'
+      };
+    }
+  };
+
+  // 获取提供商图标
+  const getProviderAvatar = (providerId) => {
+    const providerMap = {
+      'openai': '🤖',
+      'anthropic': '🧠',
+      'ollama': '🐑',
+      'azure': '☁️',
+      'custom': '🔧'
+    };
+
+    return providerMap[providerId] || '🔌';
+  };
+
   if (loading) {
     return <Typography>加载中...</Typography>;
   }
@@ -372,57 +415,110 @@ export default function ModelSettings({ projectId }) {
   return (
     <Card>
       <CardContent>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h6">
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="h6" fontWeight="bold">
             模型配置
           </Typography>
           <Button
-            variant="outlined"
+            variant="contained"
+            color="primary"
             startIcon={<AddIcon />}
             onClick={() => handleOpenModelDialog()}
+            size="small"
           >
             添加模型
           </Button>
         </Box>
 
-        <List>
+        <Stack spacing={2}>
           {models.map((model) => (
-            <Box key={model.id}>
-              <ListItem
-                secondaryAction={
-                  <Box>
-                    <IconButton
-                      edge="end"
-                      aria-label="edit"
-                      onClick={() => handleOpenModelDialog(model)}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      edge="end"
-                      aria-label="delete"
-                      onClick={() => handleDeleteModel(model.id)}
-                      disabled={models.length <= 1} // 至少保留一个模型
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
+            <Paper
+              key={model.id}
+              elevation={1}
+              sx={{
+                p: 2,
+                borderRadius: 2,
+                transition: 'all 0.2s',
+                '&:hover': {
+                  boxShadow: 3,
+                  transform: 'translateY(-2px)'
                 }
-              >
-                <ListItemText
-                  primary={`${model.provider}: ${model.name}`}
-                  secondary={`${model.endpoint}`}
-                />
-              </ListItem>
-              <Divider />
-            </Box>
-          ))}
-        </List>
+              }}
+            >
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Avatar
+                    sx={{
+                      bgcolor: 'primary.main', // 更改为主色调
+                      width: 40,
+                      height: 40,
+                      fontSize: '1.2rem',
+                      fontWeight: 'bold', // 加粗字体
+                      boxShadow: 2 // 添加阴影
+                    }}
+                  >
+                    {getProviderAvatar(model.providerId)}
+                  </Avatar>
 
-        <Box sx={{ mt: 2 }}>
+                  <Box>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      {model.name ? model.name : "（未选择模型）"}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="primary" // 改为主色调
+                      sx={{
+                        fontWeight: 'medium', // 加粗
+                        bgcolor: 'primary.50', // 添加背景色
+                        px: 1, // 水平内边距
+                        py: 0.2, // 垂直内边距
+                        borderRadius: 1, // 圆角
+                        display: 'inline-block' // 行内块元素
+                      }}
+                    >
+                      {model.provider}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Tooltip title={getModelStatusInfo(model).text}>
+                    <Chip
+                      icon={getModelStatusInfo(model).icon}
+                      label={model.endpoint.replace(/^https?:\/\//, '') + (model.provider !== 'Ollama' && !model.apiKey ? " (未配置API Key)" : "")}
+                      size="small"
+                      color={getModelStatusInfo(model).color}
+                      variant="outlined"
+                    />
+                  </Tooltip>
+
+                  <IconButton
+                    size="small"
+                    onClick={() => handleOpenModelDialog(model)}
+                    color="primary"
+                  >
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+
+                  <IconButton
+                    size="small"
+                    onClick={() => handleDeleteModel(model.id)}
+                    disabled={models.length <= 1}
+                    color="error"
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Box>
+              </Box>
+            </Paper>
+          ))}
+        </Stack>
+
+        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
           <Button
             variant="contained"
             onClick={saveAllModels}
+            color="primary"
           >
             保存所有模型配置
           </Button>
