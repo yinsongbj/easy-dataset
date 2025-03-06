@@ -10,6 +10,8 @@
 
 **A powerful tool for creating fine-tuning datasets for Large Language Models**
 
+[简体中文](./README.zh-CN.md) | [English](./README.md)
+
 [Features](#features) • [Getting Started](#getting-started) • [Usage](#usage) • [Documentation](#documentation) • [Contributing](#contributing) • [License](#license)
 
 </div>
@@ -145,12 +147,6 @@ Please make sure to update tests as appropriate and adhere to the existing codin
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgements
-
-- [Next.js](https://nextjs.org/) - The React framework used
-- [Material-UI](https://mui.com/) - UI component library
-- [OpenAI](https://openai.com/) - For API format standards
-
----
 
 <div align="center">
   <sub>Built with ❤️ by <a href="https://github.com/ConardLi">ConardLi</a></sub>

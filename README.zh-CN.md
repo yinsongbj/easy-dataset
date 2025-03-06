@@ -10,6 +10,8 @@
 
 **一个强大的大型语言模型微调数据集创建工具**
 
+[简体中文](./README.zh-CN.md) | [English](./README.md)
+
 [功能特点](#功能特点) • [快速开始](#快速开始) • [使用方法](#使用方法) • [文档](#文档) • [贡献](#贡献) • [许可证](#许可证)
 
 </div>
@@ -143,14 +145,6 @@ easy-dataset/
 ## 许可证
 
 本项目采用 Apache License 2.0 许可证 - 有关详细信息，请参阅 [LICENSE](LICENSE) 文件。
-
-## 致谢
-
-- [Next.js](https://nextjs.org/) - 使用的 React 框架
-- [Material-UI](https://mui.com/) - UI 组件库
-- [OpenAI](https://openai.com/) - API 格式标准
-
----
 
 <div align="center">
   <sub>由 <a href="https://github.com/ConardLi">ConardLi</a> 用 ❤️ 构建</sub>
