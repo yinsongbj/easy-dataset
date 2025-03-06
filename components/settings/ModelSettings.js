@@ -137,6 +137,7 @@ export default function ModelSettings({ projectId }) {
   // 保存所有模型配置
   const saveAllModels = async () => {
     try {
+      console.log('开始保存模型配置...');
       const response = await fetch(`/api/projects/${projectId}/models`, {
         method: 'PUT',
         headers: {
@@ -149,10 +150,13 @@ export default function ModelSettings({ projectId }) {
         throw new Error('保存模型配置失败');
       }
 
+      console.log('模型配置保存成功');
       setSuccess(true);
+      return true; // 返回成功状态
     } catch (error) {
       console.error('保存模型配置出错:', error);
       setError(error.message);
+      return false; // 返回失败状态
     }
   };
 
@@ -302,39 +306,59 @@ export default function ModelSettings({ projectId }) {
   const handleSaveModel = () => {
     if (editingModel) {
       // 更新现有模型
-      setModels(prev =>
-        prev.map(m =>
+      setModels(prev => {
+        const updatedModels = prev.map(m =>
           m.id === editingModel.id
             ? { ...m, ...modelForm }
             : m
-        )
-      );
+        );
+        return updatedModels;
+      });
     } else {
       // 添加新模型
-      const newModel = {
-        id: `model-${Date.now()}`,
-        ...modelForm
-      };
-      setModels(prev => [...prev, newModel]);
+      setModels(prev => {
+        const updatedModels = [...prev, { id: `model-${Date.now()}`, ...modelForm }];
+        return updatedModels;
+      });
     }
 
     handleCloseModelDialog();
-
-    // 自动保存到服务器
-    setTimeout(() => {
-      saveAllModels();
-    }, 500);
   };
 
   // 删除模型
   const handleDeleteModel = (id) => {
-    setModels(prev => prev.filter(m => m.id !== id));
-
-    // 自动保存到服务器
-    setTimeout(() => {
-      saveAllModels();
-    }, 500);
+    setModels(prev => {
+      const updatedModels = prev.filter(m => m.id !== id);
+      return updatedModels;
+    });
   };
+
+  // 监听 models 变化并保存
+  useEffect(() => {
+    console.log('models 发生变化:', models);
+    // 跳过初始加载时的保存
+    if (!loading) {
+      console.log('触发保存操作...');
+      saveAllModels().then(() => {
+        // 保存成功后，触发自定义事件通知 layout.js 刷新模型数据
+        console.log('触发模型配置变化事件');
+        const event = new CustomEvent('model-config-changed');
+        window.dispatchEvent(event);
+        
+        // 如果有选中的模型，需要检查它是否还存在
+        const selectedModelId = localStorage.getItem('selectedModelId');
+        if (selectedModelId) {
+          const modelExists = models.some(m => m.id === selectedModelId);
+          if (!modelExists && models.length > 0) {
+            // 如果选中的模型不存在了，选择第一个模型
+            const defaultModel = models[0];
+            localStorage.setItem('selectedModelId', defaultModel.id);
+            localStorage.setItem('selectedModelInfo', JSON.stringify(defaultModel));
+          }
+        }
+      });
+    }
+  }, [models]);
 
   const handleCloseSnackbar = () => {
     setSuccess(false);

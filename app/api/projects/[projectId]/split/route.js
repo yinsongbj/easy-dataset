@@ -40,6 +40,7 @@ export async function POST(request, { params }) {
       model: model.name,
     });
     // 生成领域树
+    console.log(projectId, fileName, '分割完成，开始构建领域树');
     const llmRes = await llmClient.chat(getLabelPrompt(toc));
     const response = llmRes.choices?.[0]?.message?.content ||
       llmRes.response ||
@@ -57,6 +58,7 @@ export async function POST(request, { params }) {
       });
       return NextResponse.json({ error: 'AI 分析失败，请检查模型配置，删除文件后重试！' }, { status: 400 });
     }
+    console.log(projectId, fileName, '领域树构建完成:', tags);
     await saveTags(projectId, tags);
 
     return NextResponse.json({ ...result, tags });

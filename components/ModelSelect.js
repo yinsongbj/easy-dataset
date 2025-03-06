@@ -14,10 +14,10 @@ export default function ModelSelect({ models = [], selectedModel, onChange, size
   const handleModelChange = (event) => {
     if (!event || !event.target) return;
     const newModelId = event.target.value;
-
+    
     // 找到选中的模型对象
     const selectedModelObj = models.find(model => model.id === newModelId);
-
+    
     if (selectedModelObj) {
       // 将完整的模型信息存储到 localStorage
       localStorage.setItem('selectedModelId', newModelId);
@@ -27,9 +27,13 @@ export default function ModelSelect({ models = [], selectedModel, onChange, size
       localStorage.setItem('selectedModelId', newModelId);
       localStorage.removeItem('selectedModelInfo');
     }
-
+    
     // 通知父组件
     onChange?.(event);
+    
+    // 触发模型选择变化事件
+    const modelChangeEvent = new CustomEvent('model-selection-changed');
+    window.dispatchEvent(modelChangeEvent);
   };
 
   return (
