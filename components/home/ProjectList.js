@@ -1,11 +1,13 @@
 'use client';
 
-import { Grid, Card, Box, CardActionArea, CardContent, Typography, Avatar, Chip, Divider, Paper, Button } from '@mui/material';
+import { Grid, Card, Box, CardActionArea, CardContent, Typography, Avatar, Chip, Divider, Paper, Button, useTheme } from '@mui/material';
 import Link from 'next/link';
 import { styles } from '@/styles/home';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DataObjectIcon from '@mui/icons-material/DataObject';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { motion } from 'framer-motion';
+import { alpha } from '@mui/material/styles';
 
 export default function ProjectList({ projects, onCreateProject }) {
     return (

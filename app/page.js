@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Container, Box, Typography, CircularProgress, Stack } from '@mui/material';
+import { Container, Box, Typography, CircularProgress, Stack, useTheme } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/home/HeroSection';
 import StatsCard from '@/components/home/StatsCard';
 import ProjectList from '@/components/home/ProjectList';
 import CreateProjectDialog from '@/components/home/CreateProjectDialog';
+import { motion } from 'framer-motion';
 
 export default function Home() {
   const [projects, setProjects] = useState([]);
@@ -38,35 +39,59 @@ export default function Home() {
     fetchProjects();
   }, []);
 
+  const theme = useTheme();
+
   return (
-    <main>
+    <main style={{ overflow: 'hidden', position: 'relative' }}>
       <Navbar projects={projects} models={[]} />
 
       <HeroSection onCreateProject={() => setCreateDialogOpen(true)} />
 
-      <Container maxWidth="lg" sx={{ mt: 8, mb: 6 }}>
-        <StatsCard projects={projects} />
+      <Container
+        maxWidth="lg"
+        sx={{
+          mt: { xs: 6, md: 8 },
+          mb: { xs: 4, md: 6 },
+          position: 'relative',
+          zIndex: 1
+        }}
+      >
+        {/* <StatsCard projects={projects} /> */}
 
-        <Box sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          mb: 4,
-          mt: 8
-        }}>
-          <Typography variant="h4" fontWeight="600" color="text.primary">
-            您的项目
-          </Typography>
-        </Box>
 
         {loading && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', mt: 6 }}>
-            <CircularProgress />
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              width: '100%',
+              mt: 6,
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 2
+            }}
+          >
+            <CircularProgress size={40} thickness={4} />
+            <Typography variant="body2" color="text.secondary">
+              正在加载您的项目...
+            </Typography>
           </Box>
         )}
 
         {error && !loading && (
-          <Box sx={{ mt: 4, p: 3, bgcolor: 'error.light', borderRadius: 2 }}>
+          <Box
+            component={motion.div}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            sx={{
+              mt: 4,
+              p: 3,
+              bgcolor: 'error.light',
+              borderRadius: 2,
+              boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+            }}
+          >
             <Stack direction="row" spacing={1} alignItems="center">
               <ErrorOutlineIcon color="error" />
               <Typography color="error.dark">
@@ -77,10 +102,16 @@ export default function Home() {
         )}
 
         {!loading && (
-          <ProjectList
-            projects={projects}
-            onCreateProject={() => setCreateDialogOpen(true)}
-          />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <ProjectList
+              projects={projects}
+              onCreateProject={() => setCreateDialogOpen(true)}
+            />
+          </motion.div>
         )}
       </Container>
 

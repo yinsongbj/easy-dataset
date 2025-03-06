@@ -248,11 +248,11 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
             />
           </Tooltip>
           {/* 模型选择 */}
-          <ModelSelect
+          {/* <ModelSelect
             models={models}
             selectedModel={selectedModel}
             onChange={handleModelChange}
-          />
+          /> */}
 
           {/* 主题切换按钮 */}
           <Tooltip title={resolvedTheme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'}>
