@@ -10,6 +10,12 @@
 
 **A powerful tool for creating fine-tuning datasets for Large Language Models**
 
+<span style="display: flex; align-items: center; justify-content: center ">
+   <img src="./public/imgs/garden.jpg" width="20" style="margin-right: 5px" />
+    <span>Code Garden ｜ ConardLi</span>
+</span>
+
+
 [简体中文](./README.zh-CN.md) | [English](./README.md)
 
 [Features](#features) • [Getting Started](#getting-started) • [Usage](#usage) • [Documentation](#documentation) • [Contributing](#contributing) • [License](#license)
@@ -149,5 +155,5 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 ## Acknowledgements
 
 <div align="center">
-  <sub>Built with ❤️ by <a href="https://github.com/ConardLi">ConardLi</a></sub>
+  <sub>Built with ❤️ by <a href="https://github.com/ConardLi">ConardLi</a> • Follow  me：<a href="https://mp.weixin.qq.com/s/ac9XWvVsaXpSH1HH2x4TRQ">WeChat</a>｜<a href="https://space.bilibili.com/474921808">Bilibili</a>｜<a href="https://juejin.cn/user/3949101466785709">Juijin</a>｜<a href="https://www.zhihu.com/people/wen-ti-chao-ji-duo-de-xiao-qi">Zhihu</a></sub>
 </div>

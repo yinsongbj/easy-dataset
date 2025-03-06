@@ -10,6 +10,11 @@
 
 **一个强大的大型语言模型微调数据集创建工具**
 
+<span style="display: flex; align-items: center; justify-content: center ">
+    <img src="./public/imgs/garden.jpg" width="20" style="margin-right: 5px" />
+    <span>code秘密花园 ｜ ConardLi</span>
+</span>
+
 [简体中文](./README.zh-CN.md) | [English](./README.md)
 
 [功能特点](#功能特点) • [快速开始](#快速开始) • [使用方法](#使用方法) • [文档](#文档) • [贡献](#贡献) • [许可证](#许可证)
@@ -147,5 +152,5 @@ easy-dataset/
 本项目采用 Apache License 2.0 许可证 - 有关详细信息，请参阅 [LICENSE](LICENSE) 文件。
 
 <div align="center">
-  <sub>由 <a href="https://github.com/ConardLi">ConardLi</a> 用 ❤️ 构建</sub>
+  <sub>由 <a href="https://github.com/ConardLi">ConardLi</a> 用 ❤️ 构建 • 关注我：<a href="https://mp.weixin.qq.com/s/ac9XWvVsaXpSH1HH2x4TRQ">公众号</a>｜<a href="https://space.bilibili.com/474921808">B站</a>｜<a href="https://juejin.cn/user/3949101466785709">掘金</a>｜<a href="https://www.zhihu.com/people/wen-ti-chao-ji-duo-de-xiao-qi">知乎</a></sub>
 </div>
