@@ -27,7 +27,7 @@ export default function TextSplitPage({ params }) {
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState(null); // 可以是字符串或对象 { severity, message }
-  
+
   // 进度状态
   const [progress, setProgress] = useState({
     total: 0,         // 总共选择的文本块数量
@@ -126,6 +126,7 @@ export default function TextSplitPage({ params }) {
 
       // 自动切换到智能分割标签
       setActiveTab(0);
+      location.reload();
     } catch (error) {
       console.error('文本分割出错:', error);
       setError(error.message);
@@ -186,7 +187,7 @@ export default function TextSplitPage({ params }) {
     try {
       setProcessing(true);
       setError(null);
-      
+
       // 重置进度状态
       setProgress({
         total: chunkIds.length,
@@ -265,13 +266,13 @@ export default function TextSplitPage({ params }) {
 
             const data = await response.json();
             console.log(`为文本块 ${chunkId} 生成了 ${data.total} 个问题`);
-            
+
             // 更新进度状态
             setProgress(prev => {
               const completed = prev.completed + 1;
               const percentage = Math.round((completed / prev.total) * 100);
               const questionCount = prev.questionCount + (data.total || 0);
-              
+
               return {
                 ...prev,
                 completed,
@@ -279,26 +280,26 @@ export default function TextSplitPage({ params }) {
                 questionCount
               };
             });
-            
+
             totalQuestions += (data.total || 0);
             successCount++;
             return { success: true, chunkId, total: data.total };
           } catch (error) {
             console.error(`为文本块 ${chunkId} 生成问题出错:`, error);
             errorCount++;
-            
+
             // 更新进度状态（即使失败也计入已处理）
             setProgress(prev => {
               const completed = prev.completed + 1;
               const percentage = Math.round((completed / prev.total) * 100);
-              
+
               return {
                 ...prev,
                 completed,
                 percentage
               };
             });
-            
+
             return { success: false, chunkId, error: error.message };
           }
         };
@@ -470,7 +471,7 @@ export default function TextSplitPage({ params }) {
         >
           <CircularProgress size={40} sx={{ mb: 2 }} />
           <Typography variant="h6">处理中...</Typography>
-          
+
           {progress.total > 1 ? (
             <Box sx={{ width: '100%', mt: 1, mb: 2 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
