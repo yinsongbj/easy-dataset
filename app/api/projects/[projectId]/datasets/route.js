@@ -55,8 +55,9 @@ export async function POST(request, { params }) {
     const answer = llmRes.choices?.[0]?.message?.content ||
       llmRes.response ||
       '';
+    const cot = llmRes.choices?.[0]?.message?.reasoning_content || '';
 
-    console.log(questionId, 'answer:', answer);
+    console.log(questionId, 'answer:', answer, cot);
     // 获取现有数据集
     const datasets = await getDatasets(projectId);
 
@@ -65,7 +66,9 @@ export async function POST(request, { params }) {
       id: `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
       question: question.question,
       answer: answer,
+      cot,
       chunkId: chunkId,
+      model: model.name,
       createdAt: new Date().toISOString(),
       questionLabel: question.label || null
     };

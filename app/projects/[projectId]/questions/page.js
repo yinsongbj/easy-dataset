@@ -48,7 +48,7 @@ export default function QuestionsPage({ params }) {
     message: '',
     severity: 'success'
   });
-  
+
   // 进度状态
   const [progress, setProgress] = useState({
     total: 0,         // 总共选择的问题数量
@@ -202,7 +202,7 @@ export default function QuestionsPage({ params }) {
       setSnackbar({
         open: true,
         message: '正在生成数据集...',
-        severity: 'info'
+        severity: 'info',
       });
 
       // 调用API生成数据集
@@ -224,7 +224,9 @@ export default function QuestionsPage({ params }) {
       }
 
       const result = await response.json();
-
+      setSnackbar({
+        open: false,
+      });
       fetchData(1);
       return result.dataset;
     } catch (error) {
@@ -295,7 +297,7 @@ export default function QuestionsPage({ params }) {
         percentage: 0,
         datasetCount: 0
       });
-      
+
       // 然后设置处理状态为真，确保进度条显示
       setProcessing(true);
 
@@ -312,19 +314,19 @@ export default function QuestionsPage({ params }) {
           const lastDashIndex = key.lastIndexOf('-');
           if (lastDashIndex === -1) {
             console.error('无法解析问题键:', key);
-            
+
             // 更新进度状态（即使失败也计入已处理）
             setProgress(prev => {
               const completed = prev.completed + 1;
               const percentage = Math.round((completed / prev.total) * 100);
-              
+
               return {
                 ...prev,
                 completed,
                 percentage
               };
             });
-            
+
             return { success: false, key, error: '无法解析问题键' };
           }
 
@@ -349,30 +351,30 @@ export default function QuestionsPage({ params }) {
           if (!response.ok) {
             const errorData = await response.json();
             console.error(`生成数据集失败:`, errorData.error || '生成数据集失败');
-            
+
             // 更新进度状态（即使失败也计入已处理）
             setProgress(prev => {
               const completed = prev.completed + 1;
               const percentage = Math.round((completed / prev.total) * 100);
-              
+
               return {
                 ...prev,
                 completed,
                 percentage
               };
             });
-            
+
             return { success: false, key, error: errorData.error || '生成数据集失败' };
           }
 
           const data = await response.json();
-          
+
           // 更新进度状态
           setProgress(prev => {
             const completed = prev.completed + 1;
             const percentage = Math.round((completed / prev.total) * 100);
             const datasetCount = prev.datasetCount + 1;
-            
+
             return {
               ...prev,
               completed,
@@ -380,38 +382,38 @@ export default function QuestionsPage({ params }) {
               datasetCount
             };
           });
-          
+
           console.log(`数据集生成成功: ${questionId}`);
           return { success: true, key, data: data.dataset };
         } catch (error) {
           console.error('生成数据集失败:', error);
-          
+
           // 更新进度状态（即使失败也计入已处理）
           setProgress(prev => {
             const completed = prev.completed + 1;
             const percentage = Math.round((completed / prev.total) * 100);
-            
+
             return {
               ...prev,
               completed,
               percentage
             };
           });
-          
+
           return { success: false, key, error: error.message };
         }
       };
 
       // 并行处理所有问题，最多同时处理2个
       const results = await processInParallel(selectedQuestions, processQuestion, 2);
-      
+
       // 刷新数据
       fetchData(1);
-      
+
       // 处理完成后设置结果消息
       const successCount = results.filter(r => r.success).length;
       const failCount = results.filter(r => !r.success).length;
-      
+
       if (failCount > 0) {
         setSnackbar({
           open: true,
@@ -685,22 +687,22 @@ export default function QuestionsPage({ params }) {
             <Typography variant="h6" sx={{ mb: 2, color: 'primary.main', fontWeight: 'bold' }}>
               正在生成数据集
             </Typography>
-            
+
             <Box sx={{ mb: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                 <Typography variant="body1" sx={{ mr: 1 }}>
                   {progress.percentage}%
                 </Typography>
                 <Box sx={{ width: '100%' }}>
-                  <LinearProgress 
-                    variant="determinate" 
-                    value={progress.percentage} 
+                  <LinearProgress
+                    variant="determinate"
+                    value={progress.percentage}
                     sx={{ height: 8, borderRadius: 4 }}
                     color="primary"
                   />
                 </Box>
               </Box>
-              
+
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
                 <Typography variant="body2">
                   已完成: {progress.completed}/{progress.total}
@@ -710,16 +712,16 @@ export default function QuestionsPage({ params }) {
                 </Typography>
               </Box>
             </Box>
-            
+
             <CircularProgress size={60} thickness={4} sx={{ mb: 2 }} />
-            
+
             <Typography variant="body2" color="text.secondary">
               请耐心等待，正在处理中...
             </Typography>
           </Paper>
         </Box>
       )}
-      
+
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4">
           问题列表 ({totalQuestions})
