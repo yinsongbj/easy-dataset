@@ -143,3 +143,24 @@ easy-dataset/
 3. 添加数据集版本管理
 4. 实现团队协作功能
 5. 增加更多数据集导出格式
+
+## 国际化处理
+
+### 技术选型
+
+- **国际化库**: i18next + react-i18next
+- **语言检测**: i18next-browser-languagedetector
+- **支持语言**: 英文(en)、简体中文(zh-CN)
+
+### 目录结构
+
+```
+easy-dataset/
+├── locales/              # 国际化资源目录
+│   ├── en/              # 英文翻译
+│   │   └── translation.json
+│   └── zh-CN/           # 中文翻译
+│       └── translation.json
+├── lib/
+│   └── i18n.js          # i18next 配置
+```

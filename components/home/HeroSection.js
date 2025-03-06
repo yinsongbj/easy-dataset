@@ -7,8 +7,10 @@ import { styles } from '@/styles/home';
 import { useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
 import ParticleBackground from './ParticleBackground';
+import { useTranslation } from 'react-i18next';
 
 export default function HeroSection({ onCreateProject }) {
+    const { t } = useTranslation();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -44,7 +46,7 @@ export default function HeroSection({ onCreateProject }) {
                             textShadow: theme.palette.mode === 'dark' ? '0 0 30px rgba(139, 92, 246, 0.3)' : 'none'
                         }}
                     >
-                        Easy DataSet
+                        {t('home.title')}
                     </Typography>
 
                     <Typography
@@ -65,7 +67,7 @@ export default function HeroSection({ onCreateProject }) {
                             mb: 4
                         }}
                     >
-                        简单高效地处理文本、创建问题并生成高质量数据集，让AI训练更加轻松
+                        {t('home.subtitle')}
                     </Typography>
 
                     <Box
@@ -100,7 +102,7 @@ export default function HeroSection({ onCreateProject }) {
                                 }
                             }}
                         >
-                            创建新项目
+                            {t('home.createProject')}
                         </Button>
                         <Button
                             variant="contained"
@@ -123,7 +125,7 @@ export default function HeroSection({ onCreateProject }) {
                                 }
                             }}
                         >
-                            搜索公开数据集
+                            {t('home.searchDataset')}
                         </Button>
                     </Box>
                 </Box>

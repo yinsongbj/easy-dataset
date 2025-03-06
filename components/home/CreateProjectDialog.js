@@ -14,8 +14,10 @@ import {
   CircularProgress
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 export default function CreateProjectDialog({ open, onClose }) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -48,13 +50,13 @@ export default function CreateProjectDialog({ open, onClose }) {
       });
 
       if (!response.ok) {
-        throw new Error('创建项目失败');
+        throw new Error(t('projects.createFailed'));
       }
 
       const data = await response.json();
       router.push(`/projects/${data.id}/settings?tab=model`);
     } catch (err) {
-      console.error('创建项目出错:', err);
+      console.error(t('projects.createError'), err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -78,7 +80,7 @@ export default function CreateProjectDialog({ open, onClose }) {
       }}
     >
       <DialogTitle>
-        <Typography variant="h5" fontWeight="bold">创建新项目</Typography>
+        <Typography variant="h5" fontWeight="bold">{t('projects.createNew')}</Typography>
       </DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
@@ -86,7 +88,7 @@ export default function CreateProjectDialog({ open, onClose }) {
             <TextField
               autoFocus
               name="name"
-              label="项目名称"
+              label={t('projects.name')}
               fullWidth
               required
               value={formData.name}
@@ -95,7 +97,7 @@ export default function CreateProjectDialog({ open, onClose }) {
             />
             <TextField
               name="description"
-              label="项目描述"
+              label={t('projects.description')}
               fullWidth
               multiline
               rows={4}
@@ -110,7 +112,7 @@ export default function CreateProjectDialog({ open, onClose }) {
           )}
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 3 }}>
-          <Button onClick={onClose}>取消</Button>
+          <Button onClick={onClose}>{t('common.cancel')}</Button>
           <Button
             type="submit"
             variant="contained"
@@ -122,7 +124,7 @@ export default function CreateProjectDialog({ open, onClose }) {
               }
             }}
           >
-            {loading ? <CircularProgress size={24} /> : '创建项目'}
+            {loading ? <CircularProgress size={24} /> : t('home.createProject')}
           </Button>
         </DialogActions>
       </form>

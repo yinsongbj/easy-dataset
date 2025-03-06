@@ -1,0 +1,64 @@
+{
+  "common": {
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  "home": {
+    "title": "Easy Dataset",
+    "subtitle": "A powerful tool for creating fine-tuning datasets for Large Language Models",
+    "createProject": "Create Project",
+    "searchDataset": "Search Public Datasets"
+  },
+  "projects": {
+    "fetchFailed": "Failed to fetch project list",
+    "fetchError": "Error fetching project list",
+    "loading": "Loading your projects...",
+    "createFailed": "Failed to create project",
+    "createError": "Error creating project",
+    "createNew": "Create New Project",
+    "name": "Project Name",
+    "description": "Project Description"
+  },
+  "textSplit": {
+    "fetchChunksFailed": "Failed to fetch text chunks",
+    "fetchChunksError": "Error fetching text chunks",
+    "fileResultReceived": "File result received",
+    "fileUploadSuccess": "File uploaded successfully",
+    "splitTextFailed": "Text splitting failed",
+    "splitTextError": "Error splitting text",
+    "deleteChunkFailed": "Failed to delete text chunk",
+    "deleteChunkError": "Error deleting text chunk",
+    "selectModelFirst": "Please select a model first, you can select from the top navigation bar",
+    "modelNotAvailable": "Selected model is not available, please select again",
+    "generateQuestionsFailed": "Failed to generate questions for chunk {{chunkId}}",
+    "questionsGenerated": "Generated {{total}} questions",
+    "questionsGeneratedSuccess": "Successfully generated {{total}} questions for the text chunk",
+    "generateQuestionsForChunkFailed": "Failed to generate questions for chunk {{chunkId}}",
+    "generateQuestionsForChunkError": "Error generating questions for chunk {{chunkId}}",
+    "generateQuestionsError": "Error generating questions",
+    "partialSuccess": "Partially successful question generation ({{successCount}}/{{total}}), {{errorCount}} chunks failed",
+    "allSuccess": "Successfully generated {{totalQuestions}} questions for {{successCount}} text chunks",
+    "fileDeleted": "File {{fileName}} deleted, refreshing text chunk list",
+    "tabs": {
+      "smartSplit": "Smart Split",
+      "domainAnalysis": "Domain Analysis"
+    },
+    "loading": "Loading...",
+    "fetchingDocuments": "Fetching document data",
+    "processing": "Processing...",
+    "progressStatus": "Selected {{total}} text chunks, {{completed}} completed",
+    "processingPleaseWait": "Processing, please wait!"
+  },
+  "export": {
+    "title": "Export Dataset",
+    "format": "Format",
+    "fileFormat": "File Format",
+    "systemPrompt": "System Prompt",
+    "onlyConfirmed": "Only Export Confirmed Data",
+    "example": "Format Example"
+  }
+}

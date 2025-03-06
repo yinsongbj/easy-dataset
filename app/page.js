@@ -9,8 +9,10 @@ import StatsCard from '@/components/home/StatsCard';
 import ProjectList from '@/components/home/ProjectList';
 import CreateProjectDialog from '@/components/home/CreateProjectDialog';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 export default function Home() {
+  const { t } = useTranslation();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,13 +25,13 @@ export default function Home() {
         const response = await fetch('/api/projects');
 
         if (!response.ok) {
-          throw new Error('获取项目列表失败');
+          throw new Error(t('projects.fetchFailed'));
         }
 
         const data = await response.json();
         setProjects(data);
       } catch (error) {
-        console.error('获取项目列表出错:', error);
+        console.error(t('projects.fetchError'), error);
         setError(error.message);
       } finally {
         setLoading(false);
@@ -73,7 +75,7 @@ export default function Home() {
           >
             <CircularProgress size={40} thickness={4} />
             <Typography variant="body2" color="text.secondary">
-              正在加载您的项目...
+              {t('projects.loading')}
             </Typography>
           </Box>
         )}
@@ -95,7 +97,7 @@ export default function Home() {
             <Stack direction="row" spacing={1} alignItems="center">
               <ErrorOutlineIcon color="error" />
               <Typography color="error.dark">
-                获取项目列表失败: {error}
+                {t('projects.fetchFailed')}: {error}
               </Typography>
             </Stack>
           </Box>

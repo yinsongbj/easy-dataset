@@ -1,0 +1,64 @@
+{
+  "common": {
+    "create": "创建",
+    "edit": "编辑",
+    "delete": "删除",
+    "save": "保存",
+    "cancel": "取消",
+    "confirm": "确认"
+  },
+  "home": {
+    "title": "Easy Dataset",
+    "subtitle": "一个强大的大型语言模型微调数据集创建工具",
+    "createProject": "创建项目",
+    "searchDataset": "搜索公开数据集"
+  },
+  "projects": {
+    "fetchFailed": "获取项目列表失败",
+    "fetchError": "获取项目列表出错",
+    "loading": "正在加载您的项目...",
+    "createFailed": "创建项目失败",
+    "createError": "创建项目出错",
+    "createNew": "创建新项目",
+    "name": "项目名称",
+    "description": "项目描述"
+  },
+  "textSplit": {
+    "fetchChunksFailed": "获取文本块失败",
+    "fetchChunksError": "获取文本块出错",
+    "fileResultReceived": "获取到文件结果",
+    "fileUploadSuccess": "文件上传成功",
+    "splitTextFailed": "文本分割失败",
+    "splitTextError": "文本分割出错",
+    "deleteChunkFailed": "删除文本块失败",
+    "deleteChunkError": "删除文本块出错",
+    "selectModelFirst": "请先选择一个模型，可以在顶部导航栏选择",
+    "modelNotAvailable": "选择的模型不可用，请重新选择",
+    "generateQuestionsFailed": "为文本块 {{chunkId}} 生成问题失败",
+    "questionsGenerated": "已生成 {{total}} 个问题",
+    "questionsGeneratedSuccess": "成功为文本块生成了 {{total}} 个问题",
+    "generateQuestionsForChunkFailed": "为文本块 {{chunkId}} 生成问题失败",
+    "generateQuestionsForChunkError": "为文本块 {{chunkId}} 生成问题出错",
+    "generateQuestionsError": "生成问题出错",
+    "partialSuccess": "部分文本块生成问题成功 ({{successCount}}/{{total}})，{{errorCount}} 个文本块失败",
+    "allSuccess": "成功为 {{successCount}} 个文本块生成了 {{totalQuestions}} 个问题",
+    "fileDeleted": "文件 {{fileName}} 已删除，刷新文本块列表",
+    "tabs": {
+      "smartSplit": "智能分割",
+      "domainAnalysis": "领域分析"
+    },
+    "loading": "加载中...",
+    "fetchingDocuments": "正在获取文献数据",
+    "processing": "处理中...",
+    "progressStatus": "已选择 {{total}} 个文本块，已处理完成 {{completed}} 个",
+    "processingPleaseWait": "正在努力处理中，请稍候！"
+  },
+  "export": {
+    "title": "导出数据集",
+    "format": "格式",
+    "fileFormat": "文件格式",
+    "systemPrompt": "系统提示词",
+    "onlyConfirmed": "仅导出已确认数据",
+    "example": "格式示例"
+  }
+}

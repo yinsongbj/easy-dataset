@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Container,
   Typography,
@@ -19,6 +20,7 @@ import ChunkList from '@/components/text-split/ChunkList';
 import DomainAnalysis from '@/components/text-split/DomainAnalysis';
 
 export default function TextSplitPage({ params }) {
+  const { t } = useTranslation();
   const { projectId } = params;
   const [activeTab, setActiveTab] = useState(0);
   const [chunks, setChunks] = useState([]);
@@ -49,7 +51,7 @@ export default function TextSplitPage({ params }) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || '获取文本块失败');
+        throw new Error(errorData.error || t('textSplit.fetchChunksFailed'));
       }
 
       const data = await response.json();
@@ -57,7 +59,7 @@ export default function TextSplitPage({ params }) {
 
       // 如果有文件结果，处理详细信息
       if (data.toc) {
-        console.log('获取到文件结果:', data.fileResult);
+        console.log(t('textSplit.fileResultReceived'), data.fileResult);
         // 如果有目录结构，设置目录数据
         setTocData(data.toc);
       }
@@ -67,7 +69,7 @@ export default function TextSplitPage({ params }) {
         setTags(data.tags);
       }
     } catch (error) {
-      console.error('获取文本块出错:', error);
+      console.error(t('textSplit.fetchChunksError'), error);
       setError(error.message);
     } finally {
       setLoading(false);
@@ -81,7 +83,7 @@ export default function TextSplitPage({ params }) {
 
   // 处理文件上传成功
   const handleUploadSuccess = (fileNames, model) => {
-    console.log(`文件上传成功:`, fileNames);
+    console.log(t('textSplit.fileUploadSuccess'), fileNames);
     // 如果有文件上传成功，自动处理第一个文件
     if (fileNames && fileNames.length > 0) {
       handleSplitText(fileNames[0], model);
@@ -103,7 +105,7 @@ export default function TextSplitPage({ params }) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || '文本分割失败');
+        throw new Error(errorData.error || t('textSplit.splitTextFailed'));
       }
 
       const data = await response.json();
@@ -128,7 +130,7 @@ export default function TextSplitPage({ params }) {
       setActiveTab(0);
       location.reload();
     } catch (error) {
-      console.error('文本分割出错:', error);
+      console.error(t('textSplit.splitTextError'), error);
       setError(error.message);
     } finally {
       setProcessing(false);
@@ -144,13 +146,13 @@ export default function TextSplitPage({ params }) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || '删除文本块失败');
+        throw new Error(errorData.error || t('textSplit.deleteChunkFailed'));
       }
 
       // 更新文本块列表
       setChunks(prev => prev.filter(chunk => chunk.id !== chunkId));
     } catch (error) {
-      console.error('删除文本块出错:', error);
+      console.error(t('textSplit.deleteChunkError'), error);
       setError(error.message);
     }
   };
@@ -207,18 +209,18 @@ export default function TextSplitPage({ params }) {
         try {
           model = JSON.parse(modelInfoStr);
         } catch (e) {
-          console.error('解析模型信息出错:', e);
+          console.error(t('解析模型信息出错:'), e);
           // 继续执行，将在下面尝试获取模型信息
         }
       }
 
       // 如果仍然没有模型信息，抛出错误
       if (!selectedModelId) {
-        throw new Error('请先选择一个模型，可以在顶部导航栏选择');
+        throw new Error(t('textSplit.selectModelFirst'));
       }
 
       if (!model) {
-        throw new Error('选择的模型不可用，请重新选择');
+        throw new Error(t('textSplit.modelNotAvailable'));
       }
 
       // 如果是单个文本块，直接调用单个生成接口
@@ -234,12 +236,12 @@ export default function TextSplitPage({ params }) {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || `为文本块 ${chunkId} 生成问题失败`);
+          throw new Error(errorData.error || t('textSplit.generateQuestionsFailed', { chunkId }));
         }
 
         const data = await response.json();
-        console.log(`为文本块 ${chunkId} 生成了 ${data.total} 个问题`);
-        setError({ severity: 'success', message: `成功为文本块生成了 ${data.total} 个问题` });
+        console.log(t('textSplit.questionsGenerated', { chunkId, total: data.total }));
+        setError({ severity: 'success', message: t('textSplit.questionsGeneratedSuccess', { total: data.total }) });
       } else {
         // 如果是多个文本块，循环调用单个文本块的问题生成接口，限制并行数为2
         let totalQuestions = 0;
@@ -259,13 +261,13 @@ export default function TextSplitPage({ params }) {
 
             if (!response.ok) {
               const errorData = await response.json();
-              console.error(`为文本块 ${chunkId} 生成问题失败:`, errorData.error);
+              console.error(t('textSplit.generateQuestionsForChunkFailed', { chunkId }), errorData.error);
               errorCount++;
               return { success: false, chunkId, error: errorData.error };
             }
 
             const data = await response.json();
-            console.log(`为文本块 ${chunkId} 生成了 ${data.total} 个问题`);
+            console.log(t('textSplit.questionsGenerated', { chunkId, total: data.total }));
 
             // 更新进度状态
             setProgress(prev => {
@@ -285,7 +287,7 @@ export default function TextSplitPage({ params }) {
             successCount++;
             return { success: true, chunkId, total: data.total };
           } catch (error) {
-            console.error(`为文本块 ${chunkId} 生成问题出错:`, error);
+            console.error(t('textSplit.generateQuestionsForChunkError', { chunkId }), error);
             errorCount++;
 
             // 更新进度状态（即使失败也计入已处理）
@@ -311,12 +313,12 @@ export default function TextSplitPage({ params }) {
         if (errorCount > 0) {
           setError({
             severity: 'warning',
-            message: `部分文本块生成问题成功 (${successCount}/${chunkIds.length})，${errorCount} 个文本块失败`
+            message: t('textSplit.partialSuccess', { successCount, total: chunkIds.length, errorCount })
           });
         } else {
           setError({
             severity: 'success',
-            message: `成功为 ${successCount} 个文本块生成了 ${totalQuestions} 个问题`
+            message: t('textSplit.allSuccess', { successCount, totalQuestions })
           });
         }
       }
@@ -324,7 +326,7 @@ export default function TextSplitPage({ params }) {
       // 刷新文本块列表
       fetchChunks();
     } catch (error) {
-      console.error('生成问题出错:', error);
+      console.error(t('textSplit.generateQuestionsError'), error);
       setError({ severity: 'error', message: error.message });
     } finally {
       setProcessing(false);
@@ -342,7 +344,7 @@ export default function TextSplitPage({ params }) {
 
   // 处理文件删除
   const handleFileDeleted = (fileName) => {
-    console.log(`文件 ${fileName} 已删除，刷新文本块列表`);
+    console.log(t('textSplit.fileDeleted', { fileName }));
     // 刷新文本块列表
     fetchChunks();
   };
@@ -391,8 +393,8 @@ export default function TextSplitPage({ params }) {
           variant="fullWidth"
           sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}
         >
-          <Tab label="智能分割" />
-          <Tab label="领域分析" />
+          <Tab label={t('textSplit.tabs.smartSplit')} />
+          <Tab label={t('textSplit.tabs.domainAnalysis')} />
         </Tabs>
 
         {/* 智能分割标签内容 */}
@@ -441,8 +443,8 @@ export default function TextSplitPage({ params }) {
           }}
         >
           <CircularProgress size={40} sx={{ mb: 2 }} />
-          <Typography variant="h6">加载中...</Typography>
-          <Typography variant="body2" color="text.secondary">正在获取文献数据</Typography>
+          <Typography variant="h6">{t('textSplit.loading')}</Typography>
+          <Typography variant="body2" color="text.secondary">{t('textSplit.fetchingDocuments')}</Typography>
         </Paper>
       </Backdrop>
 
@@ -470,13 +472,13 @@ export default function TextSplitPage({ params }) {
           }}
         >
           <CircularProgress size={40} sx={{ mb: 2 }} />
-          <Typography variant="h6">处理中...</Typography>
+          <Typography variant="h6">{t('textSplit.processing')}</Typography>
 
           {progress.total > 1 ? (
             <Box sx={{ width: '100%', mt: 1, mb: 2 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                 <Typography variant="body2" color="text.secondary">
-                  已选择 {progress.total} 个文本块，已处理完成 {progress.completed} 个
+                  {t('textSplit.progressStatus', { total: progress.total, completed: progress.completed })}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {progress.percentage}%
@@ -484,12 +486,12 @@ export default function TextSplitPage({ params }) {
               </Box>
               <LinearProgress variant="determinate" value={progress.percentage} sx={{ height: 8, borderRadius: 4 }} />
               <Typography variant="body2" color="text.secondary" sx={{ mt: 1, textAlign: 'center' }}>
-                已生成 {progress.questionCount} 个问题
+                {t('textSplit.questionsGenerated', { total: progress.questionCount })}
               </Typography>
             </Box>
           ) : (
             <Typography variant="body2" color="text.secondary">
-              正在努力处理中，请稍候！
+              {t('textSplit.processingPleaseWait')}
             </Typography>
           )}
         </Paper>

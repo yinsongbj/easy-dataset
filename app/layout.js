@@ -1,5 +1,6 @@
 import './globals.css';
 import ThemeRegistry from '@/components/ThemeRegistry';
+import I18nProvider from '@/components/I18nProvider';
 
 export const metadata = {
   title: 'Easy DataSet',
@@ -11,7 +12,9 @@ export default function RootLayout({ children }) {
     <html lang="zh" suppressHydrationWarning>
       <body suppressHydrationWarning>
         <ThemeRegistry>
-          {children}
+          <I18nProvider>
+            {children}
+          </I18nProvider>
         </ThemeRegistry>
       </body>
     </html>

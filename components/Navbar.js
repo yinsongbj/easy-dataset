@@ -18,6 +18,7 @@ import {
   Chip
 } from '@mui/material';
 import ModelSelect from './ModelSelect';
+import LanguageSwitcher from './LanguageSwitcher';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
@@ -27,6 +28,7 @@ import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import DataObjectIcon from '@mui/icons-material/DataObject';
 import StorageIcon from '@mui/icons-material/Storage';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 export default function Navbar({ projects = [], currentProject, models = [] }) {
   const [selectedProject, setSelectedProject] = useState(currentProject || '');
@@ -228,6 +230,7 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
 
         {/* 右侧操作区 */}
         <Box sx={{ display: 'flex', flexGrow: 0, alignItems: 'center', gap: 2 }} style={{ position: 'absolute', right: '20px' }}>
+
           {/* 数据集广场链接 */}
           <Tooltip title="数据集广场">
             <Chip
@@ -256,7 +259,10 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
             />)
           }
 
-
+          {/* 语言切换器 */}
+          <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
+            <LanguageSwitcher />
+          </Box>
           {/* 主题切换按钮 */}
           <Tooltip title={resolvedTheme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'}>
             <IconButton
@@ -275,6 +281,26 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
               {resolvedTheme === 'dark' ? <LightModeOutlinedIcon fontSize="small" /> : <DarkModeOutlinedIcon fontSize="small" />}
             </IconButton>
           </Tooltip>
+
+          {/* GitHub链接 */}
+          <Tooltip title="访问GitHub仓库">
+            <IconButton
+              onClick={() => window.open('https://github.com/ConardLi/easy-dataset', '_blank')}
+              size="small"
+              sx={{
+                bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.15)',
+                color: theme.palette.mode === 'dark' ? 'inherit' : 'white',
+                p: 1,
+                borderRadius: 1.5,
+                '&:hover': {
+                  bgcolor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.25)'
+                }
+              }}
+            >
+              <GitHubIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+
         </Box>
       </Toolbar>
     </AppBar>
