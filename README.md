@@ -1,6 +1,6 @@
 <div align="center">
 
-![](./public//imgs/bg.png)
+![](./public//imgs/bg2.png)
 
 <img src="https://img.shields.io/badge/version-0.1.0-blue.svg" alt="version 0.1.0"/>
 <img src="https://img.shields.io/badge/license-Apache--2.0-green.svg" alt="Apache 2.0 License"/>
@@ -9,12 +9,6 @@
 <img src="https://img.shields.io/badge/MUI-5.15.7-007FFF" alt="Material UI 5.15.7"/>
 
 **A powerful tool for creating fine-tuning datasets for Large Language Models**
-
-<span style="display: flex; align-items: center; justify-content: center ">
-   <img src="./public/imgs/garden.jpg" width="20" style="margin-right: 5px" />
-    <span>Code Garden ｜ ConardLi</span>
-</span>
-
 
 [简体中文](./README.zh-CN.md) | [English](./README.md)
 

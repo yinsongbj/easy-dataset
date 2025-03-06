@@ -1,6 +1,6 @@
 <div align="center">
 
-![](./public//imgs/bg.png)
+![](./public//imgs/bg2.png)
 
 <img src="https://img.shields.io/badge/版本-0.1.0-blue.svg" alt="版本 0.1.0"/>
 <img src="https://img.shields.io/badge/许可证-Apache--2.0-green.svg" alt="Apache 2.0 许可证"/>
@@ -9,11 +9,6 @@
 <img src="https://img.shields.io/badge/MUI-5.15.7-007FFF" alt="Material UI 5.15.7"/>
 
 **一个强大的大型语言模型微调数据集创建工具**
-
-<span style="display: flex; align-items: center; justify-content: center ">
-    <img src="./public/imgs/garden.jpg" width="20" style="margin-right: 5px" />
-    <span>code秘密花园 ｜ ConardLi</span>
-</span>
 
 [简体中文](./README.zh-CN.md) | [English](./README.md)
 
