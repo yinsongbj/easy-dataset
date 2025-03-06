@@ -12,7 +12,8 @@ import {
   Divider,
   Paper,
   Alert,
-  Snackbar
+  Snackbar,
+  CircularProgress
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
@@ -25,13 +26,17 @@ import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
  * @param {Array} props.selectedQuestions - 已选择的问题ID列表
  * @param {Function} props.onSelectQuestion - 选择问题的回调函数
  * @param {Function} props.onDeleteQuestion - 删除问题的回调函数
+ * @param {Function} props.onGenerateDataset - 生成数据集的回调函数
+ * @param {string} props.projectId - 项目ID
  */
 export default function QuestionListView({
   questions = [],
   chunks = [],
   selectedQuestions = [],
   onSelectQuestion,
-  onDeleteQuestion
+  onDeleteQuestion,
+  onGenerateDataset,
+  projectId
 }) {
   // 分页状态
   const [page, setPage] = useState(1);
@@ -40,6 +45,10 @@ export default function QuestionListView({
   // 批量操作显示提示
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
+
+  // 处理状态
+  const [processingQuestions, setProcessingQuestions] = useState({});
 
   // 获取文本块的标题
   const getChunkTitle = (chunkId) => {
@@ -67,6 +76,46 @@ export default function QuestionListView({
   // 处理分页变化
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
+  };
+
+  // 处理生成数据集
+  const handleGenerateDataset = async (questionId, chunkId) => {
+    // 如果没有提供回调函数，则显示提示
+    if (!onGenerateDataset) {
+      setSnackbarMessage('生成数据集功能尚未实现');
+      setSnackbarSeverity('warning');
+      setSnackbarOpen(true);
+      return;
+    }
+
+    // 设置处理状态
+    setProcessingQuestions(prev => ({
+      ...prev,
+      [`${chunkId}-${questionId}`]: true
+    }));
+
+    try {
+      // 调用回调函数生成数据集
+      const result = await onGenerateDataset(questionId, chunkId);
+
+      // 显示成功提示
+      setSnackbarMessage(`成功生成数据集: ${result.question}`);
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error('生成数据集失败:', error);
+      // 显示错误提示
+      setSnackbarMessage(`生成数据集失败: ${error.message || '未知错误'}`);
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    } finally {
+      // 清除处理状态
+      setProcessingQuestions(prev => {
+        const newState = { ...prev };
+        delete newState[`${chunkId}-${questionId}`];
+        return newState;
+      });
+    }
   };
 
   // 使用传入的问题列表
@@ -135,7 +184,20 @@ export default function QuestionListView({
                 />
 
                 <Box sx={{ ml: 1, flex: 1, mr: 2 }}>
-                  <Typography variant="body2">{question.question}</Typography>
+                  <Typography variant="body2">
+                    {question.question}
+                    {
+                      question.dataSites && question.dataSites.length > 0 ? (
+                        <Chip
+                          label={question.dataSites.length + '个答案'}
+                          size="small"
+                          color="primary"
+                          variant="outlined"
+                          sx={{ fontSize: '0.75rem', maxWidth: 150 }}
+                        />
+                      ) : null
+                    }
+                  </Typography>
                   <Typography variant="caption" color="text.secondary" sx={{ display: { xs: 'block', sm: 'none' } }}>
                     {question.label || '无标签'} • ID: {(question.question || '').substring(0, 8)}
                   </Typography>
@@ -172,9 +234,18 @@ export default function QuestionListView({
                 </Box>
 
                 <Box sx={{ width: 100, display: 'flex', justifyContent: 'center' }}>
-                  <Tooltip title="生成答案">
-                    <IconButton size="small" color="primary">
-                      <AutoFixHighIcon fontSize="small" />
+                  <Tooltip title="生成数据集">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      onClick={() => handleGenerateDataset(question.question, question.chunkId)}
+                      disabled={processingQuestions[`${question.chunkId}-${question.question}`]}
+                    >
+                      {processingQuestions[`${question.chunkId}-${question.question}`] ? (
+                        <CircularProgress size={16} />
+                      ) : (
+                        <AutoFixHighIcon fontSize="small" />
+                      )}
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="删除问题">
@@ -182,6 +253,7 @@ export default function QuestionListView({
                       size="small"
                       color="error"
                       onClick={() => onDeleteQuestion(question.question, question.chunkId)}
+                      disabled={processingQuestions[`${question.chunkId}-${question.question}`]}
                     >
                       <DeleteIcon fontSize="small" />
                     </IconButton>
@@ -217,7 +289,7 @@ export default function QuestionListView({
         onClose={() => setSnackbarOpen(false)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={() => setSnackbarOpen(false)} severity="info">
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

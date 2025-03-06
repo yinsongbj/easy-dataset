@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getQuestions } from '@/lib/db/questions';
+import { getDatasets } from '@/lib/db/datasets';
+
 
 // 获取项目的所有问题
 export async function GET(request, { params }) {
@@ -13,18 +15,23 @@ export async function GET(request, { params }) {
 
     // 获取问题列表
     const nestedQuestions = await getQuestions(projectId);
-    
+
+    // 获取数据集
+    const datasets = await getDatasets(projectId);
+
     // 将嵌套的问题数据结构拍平
     const flattenedQuestions = [];
-    
+
     nestedQuestions.forEach(item => {
       const { chunkId, questions } = item;
-      
+
       if (questions && Array.isArray(questions)) {
         questions.forEach(question => {
+          const dataSites = datasets.filter(dataset => dataset.question === question.question);
           flattenedQuestions.push({
             ...question,
-            chunkId
+            chunkId,
+            dataSites
           });
         });
       }

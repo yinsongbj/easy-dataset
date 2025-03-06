@@ -13,7 +13,8 @@ import {
   Collapse,
   Chip,
   Tooltip,
-  Divider
+  Divider,
+  CircularProgress
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -31,6 +32,7 @@ import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
  * @param {Array} props.selectedQuestions - 已选择的问题ID列表
  * @param {Function} props.onSelectQuestion - 选择问题的回调函数
  * @param {Function} props.onDeleteQuestion - 删除问题的回调函数
+ * @param {Function} props.onGenerateDataset - 生成数据集的回调函数
  */
 export default function QuestionTreeView({
   questions = [],
@@ -38,10 +40,12 @@ export default function QuestionTreeView({
   tags = [],
   selectedQuestions = [],
   onSelectQuestion,
-  onDeleteQuestion
+  onDeleteQuestion,
+  onGenerateDataset
 }) {
   const [expandedTags, setExpandedTags] = useState({});
   const [questionsByTag, setQuestionsByTag] = useState({});
+  const [processingQuestions, setProcessingQuestions] = useState({});
 
   // 初始化时，将所有标签设置为展开状态
   useEffect(() => {
@@ -89,15 +93,15 @@ export default function QuestionTreeView({
       // 使用一个数组来存储所有匹配的标签路径，以便找到最精确的匹配
       const findAllMatchingTags = (tag, path = []) => {
         const currentPath = [...path, tag.label];
-        
+
         // 存储所有匹配结果
         const matches = [];
-        
+
         // 精确匹配当前标签
         if (tag.label === questionLabel) {
           matches.push({ label: tag.label, depth: currentPath.length });
         }
-        
+
         // 检查子标签
         if (tag.child && tag.child.length > 0) {
           for (const childTag of tag.child) {
@@ -105,17 +109,17 @@ export default function QuestionTreeView({
             matches.push(...childMatches);
           }
         }
-        
+
         return matches;
       };
-      
+
       // 在所有根标签中查找所有匹配
       let allMatches = [];
       for (const rootTag of tags) {
         const matches = findAllMatchingTags(rootTag);
         allMatches.push(...matches);
       }
-      
+
       // 找到深度最大的匹配（最精确的匹配）
       let matchedTagLabel = null;
       if (allMatches.length > 0) {
@@ -155,6 +159,32 @@ export default function QuestionTreeView({
     return selectedQuestions.includes(`${chunkId}-${questionId}`);
   };
 
+  // 处理生成数据集
+  const handleGenerateDataset = async (questionId, chunkId) => {
+    // 如果没有提供回调函数，则直接返回
+    if (!onGenerateDataset) return;
+
+    // 设置处理状态
+    setProcessingQuestions(prev => ({
+      ...prev,
+      [`${chunkId}-${questionId}`]: true
+    }));
+
+    try {
+      // 调用回调函数生成数据集
+      await onGenerateDataset(questionId, chunkId);
+    } catch (error) {
+      console.error('生成数据集失败:', error);
+    } finally {
+      // 清除处理状态
+      setProcessingQuestions(prev => {
+        const newState = { ...prev };
+        delete newState[`${chunkId}-${questionId}`];
+        return newState;
+      });
+    }
+  };
+
   // 渲染单个问题项
   const renderQuestionItem = (question, index, total) => {
     return (
@@ -183,6 +213,15 @@ export default function QuestionTreeView({
             primary={
               <Typography variant="body2" sx={{ fontWeight: 400 }}>
                 {question.question}
+                {question.dataSites && question.dataSites.length > 0 && (
+                  <Chip
+                    label={question.dataSites.length + '个答案'}
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                    sx={{ ml: 1, fontSize: '0.75rem', maxWidth: 150 }}
+                  />
+                )}
               </Typography>
             }
             secondary={
@@ -192,9 +231,18 @@ export default function QuestionTreeView({
             }
           />
           <Box>
-            <Tooltip title="生成答案">
-              <IconButton size="small" sx={{ mr: 1 }}>
-                <AutoFixHighIcon fontSize="small" />
+            <Tooltip title="生成数据集">
+              <IconButton
+                size="small"
+                sx={{ mr: 1 }}
+                onClick={() => handleGenerateDataset(question.question, question.chunkId)}
+                disabled={processingQuestions[`${question.chunkId}-${question.question}`]}
+              >
+                {processingQuestions[`${question.chunkId}-${question.question}`] ? (
+                  <CircularProgress size={16} />
+                ) : (
+                  <AutoFixHighIcon fontSize="small" />
+                )}
               </IconButton>
             </Tooltip>
             <Tooltip title="删除问题">
@@ -217,14 +265,14 @@ export default function QuestionTreeView({
     // 当前标签下的问题数量
     const directQuestions = questionsByTag[tag.label] || [];
     let total = directQuestions.length;
-    
+
     // 如果有子标签，递归计算子标签下的问题数量
     if (tag.child && tag.child.length > 0) {
       for (const childTag of tag.child) {
         total += countTotalQuestions(childTag);
       }
     }
-    
+
     return total;
   };
 
@@ -234,7 +282,7 @@ export default function QuestionTreeView({
     const hasQuestions = questions.length > 0;
     const hasChildren = tag.child && tag.child.length > 0;
     const isExpanded = expandedTags[tag.label];
-    
+
     // 计算标签及其子标签下的所有问题数量
     const totalQuestions = countTotalQuestions(tag);
 

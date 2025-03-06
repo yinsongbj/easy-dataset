@@ -11,7 +11,8 @@ import {
   CircularProgress,
   Snackbar,
   Backdrop,
-  Paper
+  Paper,
+  LinearProgress
 } from '@mui/material';
 import FileUploader from '@/components/text-split/FileUploader';
 import ChunkList from '@/components/text-split/ChunkList';
@@ -26,6 +27,14 @@ export default function TextSplitPage({ params }) {
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState(null); // 可以是字符串或对象 { severity, message }
+  
+  // 进度状态
+  const [progress, setProgress] = useState({
+    total: 0,         // 总共选择的文本块数量
+    completed: 0,     // 已处理完成的数量
+    percentage: 0,    // 进度百分比
+    questionCount: 0  // 已生成的问题数量
+  });
 
   // 加载文本块数据
   useEffect(() => {
@@ -145,11 +154,46 @@ export default function TextSplitPage({ params }) {
     }
   };
 
+  // 并行处理数组的辅助函数，限制并发数
+  const processInParallel = async (items, processFunction, concurrencyLimit) => {
+    const results = [];
+    const inProgress = new Set();
+    const queue = [...items];
+
+    while (queue.length > 0 || inProgress.size > 0) {
+      // 如果有空闲槽位且队列中还有任务，启动新任务
+      while (inProgress.size < concurrencyLimit && queue.length > 0) {
+        const item = queue.shift();
+        const promise = processFunction(item).then(result => {
+          inProgress.delete(promise);
+          return result;
+        });
+        inProgress.add(promise);
+        results.push(promise);
+      }
+
+      // 等待其中一个任务完成
+      if (inProgress.size > 0) {
+        await Promise.race(inProgress);
+      }
+    }
+
+    return Promise.all(results);
+  };
+
   // 处理生成问题
   const handleGenerateQuestions = async (chunkIds) => {
     try {
       setProcessing(true);
       setError(null);
+      
+      // 重置进度状态
+      setProgress({
+        total: chunkIds.length,
+        completed: 0,
+        percentage: 0,
+        questionCount: 0
+      });
 
       // 从 localStorage 获取当前选择的模型信息
       const selectedModelId = localStorage.getItem('selectedModelId');
@@ -196,32 +240,82 @@ export default function TextSplitPage({ params }) {
         console.log(`为文本块 ${chunkId} 生成了 ${data.total} 个问题`);
         setError({ severity: 'success', message: `成功为文本块生成了 ${data.total} 个问题` });
       } else {
-        // 如果是多个文本块，调用批量生成接口
-        const response = await fetch(`/api/projects/${projectId}/generate-questions`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ model, chunkIds })
-        });
+        // 如果是多个文本块，循环调用单个文本块的问题生成接口，限制并行数为2
+        let totalQuestions = 0;
+        let successCount = 0;
+        let errorCount = 0;
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || '批量生成问题失败');
-        }
+        // 单个文本块处理函数
+        const processChunk = async (chunkId) => {
+          try {
+            const response = await fetch(`/api/projects/${projectId}/chunks/${chunkId}/questions`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ model })
+            });
 
-        const data = await response.json();
-        console.log(`批量生成问题成功: ${data.totalSuccess} 个成功，${data.totalErrors} 个失败`);
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error(`为文本块 ${chunkId} 生成问题失败:`, errorData.error);
+              errorCount++;
+              return { success: false, chunkId, error: errorData.error };
+            }
 
-        if (data.totalErrors > 0) {
+            const data = await response.json();
+            console.log(`为文本块 ${chunkId} 生成了 ${data.total} 个问题`);
+            
+            // 更新进度状态
+            setProgress(prev => {
+              const completed = prev.completed + 1;
+              const percentage = Math.round((completed / prev.total) * 100);
+              const questionCount = prev.questionCount + (data.total || 0);
+              
+              return {
+                ...prev,
+                completed,
+                percentage,
+                questionCount
+              };
+            });
+            
+            totalQuestions += (data.total || 0);
+            successCount++;
+            return { success: true, chunkId, total: data.total };
+          } catch (error) {
+            console.error(`为文本块 ${chunkId} 生成问题出错:`, error);
+            errorCount++;
+            
+            // 更新进度状态（即使失败也计入已处理）
+            setProgress(prev => {
+              const completed = prev.completed + 1;
+              const percentage = Math.round((completed / prev.total) * 100);
+              
+              return {
+                ...prev,
+                completed,
+                percentage
+              };
+            });
+            
+            return { success: false, chunkId, error: error.message };
+          }
+        };
+
+        // 并行处理所有文本块，最多同时处理2个
+        await processInParallel(chunkIds, processChunk, 2);
+
+        // 处理完成后设置结果消息
+        if (errorCount > 0) {
           setError({
             severity: 'warning',
-            message: `部分文本块生成问题成功 (${data.totalSuccess}/${data.totalChunks})，${data.totalErrors} 个文本块失败`
+            message: `部分文本块生成问题成功 (${successCount}/${chunkIds.length})，${errorCount} 个文本块失败`
           });
         } else {
           setError({
             severity: 'success',
-            message: `成功为 ${data.totalSuccess} 个文本块生成问题`
+            message: `成功为 ${successCount} 个文本块生成了 ${totalQuestions} 个问题`
           });
         }
       }
@@ -233,6 +327,15 @@ export default function TextSplitPage({ params }) {
       setError({ severity: 'error', message: error.message });
     } finally {
       setProcessing(false);
+      // 重置进度状态
+      setTimeout(() => {
+        setProgress({
+          total: 0,
+          completed: 0,
+          percentage: 0,
+          questionCount: 0
+        });
+      }, 1000); // 延迟重置，让用户看到完成的进度
     }
   };
 
@@ -362,12 +465,32 @@ export default function TextSplitPage({ params }) {
             p: 3,
             borderRadius: 2,
             bgcolor: 'background.paper',
-            minWidth: 200
+            minWidth: 300
           }}
         >
           <CircularProgress size={40} sx={{ mb: 2 }} />
           <Typography variant="h6">处理中...</Typography>
-          <Typography variant="body2" color="text.secondary">正在努力处理中，请稍候！</Typography>
+          
+          {progress.total > 1 ? (
+            <Box sx={{ width: '100%', mt: 1, mb: 2 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                <Typography variant="body2" color="text.secondary">
+                  已选择 {progress.total} 个文本块，已处理完成 {progress.completed} 个
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {progress.percentage}%
+                </Typography>
+              </Box>
+              <LinearProgress variant="determinate" value={progress.percentage} sx={{ height: 8, borderRadius: 4 }} />
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1, textAlign: 'center' }}>
+                已生成 {progress.questionCount} 个问题
+              </Typography>
+            </Box>
+          ) : (
+            <Typography variant="body2" color="text.secondary">
+              正在努力处理中，请稍候！
+            </Typography>
+          )}
         </Paper>
       </Backdrop>
 

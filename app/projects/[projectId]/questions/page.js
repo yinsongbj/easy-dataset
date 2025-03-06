@@ -12,8 +12,6 @@ import {
   CircularProgress,
   Divider,
   Checkbox,
-  IconButton,
-  Tooltip,
   Snackbar,
   Alert,
   TextField,
@@ -25,7 +23,6 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -58,45 +55,53 @@ export default function QuestionsPage({ params }) {
     confirmAction: null
   });
 
-  // 获取所有数据
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async (currentPage) => {
+    if (!currentPage) {
       setLoading(true);
-      try {
-        // 获取标签树
-        const tagsResponse = await fetch(`/api/projects/${projectId}/tags`);
-        if (!tagsResponse.ok) {
-          throw new Error('获取标签树失败');
-        }
-        const tagsData = await tagsResponse.json();
-        setTags(tagsData.tags || []);
+    }
+    try {
+      // 获取标签树
+      const tagsResponse = await fetch(`/api/projects/${projectId}/tags`);
+      if (!tagsResponse.ok) {
+        throw new Error('获取标签树失败');
+      }
+      const tagsData = await tagsResponse.json();
+      setTags(tagsData.tags || []);
 
-        // 获取问题列表
-        const questionsResponse = await fetch(`/api/projects/${projectId}/questions`);
-        if (!questionsResponse.ok) {
-          throw new Error('获取问题列表失败');
-        }
-        const questionsData = await questionsResponse.json();
-        setQuestions(questionsData || []);
+      // 获取问题列表
+      const questionsResponse = await fetch(`/api/projects/${projectId}/questions`);
+      if (!questionsResponse.ok) {
+        throw new Error('获取问题列表失败');
+      }
+      const questionsData = await questionsResponse.json();
+      setQuestions(questionsData || []);
 
-        // 获取文本块列表
-        const response = await fetch(`/api/projects/${projectId}/split`);
+      // 获取文本块列表
+      const response = await fetch(`/api/projects/${projectId}/split`);
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || '获取文本块失败');
-        }
-        const data = await response.json();
-        setChunks(data.chunks || []);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || '获取文本块失败');
+      }
+      const data = await response.json();
+      setChunks(data.chunks || []);
 
-      } catch (error) {
-        console.error('获取数据失败:', error);
-        setError(error.message);
-      } finally {
+      // 如果传入了当前页码，则保持该页码状态
+      // if (typeof currentPage !== 'undefined') {
+      //   setPage(currentPage);
+      // }
+    } catch (error) {
+      console.error('获取数据失败:', error);
+      setError(error.message);
+    } finally {
+      if (!currentPage) {
         setLoading(false);
       }
-    };
+    }
+  };
 
+  // 获取所有数据
+  useEffect(() => {
     fetchData();
   }, [projectId]);
 
@@ -136,7 +141,94 @@ export default function QuestionsPage({ params }) {
     }
   };
 
-  // 批量生成答案
+  // 从本地存储获取模型参数
+  const getModelFromLocalStorage = () => {
+    if (typeof window === 'undefined') return null;
+
+    try {
+      // 从 localStorage 获取当前选择的模型信息
+      const selectedModelId = localStorage.getItem('selectedModelId');
+      let model = null;
+
+      // 尝试从 localStorage 获取完整的模型信息
+      const modelInfoStr = localStorage.getItem('selectedModelInfo');
+
+      if (modelInfoStr) {
+        try {
+          model = JSON.parse(modelInfoStr);
+        } catch (e) {
+          console.error('解析模型信息出错:', e);
+          return null;
+        }
+      }
+
+      // 如果没有模型 ID 或模型信息，返回 null
+      if (!selectedModelId || !model) {
+        return null;
+      }
+
+      return model;
+    } catch (error) {
+      console.error('获取模型配置失败:', error);
+      return null;
+    }
+  };
+
+  // 生成单个问题的数据集
+  const handleGenerateDataset = async (questionId, chunkId) => {
+    try {
+      // 获取模型参数
+      const model = getModelFromLocalStorage();
+      if (!model) {
+        setSnackbar({
+          open: true,
+          message: '未找到模型配置，请先在设置中配置模型',
+          severity: 'error'
+        });
+        return null;
+      }
+
+      // 显示处理中提示
+      setSnackbar({
+        open: true,
+        message: '正在生成数据集...',
+        severity: 'info'
+      });
+
+      // 调用API生成数据集
+      const response = await fetch(`/api/projects/${projectId}/datasets`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          questionId,
+          chunkId,
+          model
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || '生成数据集失败');
+      }
+
+      const result = await response.json();
+
+      fetchData(1);
+      return result.dataset;
+    } catch (error) {
+      console.error('生成数据集失败:', error);
+      setSnackbar({
+        open: true,
+        message: error.message || '生成数据集失败',
+        severity: 'error'
+      });
+      return null;
+    }
+  };
+
+  // 批量生成数据集
   const handleBatchGenerateAnswers = async () => {
     if (selectedQuestions.length === 0) {
       setSnackbar({
@@ -147,14 +239,89 @@ export default function QuestionsPage({ params }) {
       return;
     }
 
+    // 获取模型参数
+    const model = getModelFromLocalStorage();
+    if (!model) {
+      setSnackbar({
+        open: true,
+        message: '未找到模型配置，请先在设置中配置模型',
+        severity: 'error'
+      });
+      return;
+    }
+
     setSnackbar({
       open: true,
-      message: `已选择 ${selectedQuestions.length} 个问题，准备生成答案`,
+      message: `已选择 ${selectedQuestions.length} 个问题，准备生成数据集`,
       severity: 'info'
     });
 
-    // 这里是生成答案的逻辑，暂时留空
-    console.log('生成答案:', selectedQuestions);
+    // 存储成功生成的数据集数量
+    let successCount = 0;
+    let failCount = 0;
+
+    // 逐个生成数据集
+    for (const key of selectedQuestions) {
+      try {
+        // 从问题键中提取 chunkId 和 questionId
+        const lastDashIndex = key.lastIndexOf('-');
+        if (lastDashIndex === -1) {
+          console.error('无法解析问题键:', key);
+          failCount++;
+          continue;
+        }
+
+        const chunkId = key.substring(0, lastDashIndex);
+        const questionId = key.substring(lastDashIndex + 1);
+
+        console.log('开始生成数据集:', { chunkId, questionId });
+
+        // 调用API生成数据集
+        const response = await fetch(`/api/projects/${projectId}/datasets`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            questionId,
+            chunkId,
+            model
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error(`生成数据集失败:`, errorData.error || '生成数据集失败');
+          failCount++;
+          continue;
+        }
+
+        successCount++;
+        console.log(`数据集生成成功: ${questionId}`);
+
+        // 更新进度提示
+        setSnackbar({
+          open: true,
+          message: `正在生成数据集: ${successCount}/${selectedQuestions.length}`,
+          severity: 'info'
+        });
+
+        // 添加短暂延迟，避免API请求过于频繁
+        await new Promise(resolve => setTimeout(resolve, 500));
+      } catch (error) {
+        console.error('生成数据集失败:', error);
+        failCount++;
+      }
+    }
+    fetchData(1);
+    // 显示最终结果
+    setSnackbar({
+      open: true,
+      message: successCount === selectedQuestions.length
+        ? `成功生成 ${successCount} 个数据集`
+        : `生成完成，成功: ${successCount}, 失败: ${failCount}`,
+      severity: successCount === selectedQuestions.length ? 'success' : 'warning'
+    });
   };
 
   // 关闭提示框
@@ -167,7 +334,7 @@ export default function QuestionsPage({ params }) {
     // 根据 questionId 找到对应的问题对象
     const question = questions.find(q => q.question === questionId && q.chunkId === chunkId);
     const questionText = question ? question.question : questionId;
-    
+
     // 显示确认对话框
     setConfirmDialog({
       open: true,
@@ -176,7 +343,7 @@ export default function QuestionsPage({ params }) {
       confirmAction: () => executeDeleteQuestion(questionId, chunkId)
     });
   };
-  
+
   // 执行删除问题的操作
   const executeDeleteQuestion = async (questionId, chunkId) => {
     try {
@@ -186,7 +353,7 @@ export default function QuestionsPage({ params }) {
         message: '正在删除问题...',
         severity: 'info'
       });
-      
+
       // 调用删除问题的 API
       const response = await fetch(`/api/projects/${projectId}/questions/${encodeURIComponent(questionId)}`, {
         method: 'DELETE',
@@ -195,19 +362,19 @@ export default function QuestionsPage({ params }) {
         },
         body: JSON.stringify({ chunkId })
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || '删除问题失败');
       }
-      
+
       // 从列表中移除已删除的问题
       setQuestions(prev => prev.filter(q => !(q.question === questionId && q.chunkId === chunkId)));
-      
+
       // 从选中列表中移除已删除的问题
       const questionKey = `${chunkId}-${questionId}`;
       setSelectedQuestions(prev => prev.filter(id => id !== questionKey));
-      
+
       // 显示成功提示
       setSnackbar({
         open: true,
@@ -223,7 +390,7 @@ export default function QuestionsPage({ params }) {
       });
     }
   };
-  
+
   // 处理删除问题的入口函数
   const handleDeleteQuestion = (questionId, chunkId) => {
     confirmDeleteQuestion(questionId, chunkId);
@@ -258,10 +425,10 @@ export default function QuestionsPage({ params }) {
         message: `正在删除 ${selectedQuestions.length} 个问题...`,
         severity: 'info'
       });
-      
+
       // 存储成功删除的问题数量
       let successCount = 0;
-      
+
       // 逐个删除问题，完全模仿单个删除的逻辑
       for (const key of selectedQuestions) {
         try {
@@ -273,12 +440,12 @@ export default function QuestionsPage({ params }) {
             console.error('无法解析问题键:', key);
             continue;
           }
-          
+
           const chunkId = key.substring(0, lastDashIndex);
           const questionId = key.substring(lastDashIndex + 1);
-          
+
           console.log('开始删除问题:', { chunkId, questionId });
-          
+
           // 调用删除问题的 API
           const response = await fetch(`/api/projects/${projectId}/questions/${encodeURIComponent(questionId)}`, {
             method: 'DELETE',
@@ -287,26 +454,26 @@ export default function QuestionsPage({ params }) {
             },
             body: JSON.stringify({ chunkId })
           });
-          
+
           if (!response.ok) {
             const errorData = await response.json();
             console.error(`删除问题失败:`, errorData.error || '删除问题失败');
             continue;
           }
-          
+
           // 从列表中移除已删除的问题，完全复制单个删除的逻辑
           setQuestions(prev => prev.filter(q => !(q.question === questionId && q.chunkId === chunkId)));
-          
+
           successCount++;
           console.log(`问题删除成功: ${questionId}`);
         } catch (error) {
           console.error('删除问题失败:', error);
         }
       }
-      
+
       // 清空选中列表
       setSelectedQuestions([]);
-      
+
       // 显示成功提示
       setSnackbar({
         open: true,
@@ -324,7 +491,7 @@ export default function QuestionsPage({ params }) {
       });
     }
   };
-  
+
   // 处理批量删除问题的入口函数
   const handleBatchDeleteQuestions = () => {
     confirmBatchDeleteQuestions();
@@ -381,7 +548,7 @@ export default function QuestionsPage({ params }) {
             onClick={handleBatchGenerateAnswers}
             disabled={selectedQuestions.length === 0}
           >
-            生成答案
+            批量构造数据集
           </Button>
         </Box>
       </Box>
@@ -456,6 +623,8 @@ export default function QuestionsPage({ params }) {
             selectedQuestions={selectedQuestions}
             onSelectQuestion={handleSelectQuestion}
             onDeleteQuestion={handleDeleteQuestion}
+            onGenerateDataset={handleGenerateDataset}
+            projectId={projectId}
           />
         </TabPanel>
 
@@ -470,6 +639,8 @@ export default function QuestionsPage({ params }) {
             selectedQuestions={selectedQuestions}
             onSelectQuestion={handleSelectQuestion}
             onDeleteQuestion={handleDeleteQuestion}
+            onGenerateDataset={handleGenerateDataset}
+            projectId={projectId}
           />
         </TabPanel>
       </Paper>
@@ -484,7 +655,7 @@ export default function QuestionsPage({ params }) {
           {snackbar.message}
         </Alert>
       </Snackbar>
-      
+
       {/* 确认对话框 */}
       <Dialog
         open={confirmDialog.open}
@@ -499,20 +670,20 @@ export default function QuestionsPage({ params }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button 
-            onClick={() => setConfirmDialog({ ...confirmDialog, open: false })} 
+          <Button
+            onClick={() => setConfirmDialog({ ...confirmDialog, open: false })}
             color="primary"
           >
             取消
           </Button>
-          <Button 
+          <Button
             onClick={() => {
               setConfirmDialog({ ...confirmDialog, open: false });
               if (confirmDialog.confirmAction) {
                 confirmDialog.confirmAction();
               }
-            }} 
-            color="error" 
+            }}
+            color="error"
             variant="contained"
             autoFocus
           >
