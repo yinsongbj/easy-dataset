@@ -21,7 +21,8 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
+  LinearProgress
 } from '@mui/material';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -41,10 +42,19 @@ export default function QuestionsPage({ params }) {
   const [activeTab, setActiveTab] = useState(0);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [processing, setProcessing] = useState(false);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
     severity: 'success'
+  });
+  
+  // 进度状态
+  const [progress, setProgress] = useState({
+    total: 0,         // 总共选择的问题数量
+    completed: 0,     // 已处理完成的数量
+    percentage: 0,    // 进度百分比
+    datasetCount: 0   // 已生成的数据集数量
   });
 
   // 确认对话框状态
@@ -228,6 +238,33 @@ export default function QuestionsPage({ params }) {
     }
   };
 
+  // 并行处理数组的辅助函数，限制并发数
+  const processInParallel = async (items, processFunction, concurrencyLimit) => {
+    const results = [];
+    const inProgress = new Set();
+    const queue = [...items];
+
+    while (queue.length > 0 || inProgress.size > 0) {
+      // 如果有空闲槽位且队列中还有任务，启动新任务
+      while (inProgress.size < concurrencyLimit && queue.length > 0) {
+        const item = queue.shift();
+        const promise = processFunction(item).then(result => {
+          inProgress.delete(promise);
+          return result;
+        });
+        inProgress.add(promise);
+        results.push(promise);
+      }
+
+      // 等待其中一个任务完成
+      if (inProgress.size > 0) {
+        await Promise.race(inProgress);
+      }
+    }
+
+    return Promise.all(results);
+  };
+
   // 批量生成数据集
   const handleBatchGenerateAnswers = async () => {
     if (selectedQuestions.length === 0) {
@@ -250,78 +287,166 @@ export default function QuestionsPage({ params }) {
       return;
     }
 
-    setSnackbar({
-      open: true,
-      message: `已选择 ${selectedQuestions.length} 个问题，准备生成数据集`,
-      severity: 'info'
-    });
+    try {
+      // 先重置进度状态
+      setProgress({
+        total: selectedQuestions.length,
+        completed: 0,
+        percentage: 0,
+        datasetCount: 0
+      });
+      
+      // 然后设置处理状态为真，确保进度条显示
+      setProcessing(true);
 
-    // 存储成功生成的数据集数量
-    let successCount = 0;
-    let failCount = 0;
+      setSnackbar({
+        open: true,
+        message: `已选择 ${selectedQuestions.length} 个问题，准备生成数据集`,
+        severity: 'info'
+      });
 
-    // 逐个生成数据集
-    for (const key of selectedQuestions) {
-      try {
-        // 从问题键中提取 chunkId 和 questionId
-        const lastDashIndex = key.lastIndexOf('-');
-        if (lastDashIndex === -1) {
-          console.error('无法解析问题键:', key);
-          failCount++;
-          continue;
+      // 单个问题处理函数
+      const processQuestion = async (key) => {
+        try {
+          // 从问题键中提取 chunkId 和 questionId
+          const lastDashIndex = key.lastIndexOf('-');
+          if (lastDashIndex === -1) {
+            console.error('无法解析问题键:', key);
+            
+            // 更新进度状态（即使失败也计入已处理）
+            setProgress(prev => {
+              const completed = prev.completed + 1;
+              const percentage = Math.round((completed / prev.total) * 100);
+              
+              return {
+                ...prev,
+                completed,
+                percentage
+              };
+            });
+            
+            return { success: false, key, error: '无法解析问题键' };
+          }
+
+          const chunkId = key.substring(0, lastDashIndex);
+          const questionId = key.substring(lastDashIndex + 1);
+
+          console.log('开始生成数据集:', { chunkId, questionId });
+
+          // 调用API生成数据集
+          const response = await fetch(`/api/projects/${projectId}/datasets`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              questionId,
+              chunkId,
+              model
+            })
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            console.error(`生成数据集失败:`, errorData.error || '生成数据集失败');
+            
+            // 更新进度状态（即使失败也计入已处理）
+            setProgress(prev => {
+              const completed = prev.completed + 1;
+              const percentage = Math.round((completed / prev.total) * 100);
+              
+              return {
+                ...prev,
+                completed,
+                percentage
+              };
+            });
+            
+            return { success: false, key, error: errorData.error || '生成数据集失败' };
+          }
+
+          const data = await response.json();
+          
+          // 更新进度状态
+          setProgress(prev => {
+            const completed = prev.completed + 1;
+            const percentage = Math.round((completed / prev.total) * 100);
+            const datasetCount = prev.datasetCount + 1;
+            
+            return {
+              ...prev,
+              completed,
+              percentage,
+              datasetCount
+            };
+          });
+          
+          console.log(`数据集生成成功: ${questionId}`);
+          return { success: true, key, data: data.dataset };
+        } catch (error) {
+          console.error('生成数据集失败:', error);
+          
+          // 更新进度状态（即使失败也计入已处理）
+          setProgress(prev => {
+            const completed = prev.completed + 1;
+            const percentage = Math.round((completed / prev.total) * 100);
+            
+            return {
+              ...prev,
+              completed,
+              percentage
+            };
+          });
+          
+          return { success: false, key, error: error.message };
         }
+      };
 
-        const chunkId = key.substring(0, lastDashIndex);
-        const questionId = key.substring(lastDashIndex + 1);
-
-        console.log('开始生成数据集:', { chunkId, questionId });
-
-        // 调用API生成数据集
-        const response = await fetch(`/api/projects/${projectId}/datasets`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            questionId,
-            chunkId,
-            model
-          })
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error(`生成数据集失败:`, errorData.error || '生成数据集失败');
-          failCount++;
-          continue;
-        }
-
-        successCount++;
-        console.log(`数据集生成成功: ${questionId}`);
-
-        // 更新进度提示
+      // 并行处理所有问题，最多同时处理2个
+      const results = await processInParallel(selectedQuestions, processQuestion, 2);
+      
+      // 刷新数据
+      fetchData(1);
+      
+      // 处理完成后设置结果消息
+      const successCount = results.filter(r => r.success).length;
+      const failCount = results.filter(r => !r.success).length;
+      
+      if (failCount > 0) {
         setSnackbar({
           open: true,
-          message: `正在生成数据集: ${successCount}/${selectedQuestions.length}`,
-          severity: 'info'
+          message: `部分问题生成数据集成功 (${successCount}/${selectedQuestions.length})，${failCount} 个问题失败`,
+          severity: 'warning'
         });
-
-        // 添加短暂延迟，避免API请求过于频繁
-        await new Promise(resolve => setTimeout(resolve, 500));
-      } catch (error) {
-        console.error('生成数据集失败:', error);
-        failCount++;
+      } else {
+        setSnackbar({
+          open: true,
+          message: `成功为 ${successCount} 个问题生成了数据集`,
+          severity: 'success'
+        });
       }
+    } catch (error) {
+      console.error('生成数据集出错:', error);
+      setSnackbar({
+        open: true,
+        message: error.message || '生成数据集失败',
+        severity: 'error'
+      });
+    } finally {
+      // 延迟关闭处理状态，确保用户可以看到完成的进度
+      setTimeout(() => {
+        setProcessing(false);
+        // 再次延迟重置进度状态
+        setTimeout(() => {
+          setProgress({
+            total: 0,
+            completed: 0,
+            percentage: 0,
+            datasetCount: 0
+          });
+        }, 500);
+      }, 2000); // 延迟关闭处理状态，让用户看到完成的进度
     }
-    fetchData(1);
-    // 显示最终结果
-    setSnackbar({
-      open: true,
-      message: successCount === selectedQuestions.length
-        ? `成功生成 ${successCount} 个数据集`
-        : `生成完成，成功: ${successCount}, 失败: ${failCount}`,
-      severity: successCount === selectedQuestions.length ? 'success' : 'warning'
-    });
   };
 
   // 关闭提示框
@@ -528,6 +653,73 @@ export default function QuestionsPage({ params }) {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 8 }}>
+      {/* 处理中的进度显示 - 全局蒙版样式 */}
+      {processing && (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            zIndex: 9999,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Paper
+            elevation={6}
+            sx={{
+              width: '90%',
+              maxWidth: 500,
+              p: 3,
+              borderRadius: 2,
+              textAlign: 'center',
+            }}
+          >
+            <Typography variant="h6" sx={{ mb: 2, color: 'primary.main', fontWeight: 'bold' }}>
+              正在生成数据集
+            </Typography>
+            
+            <Box sx={{ mb: 3 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <Typography variant="body1" sx={{ mr: 1 }}>
+                  {progress.percentage}%
+                </Typography>
+                <Box sx={{ width: '100%' }}>
+                  <LinearProgress 
+                    variant="determinate" 
+                    value={progress.percentage} 
+                    sx={{ height: 8, borderRadius: 4 }}
+                    color="primary"
+                  />
+                </Box>
+              </Box>
+              
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                <Typography variant="body2">
+                  已完成: {progress.completed}/{progress.total}
+                </Typography>
+                <Typography variant="body2" color="success.main" sx={{ fontWeight: 'medium' }}>
+                  已生成: {progress.datasetCount}
+                </Typography>
+              </Box>
+            </Box>
+            
+            <CircularProgress size={60} thickness={4} sx={{ mb: 2 }} />
+            
+            <Typography variant="body2" color="text.secondary">
+              请耐心等待，正在处理中...
+            </Typography>
+          </Paper>
+        </Box>
+      )}
+      
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4">
           问题列表 ({totalQuestions})
