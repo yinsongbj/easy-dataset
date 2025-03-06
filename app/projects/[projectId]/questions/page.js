@@ -769,7 +769,22 @@ export default function QuestionsPage({ params }) {
             alignItems={{ xs: 'stretch', sm: 'center' }}
             justifyContent="space-between"
           >
-            <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Checkbox
+                checked={selectedQuestions.length > 0 && selectedQuestions.length === totalQuestions}
+                indeterminate={selectedQuestions.length > 0 && selectedQuestions.length < totalQuestions}
+                onChange={handleSelectAll}
+              />
+              <Typography variant="body2" sx={{ ml: 1 }}>
+                {selectedQuestions.length > 0 ? `已选择 ${selectedQuestions.length} 个问题` : '全选'}
+                （共 {questions.filter(question =>
+                  question.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                  (question.label && question.label.toLowerCase().includes(searchTerm.toLowerCase()))
+                ).length} 个问题）
+              </Typography>
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <TextField
                 placeholder="搜索问题或标签..."
                 variant="outlined"
@@ -786,21 +801,6 @@ export default function QuestionsPage({ params }) {
                   ),
                 }}
               />
-            </Box>
-
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Checkbox
-                checked={selectedQuestions.length > 0 && selectedQuestions.length === totalQuestions}
-                indeterminate={selectedQuestions.length > 0 && selectedQuestions.length < totalQuestions}
-                onChange={handleSelectAll}
-              />
-              <Typography variant="body2" sx={{ ml: 1 }}>
-                {selectedQuestions.length > 0 ? `已选择 ${selectedQuestions.length} 个问题` : '全选'}
-                （共 {questions.filter(question =>
-                  question.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                  (question.label && question.label.toLowerCase().includes(searchTerm.toLowerCase()))
-                ).length} 个问题）
-              </Typography>
             </Box>
           </Stack>
         </Box>

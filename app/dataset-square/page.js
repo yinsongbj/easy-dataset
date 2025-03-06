@@ -40,7 +40,7 @@ export default function DatasetSquarePage() {
   return (
     <main>
       {/* 导航栏 */}
-      <Navbar projects={projects} models={models} />
+      <Navbar projects={projects} models={models} hideModels={true} />
 
       {/* 头部区域 */}
       <Box

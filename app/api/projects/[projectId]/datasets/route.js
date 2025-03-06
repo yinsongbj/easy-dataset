@@ -114,3 +114,112 @@ export async function GET(request, { params }) {
     }, { status: 500 });
   }
 }
+
+/**
+ * 删除数据集
+ */
+export async function DELETE(request, { params }) {
+  try {
+    const { projectId } = params;
+    const { searchParams } = new URL(request.url);
+    const datasetId = searchParams.get('id');
+
+    // 验证参数
+    if (!projectId) {
+      return NextResponse.json({
+        error: '项目ID不能为空'
+      }, { status: 400 });
+    }
+
+    if (!datasetId) {
+      return NextResponse.json({
+        error: '数据集ID不能为空'
+      }, { status: 400 });
+    }
+
+    // 获取所有数据集
+    const datasets = await getDatasets(projectId);
+
+    // 找到要删除的数据集索引
+    const datasetIndex = datasets.findIndex(dataset => dataset.id === datasetId);
+
+    if (datasetIndex === -1) {
+      return NextResponse.json({
+        error: '数据集不存在'
+      }, { status: 404 });
+    }
+
+    // 删除数据集
+    datasets.splice(datasetIndex, 1);
+
+    // 保存更新后的数据集列表
+    await saveDatasets(projectId, datasets);
+
+    return NextResponse.json({
+      success: true,
+      message: '数据集删除成功'
+    });
+  } catch (error) {
+    console.error('删除数据集失败:', error);
+    return NextResponse.json({
+      error: error.message || '删除数据集失败'
+    }, { status: 500 });
+  }
+}
+
+/**
+ * 编辑数据集
+ */
+export async function PATCH(request, { params }) {
+  try {
+    const { projectId } = params;
+    const { searchParams } = new URL(request.url);
+    const datasetId = searchParams.get('id');
+    const { answer, cot, confirmed } = await request.json();
+
+    // 验证参数
+    if (!projectId) {
+      return NextResponse.json({
+        error: '项目ID不能为空'
+      }, { status: 400 });
+    }
+
+    if (!datasetId) {
+      return NextResponse.json({
+        error: '数据集ID不能为空'
+      }, { status: 400 });
+    }
+
+    // 获取所有数据集
+    const datasets = await getDatasets(projectId);
+
+    // 找到要编辑的数据集
+    const datasetIndex = datasets.findIndex(dataset => dataset.id === datasetId);
+
+    if (datasetIndex === -1) {
+      return NextResponse.json({
+        error: '数据集不存在'
+      }, { status: 404 });
+    }
+
+    // 更新数据集
+    const dataset = datasets[datasetIndex];
+    if (answer !== undefined) dataset.answer = answer;
+    if (cot !== undefined) dataset.cot = cot;
+    if (confirmed !== undefined) dataset.confirmed = confirmed;
+
+    // 保存更新后的数据集列表
+    await saveDatasets(projectId, datasets);
+
+    return NextResponse.json({
+      success: true,
+      message: '数据集更新成功',
+      dataset: dataset
+    });
+  } catch (error) {
+    console.error('编辑数据集失败:', error);
+    return NextResponse.json({
+      error: error.message || '编辑数据集失败'
+    }, { status: 500 });
+  }
+}
