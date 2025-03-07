@@ -10,6 +10,7 @@ import {
   Checkbox,
   ListItemText
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -35,10 +36,11 @@ export default function ModelSelector({ models, selectedModels, onChange }) {
     const model = models.find(m => m.id === modelId);
     return model ? `${model.provider}: ${model.name}` : modelId;
   };
+  const { t } = useTranslation();
 
   return (
     <FormControl fullWidth>
-      <InputLabel id="model-select-label">选择模型（最多3个）</InputLabel>
+      <InputLabel id="model-select-label">{t('playground.selectModelMax3')}</InputLabel>
       <Select
         labelId="model-select-label"
         id="model-select"
@@ -49,11 +51,11 @@ export default function ModelSelector({ models, selectedModels, onChange }) {
         renderValue={(selected) => (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
             {selected.map((modelId) => (
-              <Chip 
-                key={modelId} 
-                label={getModelName(modelId)} 
-                color="primary" 
-                variant="outlined" 
+              <Chip
+                key={modelId}
+                label={getModelName(modelId)}
+                color="primary"
+                variant="outlined"
                 size="small"
               />
             ))}
@@ -62,8 +64,8 @@ export default function ModelSelector({ models, selectedModels, onChange }) {
         MenuProps={MenuProps}
       >
         {models.map((model) => (
-          <MenuItem 
-            key={model.id} 
+          <MenuItem
+            key={model.id}
             value={model.id}
             disabled={selectedModels.length >= 3 && !selectedModels.includes(model.id)}
           >

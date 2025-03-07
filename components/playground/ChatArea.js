@@ -11,6 +11,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import ChatMessage from './ChatMessage';
 import { playgroundStyles } from '@/styles/playground';
+import { useTranslation } from 'react-i18next';
 
 const ChatArea = ({
   selectedModels,
@@ -20,6 +21,7 @@ const ChatArea = ({
 }) => {
   const theme = useTheme();
   const styles = playgroundStyles(theme);
+  const { t } = useTranslation();
 
   // 为每个模型创建独立的引用
   const chatContainerRefs = {
@@ -41,7 +43,7 @@ const ChatArea = ({
     return (
       <Box sx={styles.emptyStateBox}>
         <Typography color="textSecondary">
-          请选择至少一个模型开始测试
+          {t('playground.selectModelFirst')}
         </Typography>
       </Box>
     );
@@ -79,7 +81,7 @@ const ChatArea = ({
                 {modelConversation.length === 0 ? (
                   <Box sx={styles.emptyChatBox}>
                     <Typography color="textSecondary" variant="body2">
-                      发送第一条消息开始测试
+                      {t('playground.sendFirstMessage')}
                     </Typography>
                   </Box>
                 ) : (

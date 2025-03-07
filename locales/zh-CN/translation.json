@@ -1,4 +1,20 @@
 {
+    "language": {
+        "switchToEnglish": "切换到英文",
+        "switchToChinese": "切换到中文",
+        "en": "EN",
+        "zh": "中"
+    },
+    "theme": {
+        "switchToLight": "切换到亮色模式",
+        "switchToDark": "切换到暗色模式"
+    },
+    "settings": {
+        "title": "项目设置"
+    },
+    "questions": {
+        "title": "问题列表"
+    },
     "common": {
         "create": "创建",
         "edit": "编辑",
@@ -31,6 +47,7 @@
         "searchDataset": "搜索公开数据集"
     },
     "projects": {
+        "selectProject": "选择项目",
         "fetchFailed": "获取项目列表失败",
         "fetchError": "获取项目列表出错",
         "loading": "正在加载您的项目...",
@@ -41,6 +58,7 @@
         "description": "项目描述"
     },
     "textSplit": {
+        "title": "文献处理",
         "uploadNewDocument": "上传新文献",
         "selectFile": "选择文件",
         "markdownOnly": "目前仅支持上传 Markdown (.md) 格式文件",
@@ -178,5 +196,17 @@
         "tryOtherCategories": "请尝试其他分类或返回全部数据集查看",
         "dataset": "数据集",
         "viewDataset": "查看数据集"
+    },
+    "playground": {
+        "title": "模型测试",
+        "selectModelFirst": "请选择至少一个模型开始测试",
+        "sendFirstMessage": "发送第一条消息开始测试",
+        "inputMessage": "输入消息...",
+        "send": "发送",
+        "outputMode": "输出方式",
+        "normalOutput": "普通输出",
+        "streamingOutput": "流式输出",
+        "clearConversation": "清空对话",
+        "selectModelMax3": "选择模型（最多3个）"
     }
 }

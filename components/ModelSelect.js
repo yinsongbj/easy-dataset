@@ -7,9 +7,11 @@ import {
   MenuItem,
   useTheme
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 export default function ModelSelect({ models = [], selectedModel, onChange, size = "small", minWidth = 180 }) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const handleModelChange = (event) => {
     if (!event || !event.target) return;
@@ -68,7 +70,7 @@ export default function ModelSelect({ models = [], selectedModel, onChange, size
         }}
       >
         <MenuItem value="" disabled>
-          选择模型
+          {t('playground.selectModelFirst')}
         </MenuItem>
         {models.map((model) => (
           <MenuItem key={model.id} value={model.id}>

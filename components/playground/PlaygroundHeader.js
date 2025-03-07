@@ -6,6 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useTheme } from '@mui/material/styles';
 import ModelSelector from './ModelSelector';
 import { playgroundStyles } from '@/styles/playground';
+import { useTranslation } from 'react-i18next';
 
 const PlaygroundHeader = ({ 
   availableModels, 
@@ -18,6 +19,7 @@ const PlaygroundHeader = ({
 }) => {
   const theme = useTheme();
   const styles = playgroundStyles(theme);
+  const { t } = useTranslation();
   
   const isClearDisabled = selectedModels.length === 0 || 
     Object.values(conversations).every(conv => conv.length === 0);
@@ -34,16 +36,16 @@ const PlaygroundHeader = ({
         </Grid>
         <Grid item xs={12} md={3}>
           <FormControl fullWidth>
-            <InputLabel id="output-mode-label">输出方式</InputLabel>
+            <InputLabel id="output-mode-label">{t('playground.outputMode')}</InputLabel>
             <Select
               labelId="output-mode-label"
               id="output-mode-select"
               value={outputMode}
-              label="输出方式"
+              label={t('playground.outputMode')}
               onChange={handleOutputModeChange}
             >
-              <MenuItem value="normal">普通输出</MenuItem>
-              <MenuItem value="streaming">流式输出</MenuItem>
+              <MenuItem value="normal">{t('playground.normalOutput')}</MenuItem>
+              <MenuItem value="streaming">{t('playground.streamingOutput')}</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -56,7 +58,7 @@ const PlaygroundHeader = ({
             disabled={isClearDisabled}
             sx={styles.clearButton}
           >
-            清空对话
+            {t('playground.clearConversation')}
           </Button>
         </Grid>
       </Grid>

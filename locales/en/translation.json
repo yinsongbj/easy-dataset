@@ -1,5 +1,22 @@
 {
+    "language": {
+        "switchToEnglish": "Switch to English",
+        "switchToChinese": "Switch to Chinese",
+        "en": "EN",
+        "zh": "中"
+    },
+    "theme": {
+        "switchToLight": "Switch to Light Mode",
+        "switchToDark": "Switch to Dark Mode"
+    },
+    "settings": {
+        "title": "Project Settings"
+    },
+    "questions": {
+        "title": "Question List"
+    },
     "common": {
+        "visitGitHub": "Visit GitHub Repository",
         "create": "Create",
         "edit": "Edit",
         "delete": "Delete",
@@ -39,6 +56,7 @@
         "description": "Project Description"
     },
     "textSplit": {
+        "title": "Text Splitting",
         "uploadNewDocument": "Upload New Document",
         "selectFile": "Select File",
         "markdownOnly": "Currently only supports Markdown (.md) format files",
@@ -175,5 +193,17 @@
         "tryOtherCategories": "Please try other categories or return to view all datasets",
         "dataset": "Dataset",
         "viewDataset": "View Dataset"
+    },
+    "playground": {
+        "title": "Model Testing",
+        "selectModelFirst": "Please select at least one model to start testing",
+        "sendFirstMessage": "Send your first message to start testing",
+        "inputMessage": "Enter message...",
+        "send": "Send",
+        "outputMode": "Output Mode",
+        "normalOutput": "Normal Output",
+        "streamingOutput": "Streaming Output",
+        "clearConversation": "Clear Conversation",
+        "selectModelMax3": "Please select up to 3 models to test"
     }
 }

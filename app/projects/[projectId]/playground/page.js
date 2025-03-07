@@ -9,13 +9,15 @@ import MessageInput from '@/components/playground/MessageInput';
 import PlaygroundHeader from '@/components/playground/PlaygroundHeader';
 import useModelPlayground from '@/hooks/useModelPlayground';
 import { playgroundStyles } from '@/styles/playground';
+import { useTranslation } from 'react-i18next';
 
 export default function ModelPlayground() {
   const theme = useTheme();
   const params = useParams();
   const { projectId } = params;
   const styles = playgroundStyles(theme);
-  
+  const { t } = useTranslation();
+
   const {
     availableModels,
     selectedModels,
@@ -31,21 +33,21 @@ export default function ModelPlayground() {
     handleOutputModeChange,
     getModelName
   } = useModelPlayground(projectId);
-  
+
   return (
     <Box sx={styles.container}>
       <Typography variant="h5" component="h1" gutterBottom>
-        模型测试
+        {t('playground.title')}
       </Typography>
-      
+
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
           {error}
         </Alert>
       )}
-      
+
       <Paper elevation={2} sx={styles.mainPaper}>
-        <PlaygroundHeader 
+        <PlaygroundHeader
           availableModels={availableModels}
           selectedModels={selectedModels}
           handleModelSelection={handleModelSelection}
@@ -54,15 +56,15 @@ export default function ModelPlayground() {
           outputMode={outputMode}
           handleOutputModeChange={handleOutputModeChange}
         />
-        
-        <ChatArea 
+
+        <ChatArea
           selectedModels={selectedModels}
           conversations={conversations}
           loading={loading}
           getModelName={getModelName}
         />
-        
-        <MessageInput 
+
+        <MessageInput
           userInput={userInput}
           handleInputChange={handleInputChange}
           handleSendMessage={handleSendMessage}

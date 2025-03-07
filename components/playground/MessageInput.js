@@ -5,6 +5,7 @@ import { Box, TextField, Button } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { useTheme } from '@mui/material/styles';
 import { playgroundStyles } from '@/styles/playground';
+import { useTranslation } from 'react-i18next';
 
 const MessageInput = ({ 
   userInput, 
@@ -15,6 +16,7 @@ const MessageInput = ({
 }) => {
   const theme = useTheme();
   const styles = playgroundStyles(theme);
+  const { t } = useTranslation();
   
   const isDisabled = Object.values(loading).some(value => value) || selectedModels.length === 0;
   const isSendDisabled = isDisabled || !userInput.trim();
@@ -24,7 +26,7 @@ const MessageInput = ({
       <TextField
         fullWidth
         variant="outlined"
-        placeholder="输入消息..."
+        placeholder={t('playground.inputMessage')}
         value={userInput}
         onChange={handleInputChange}
         disabled={isDisabled}
@@ -45,7 +47,7 @@ const MessageInput = ({
         disabled={isSendDisabled}
         sx={styles.sendButton}
       >
-        发送
+        {t('playground.send')}
       </Button>
     </Box>
   );

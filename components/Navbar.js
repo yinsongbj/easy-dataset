@@ -17,6 +17,7 @@ import {
   Avatar,
   Chip
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import ModelSelect from './ModelSelect';
 import LanguageSwitcher from './LanguageSwitcher';
 import Link from 'next/link';
@@ -32,6 +33,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 
 export default function Navbar({ projects = [], currentProject, models = [] }) {
   const [selectedProject, setSelectedProject] = useState(currentProject || '');
+  const { t } = useTranslation();
   const [selectedModel, setSelectedModel] = useState(() => {
     // 从 localStorage 获取上次选择的模型
     const savedModel = localStorage.getItem('selectedModel');
@@ -153,7 +155,7 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
               }}
             >
               <MenuItem value="" disabled>
-                选择项目
+                {t('projects.selectProject')}
               </MenuItem>
               {projects.map((project) => (
                 <MenuItem key={project.id} value={project.id}>
@@ -167,7 +169,7 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
 
         {/* 中间的功能模块导航 */}
         {isProjectDetail && (
-          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }} style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
+          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }} style={{ position: 'absolute', left: '400px' }}>
             <Tabs
               value={pathname}
               textColor="inherit"
@@ -195,31 +197,31 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
               }}
             >
               <Tab
-                label="文献处理"
+                label={t('textSplit.title')}
                 value={`/projects/${selectedProject}/text-split`}
                 component={Link}
                 href={`/projects/${selectedProject}/text-split`}
               />
               <Tab
-                label="问题列表"
+                label={t('questions.title')}
                 value={`/projects/${selectedProject}/questions`}
                 component={Link}
                 href={`/projects/${selectedProject}/questions`}
               />
               <Tab
-                label="数据集"
+                label={t('datasets.management')}
                 value={`/projects/${selectedProject}/datasets`}
                 component={Link}
                 href={`/projects/${selectedProject}/datasets`}
               />
               <Tab
-                label="项目设置"
+                label={t('settings.title')}
                 value={`/projects/${selectedProject}/settings`}
                 component={Link}
                 href={`/projects/${selectedProject}/settings`}
               />
               <Tab
-                label="模型测试"
+                label={t('playground.title')}
                 value={`/projects/${selectedProject}/playground`}
                 component={Link}
                 href={`/projects/${selectedProject}/playground`}
@@ -232,10 +234,10 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
         <Box sx={{ display: 'flex', flexGrow: 0, alignItems: 'center', gap: 2 }} style={{ position: 'absolute', right: '20px' }}>
 
           {/* 数据集广场链接 */}
-          <Tooltip title="数据集广场">
+          <Tooltip title={t('datasetSquare.title')}>
             <Chip
               icon={<StorageIcon fontSize="small" />}
-              label="数据集广场"
+              label={t('datasetSquare.title')}
               component={Link}
               href="/dataset-square"
               clickable
@@ -264,7 +266,7 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
             <LanguageSwitcher />
           </Box>
           {/* 主题切换按钮 */}
-          <Tooltip title={resolvedTheme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'}>
+          <Tooltip title={resolvedTheme === 'dark' ? t('theme.switchToLight') : t('theme.switchToDark')}>
             <IconButton
               onClick={toggleTheme}
               size="small"
@@ -283,7 +285,7 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
           </Tooltip>
 
           {/* GitHub链接 */}
-          <Tooltip title="访问GitHub仓库">
+          <Tooltip title={t('common.visitGitHub')}>
             <IconButton
               onClick={() => window.open('https://github.com/ConardLi/easy-dataset', '_blank')}
               size="small"
