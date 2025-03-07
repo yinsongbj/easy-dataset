@@ -34,6 +34,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import { MODEL_PROVIDERS } from '@/constant/model';
+import { useTranslation } from 'react-i18next';
 
 const providerOptions = MODEL_PROVIDERS.map(provider => ({
   id: provider.id,
@@ -41,6 +42,7 @@ const providerOptions = MODEL_PROVIDERS.map(provider => ({
 }));
 
 export default function ModelSettings({ projectId }) {
+  const { t } = useTranslation();
   const [models, setModels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -63,7 +65,7 @@ export default function ModelSettings({ projectId }) {
       const response = await fetch(`/api/llm/ollama/models?host=${host}&port=${port}`);
 
       if (!response.ok) {
-        throw new Error('获取 Ollama 模型列表失败');
+        throw new Error(t('models.fetchOllamaFailed'));
       }
 
       const data = await response.json();
@@ -92,7 +94,7 @@ export default function ModelSettings({ projectId }) {
         const response = await fetch(`/api/projects/${projectId}/models`);
 
         if (!response.ok) {
-          throw new Error('获取模型配置失败');
+          throw new Error(t('models.fetchFailed'));
         }
 
         const data = await response.json();
@@ -120,7 +122,7 @@ export default function ModelSettings({ projectId }) {
     }
 
     fetchModelSettings();
-  }, [projectId]);
+  }, [projectId, t]);
 
   // 当组件挂载或模型列表变化时，检查是否有 Ollama 模型
   useEffect(() => {
@@ -154,7 +156,7 @@ export default function ModelSettings({ projectId }) {
       });
 
       if (!response.ok) {
-        throw new Error('保存模型配置失败');
+        throw new Error(t('models.saveFailed'));
       }
 
       console.log('模型配置保存成功');
@@ -378,19 +380,19 @@ export default function ModelSettings({ projectId }) {
       return {
         icon: <CheckCircleIcon fontSize="small" />,
         color: 'success',
-        text: '本地模型'
+        text: t('models.localModel')
       };
     } else if (model.apiKey) {
       return {
         icon: <CheckCircleIcon fontSize="small" />,
         color: 'success',
-        text: 'API Key 已配置'
+        text: t('models.apiKeyConfigured')
       };
     } else {
       return {
         icon: <ErrorIcon fontSize="small" />,
         color: 'warning',
-        text: '未配置 API Key'
+        text: t('models.apiKeyNotConfigured')
       };
     }
   };

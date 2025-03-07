@@ -15,8 +15,10 @@ import {
   Snackbar
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
+import { useTranslation } from 'react-i18next';
 
 export default function TaskSettings({ projectId }) {
+  const { t } = useTranslation();
   const [taskSettings, setTaskSettings] = useState({
     textSplitMinLength: 1500,
     textSplitMaxLength: 2000,
@@ -34,7 +36,7 @@ export default function TaskSettings({ projectId }) {
         const response = await fetch(`/api/projects/${projectId}/tasks`);
         
         if (!response.ok) {
-          throw new Error('获取任务配置失败');
+          throw new Error(t('settings.fetchTasksFailed'));
         }
         
         const data = await response.json();
@@ -59,7 +61,7 @@ export default function TaskSettings({ projectId }) {
     }
     
     fetchTaskSettings();
-  }, [projectId]);
+  }, [projectId, t]);
 
   // 处理设置变更
   const handleSettingChange = (e) => {
@@ -90,7 +92,7 @@ export default function TaskSettings({ projectId }) {
       });
       
       if (!response.ok) {
-        throw new Error('保存任务配置失败');
+        throw new Error(t('settings.saveTasksFailed'));
       }
       
       setSuccess(true);
@@ -106,24 +108,24 @@ export default function TaskSettings({ projectId }) {
   };
 
   if (loading) {
-    return <Typography>加载中...</Typography>;
+    return <Typography>{t('common.loading')}</Typography>;
   }
 
   return (
     <Card>
       <CardContent>
         <Typography variant="h6" gutterBottom>
-          任务配置
+          {t('settings.taskConfig')}
         </Typography>
         
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Typography variant="subtitle1" gutterBottom>
-              文本分段设置
+              {t('settings.textSplitSettings')}
             </Typography>
             <Box sx={{ px: 2, py: 1 }}>
               <Typography id="text-split-min-length-slider" gutterBottom>
-                最小字数: {taskSettings.textSplitMinLength}
+                {t('settings.minLength')}: {taskSettings.textSplitMinLength}
               </Typography>
               <Slider
                 value={taskSettings.textSplitMinLength}
@@ -137,7 +139,7 @@ export default function TaskSettings({ projectId }) {
               />
               
               <Typography id="text-split-max-length-slider" gutterBottom sx={{ mt: 3 }}>
-                最大字数: {taskSettings.textSplitMaxLength}
+                {t('settings.maxLength')}: {taskSettings.textSplitMaxLength}
               </Typography>
               <Slider
                 value={taskSettings.textSplitMaxLength}
@@ -151,18 +153,18 @@ export default function TaskSettings({ projectId }) {
               />
               
               <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-                文本分割时，系统会尝试将文本分割成字数在最小值和最大值之间的片段。
+                {t('settings.textSplitDescription')}
               </Typography>
             </Box>
           </Grid>
           
           <Grid item xs={12}>
             <Typography variant="subtitle1" gutterBottom>
-              问题生成设置
+              {t('settings.questionGenSettings')}
             </Typography>
             <Box sx={{ px: 2, py: 1 }}>
               <Typography id="question-generation-length-slider" gutterBottom>
-                每 {taskSettings.questionGenerationLength} 字符生成一个问题
+                {t('settings.questionGenLength', { length: taskSettings.questionGenerationLength })}
               </Typography>
               <Slider
                 value={taskSettings.questionGenerationLength}
@@ -176,23 +178,23 @@ export default function TaskSettings({ projectId }) {
               />
               
               <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-                系统会根据文本长度自动计算需要生成的问题数量，每 N 个字符生成一个问题。
+                {t('settings.questionGenDescription')}
               </Typography>
             </Box>
           </Grid>
           
           <Grid item xs={12}>
             <Typography variant="subtitle1" gutterBottom>
-              HuggingFace 设置
+              {t('settings.huggingfaceSettings')}
             </Typography>
             <TextField
               fullWidth
-              label="HuggingFace Token"
+              label={t('settings.huggingfaceToken')}
               name="huggingfaceToken"
               value={taskSettings.huggingfaceToken}
               onChange={handleSettingChange}
               type="password"
-              helperText="此功能暂未实现，仅作展示用途"
+              helperText={t('settings.huggingfaceNotImplemented')}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">hf_</InputAdornment>
@@ -207,7 +209,7 @@ export default function TaskSettings({ projectId }) {
               startIcon={<SaveIcon />}
               onClick={handleSaveTaskSettings}
             >
-              保存任务配置
+              {t('settings.saveTaskConfig')}
             </Button>
           </Grid>
         </Grid>
@@ -220,7 +222,7 @@ export default function TaskSettings({ projectId }) {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
         <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
-          任务配置已成功保存
+          {t('settings.saveSuccess')}
         </Alert>
       </Snackbar>
 

@@ -10,7 +10,27 @@
         "switchToDark": "切换到暗色模式"
     },
     "settings": {
-        "title": "项目设置"
+        "title": "项目设置",
+        "basicInfo": "基本信息",
+        "modelConfig": "模型配置",
+        "taskConfig": "任务配置",
+        "tabsAriaLabel": "设置选项卡",
+        "idNotEditable": "项目 ID 不可编辑",
+        "saveBasicInfo": "保存基本信息",
+        "saveSuccess": "保存成功",
+        "saveFailed": "保存失败",
+        "fetchTasksFailed": "获取任务配置失败",
+        "saveTasksFailed": "保存任务配置失败",
+        "textSplitSettings": "文本分割设置",
+        "minLength": "最小长度",
+        "maxLength": "最大长度",
+        "textSplitDescription": "设置文本分割的最小和最大长度范围",
+        "questionGenSettings": "问题生成设置",
+        "questionGenLength": "问题生成长度：{{length}}",
+        "questionGenDescription": "设置生成问题的最大长度",
+        "huggingfaceSettings": "Hugging Face 设置",
+        "huggingfaceToken": "Hugging Face Token",
+        "huggingfaceNotImplemented": "Hugging Face 功能暂未实现"
     },
     "questions": {
         "title": "问题列表",

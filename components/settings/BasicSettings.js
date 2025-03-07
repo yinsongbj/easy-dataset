@@ -13,8 +13,10 @@ import {
   Snackbar
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
+import { useTranslation } from 'react-i18next';
 
 export default function BasicSettings({ projectId }) {
+  const { t } = useTranslation();
   const [projectInfo, setProjectInfo] = useState({
     id: '',
     name: '',
@@ -31,7 +33,7 @@ export default function BasicSettings({ projectId }) {
         const response = await fetch(`/api/projects/${projectId}`);
         
         if (!response.ok) {
-          throw new Error('获取项目信息失败');
+          throw new Error(t('projects.fetchFailed'));
         }
         
         const data = await response.json();
@@ -45,7 +47,7 @@ export default function BasicSettings({ projectId }) {
     }
     
     fetchProjectInfo();
-  }, [projectId]);
+  }, [projectId, t]);
 
   // 处理项目信息变更
   const handleProjectInfoChange = (e) => {
@@ -71,7 +73,7 @@ export default function BasicSettings({ projectId }) {
       });
       
       if (!response.ok) {
-        throw new Error('保存项目信息失败');
+        throw new Error(t('projects.saveFailed'));
       }
       
       setSuccess(true);
@@ -87,29 +89,29 @@ export default function BasicSettings({ projectId }) {
   };
 
   if (loading) {
-    return <Typography>加载中...</Typography>;
+    return <Typography>{t('common.loading')}</Typography>;
   }
 
   return (
     <Card>
       <CardContent>
         <Typography variant="h6" gutterBottom>
-          基本信息
+          {t('settings.basicInfo')}
         </Typography>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="项目ID"
+              label={t('projects.id')}
               value={projectInfo.id}
               disabled
-              helperText="项目ID不可更改"
+              helperText={t('settings.idNotEditable')}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="项目名称"
+              label={t('projects.name')}
               name="name"
               value={projectInfo.name}
               onChange={handleProjectInfoChange}
@@ -119,7 +121,7 @@ export default function BasicSettings({ projectId }) {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label="项目描述"
+              label={t('projects.description')}
               name="description"
               value={projectInfo.description}
               onChange={handleProjectInfoChange}
@@ -133,7 +135,7 @@ export default function BasicSettings({ projectId }) {
               startIcon={<SaveIcon />}
               onClick={handleSaveProjectInfo}
             >
-              保存基本信息
+              {t('settings.saveBasicInfo')}
             </Button>
           </Grid>
         </Grid>
@@ -146,7 +148,7 @@ export default function BasicSettings({ projectId }) {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
         <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
-          项目信息已成功保存
+          {t('settings.saveSuccess')}
         </Alert>
       </Snackbar>
 

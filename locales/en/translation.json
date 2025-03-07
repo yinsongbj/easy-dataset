@@ -10,7 +10,27 @@
         "switchToDark": "Switch to Dark Mode"
     },
     "settings": {
-        "title": "Settings"
+        "title": "Settings",
+        "basicInfo": "Basic Info",
+        "modelConfig": "Model Configuration",
+        "taskConfig": "Task Configuration",
+        "tabsAriaLabel": "Settings Tabs",
+        "idNotEditable": "Project ID is not editable",
+        "saveBasicInfo": "Save Basic Info",
+        "saveSuccess": "Save Successful",
+        "saveFailed": "Save Failed",
+        "fetchTasksFailed": "Failed to fetch task settings",
+        "saveTasksFailed": "Failed to save task settings",
+        "textSplitSettings": "Text Split Settings",
+        "minLength": "Minimum Length",
+        "maxLength": "Maximum Length",
+        "textSplitDescription": "Set the minimum and maximum length range for text splitting",
+        "questionGenSettings": "Question Generation Settings",
+        "questionGenLength": "Question Generation Length: {{length}}",
+        "questionGenDescription": "Set the maximum length for generated questions",
+        "huggingfaceSettings": "Hugging Face Settings",
+        "huggingfaceToken": "Hugging Face Token",
+        "huggingfaceNotImplemented": "Hugging Face functionality is not yet implemented"
     },
     "questions": {
         "title": "Questions",

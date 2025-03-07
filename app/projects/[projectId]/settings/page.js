@@ -12,6 +12,7 @@ import {
   CircularProgress
 } from '@mui/material';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 // 导入设置组件
 import BasicSettings from '@/components/settings/BasicSettings';
@@ -26,6 +27,7 @@ const TABS = {
 };
 
 export default function SettingsPage({ params }) {
+  const { t } = useTranslation();
   const { projectId } = params;
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -53,7 +55,7 @@ export default function SettingsPage({ params }) {
           if (response.status === 404) {
             setProjectExists(false);
           } else {
-            throw new Error('获取项目详情失败');
+            throw new Error(t('projects.fetchFailed'));
           }
         } else {
           setProjectExists(true);
@@ -67,7 +69,7 @@ export default function SettingsPage({ params }) {
     }
     
     checkProject();
-  }, [projectId]);
+  }, [projectId, t]);
 
   // 处理 tab 切换
   const handleTabChange = (event, newValue) => {
@@ -87,7 +89,7 @@ export default function SettingsPage({ params }) {
   if (!projectExists) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Alert severity="error">项目不存在或已被删除</Alert>
+        <Alert severity="error">{t('projects.notExist')}</Alert>
       </Container>
     );
   }
@@ -103,7 +105,7 @@ export default function SettingsPage({ params }) {
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        项目设置
+        {t('settings.title')}
       </Typography>
       
       <Paper sx={{ mb: 4 }}>
@@ -113,11 +115,11 @@ export default function SettingsPage({ params }) {
           variant="fullWidth"
           textColor="primary"
           indicatorColor="primary"
-          aria-label="项目设置选项卡"
+          aria-label={t('settings.tabsAriaLabel')}
         >
-          <Tab value={TABS.BASIC} label="基本信息" />
-          <Tab value={TABS.MODEL} label="模型配置" />
-          <Tab value={TABS.TASK} label="任务配置" />
+          <Tab value={TABS.BASIC} label={t('settings.basicInfo')} />
+          <Tab value={TABS.MODEL} label={t('settings.modelConfig')} />
+          <Tab value={TABS.TASK} label={t('settings.taskConfig')} />
         </Tabs>
       </Paper>
       
