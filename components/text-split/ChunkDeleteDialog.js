@@ -8,12 +8,14 @@ import {
   DialogActions,
   Button
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 export default function ChunkDeleteDialog({
   open,
   onClose,
   onConfirm
 }) {
+  const { t } = useTranslation();
   return (
     <Dialog
       open={open}
@@ -22,7 +24,7 @@ export default function ChunkDeleteDialog({
       aria-describedby="delete-dialog-description"
     >
       <DialogTitle id="delete-dialog-title">
-        确认删除
+        {t('common.confirmDelete')}?
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="delete-dialog-description">

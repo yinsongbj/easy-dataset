@@ -1,6 +1,7 @@
 'use client';
 
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 export default function DeleteConfirmDialog({
   open,
@@ -8,6 +9,7 @@ export default function DeleteConfirmDialog({
   onClose,
   onConfirm
 }) {
+  const { t } = useTranslation();
   return (
     <Dialog
       open={open}
@@ -16,19 +18,19 @@ export default function DeleteConfirmDialog({
       aria-describedby="delete-dialog-description"
     >
       <DialogTitle id="delete-dialog-title">
-        确认删除文献
+        {t('common.confirmDelete')}「{fileName}」?
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="delete-dialog-description">
-          您确定要删除文献「{fileName}」吗？删除后将同时删除所有相关的文本块和目录结构。
+          {t('common.confirmDeleteDescription')}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary">
-          取消
+          {t('common.cancel')}
         </Button>
         <Button onClick={onConfirm} color="error" variant="contained">
-          确认删除
+          {t('common.delete')}
         </Button>
       </DialogActions>
     </Dialog>

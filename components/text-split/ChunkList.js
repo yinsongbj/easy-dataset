@@ -14,14 +14,15 @@ import ChunkCard from './ChunkCard';
 import ChunkViewDialog from './ChunkViewDialog';
 import ChunkDeleteDialog from './ChunkDeleteDialog';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 /**
- * 文本块列表组件
+ * Chunk list component
  * @param {Object} props
- * @param {string} props.projectId - 项目ID
- * @param {Array} props.chunks - 文本块数组
- * @param {Function} props.onDelete - 删除回调
- * @param {Function} props.onGenerateQuestions - 生成问题回调
+ * @param {string} props.projectId - Project ID
+ * @param {Array} props.chunks - Chunk array
+ * @param {Function} props.onDelete - Delete callback
+ * @param {Function} props.onGenerateQuestions - Generate questions callback
  */
 export default function ChunkList({ projectId, chunks = [], onDelete, onGenerateQuestions, loading = false }) {
   const theme = useTheme();
@@ -37,46 +38,41 @@ export default function ChunkList({ projectId, chunks = [], onDelete, onGenerate
   const endIndex = startIndex + itemsPerPage;
   const displayedChunks = chunks.slice(startIndex, endIndex);
   const totalPages = Math.ceil(chunks.length / itemsPerPage);
+  const { t } = useTranslation();
 
-  // 处理页面变化
   const handlePageChange = (event, value) => {
     setPage(value);
   };
 
-  // 查看文本块详情
   const handleViewChunk = async (chunkId) => {
     try {
       const response = await fetch(`/api/projects/${projectId}/chunks/${chunkId}`);
       if (!response.ok) {
-        throw new Error('获取文本块内容失败');
+        throw new Error(t('textSplit.fetchChunksFailed'));
       }
 
       const data = await response.json();
       setViewChunk(data);
       setViewDialogOpen(true);
     } catch (error) {
-      console.error('获取文本块内容出错:', error);
+      console.error(t('textSplit.fetchChunksError'), error);
     }
   };
 
-  // 关闭详情对话框
   const handleCloseViewDialog = () => {
     setViewDialogOpen(false);
   };
 
-  // 打开删除确认对话框
   const handleOpenDeleteDialog = (chunkId) => {
     setChunkToDelete(chunkId);
     setDeleteDialogOpen(true);
   };
 
-  // 关闭删除确认对话框
   const handleCloseDeleteDialog = () => {
     setDeleteDialogOpen(false);
     setChunkToDelete(null);
   };
 
-  // 确认删除文本块
   const handleConfirmDelete = () => {
     if (chunkToDelete && onDelete) {
       onDelete(chunkToDelete);
@@ -95,7 +91,6 @@ export default function ChunkList({ projectId, chunks = [], onDelete, onGenerate
     });
   };
 
-  // 全选/取消全选
   const handleSelectAll = () => {
     if (selectedChunks.length === chunks.length) {
       setSelectedChunks([]);
@@ -104,7 +99,6 @@ export default function ChunkList({ projectId, chunks = [], onDelete, onGenerate
     }
   };
 
-  // 批量生成问题
   const handleBatchGenerateQuestions = () => {
     if (onGenerateQuestions && selectedChunks.length > 0) {
       onGenerateQuestions(selectedChunks);
@@ -130,7 +124,7 @@ export default function ChunkList({ projectId, chunks = [], onDelete, onGenerate
         }}
       >
         <Typography variant="body1" color="textSecondary">
-          暂无文本块，请先上传并处理文献
+          {t('textSplit.noChunks')}
         </Typography>
       </Paper>
     );

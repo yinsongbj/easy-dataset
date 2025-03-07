@@ -3,6 +3,7 @@
 import { Box, Typography, List, ListItem, ListItemText, Divider, IconButton, Tooltip, CircularProgress } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileIcon from '@mui/icons-material/InsertDriveFile';
+import { useTranslation } from 'react-i18next';
 
 export default function FileList({
   theme,
@@ -10,6 +11,8 @@ export default function FileList({
   loading = false,
   onDeleteFile
 }) {
+  const { t } = useTranslation();
+
   return (
     <Box
       sx={{
@@ -24,7 +27,7 @@ export default function FileList({
       }}
     >
       <Typography variant="subtitle1" gutterBottom>
-        已上传文献
+        {t('textSplit.uploadedDocuments')}
       </Typography>
 
       {loading ? (

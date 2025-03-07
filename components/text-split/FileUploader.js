@@ -14,11 +14,11 @@ import FileList from './components/FileList';
 import DeleteConfirmDialog from './components/DeleteConfirmDialog';
 
 /**
- * 文件上传组件
+ * File uploader component
  * @param {Object} props
- * @param {string} props.projectId - 项目ID
- * @param {Function} props.onUploadSuccess - 上传成功回调
- * @param {Function} props.onProcessStart - 处理开始回调
+ * @param {string} props.projectId - Project ID
+ * @param {Function} props.onUploadSuccess - Upload success callback
+ * @param {Function} props.onProcessStart - Process start callback
  */
 export default function FileUploader({ projectId, onUploadSuccess, onProcessStart, onFileDeleted }) {
   const theme = useTheme();
@@ -33,12 +33,12 @@ export default function FileUploader({ projectId, onUploadSuccess, onProcessStar
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [fileToDelete, setFileToDelete] = useState(null);
 
-  // 加载已上传的文件列表
+  // Load uploaded files list
   useEffect(() => {
     fetchUploadedFiles();
   }, []);
 
-  // 获取已上传的文件列表
+  // Fetch uploaded files list
   const fetchUploadedFiles = async () => {
     try {
       setLoading(true);

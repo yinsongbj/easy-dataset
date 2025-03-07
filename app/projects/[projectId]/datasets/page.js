@@ -408,7 +408,7 @@ export default function DatasetsPage({ params }) {
     try {
       setLoading(true);
       const response = await fetch(`/api/projects/${projectId}/datasets`);
-      if (!response.ok) throw new Error('获取数据集失败');
+      if (!response.ok) throw new Error(t('datasets.fetchFailed'));
       const data = await response.json();
       setDatasets(data);
     } catch (error) {
@@ -476,11 +476,11 @@ export default function DatasetsPage({ params }) {
       const response = await fetch(`/api/projects/${projectId}/datasets?id=${dataset.id}`, {
         method: 'DELETE'
       });
-      if (!response.ok) throw new Error('删除数据集失败');
+      if (!response.ok) throw new Error(t('datasets.deleteFailed'));
 
       setSnackbar({
         open: true,
-        message: '删除成功',
+        message: t('datasets.deleteSuccess'),
         severity: 'success'
       });
 
@@ -616,7 +616,7 @@ export default function DatasetsPage({ params }) {
         }}>
           <CircularProgress size={60} thickness={4} />
           <Typography variant="h6" sx={{ mt: 2 }}>
-            加载数据集...
+            {t('datasets.loading')}
           </Typography>
         </Box>
       </Container>
@@ -643,14 +643,16 @@ export default function DatasetsPage({ params }) {
         }}>
           <Box>
             <Typography variant="h4" fontWeight="bold" sx={{ mb: 0.5 }}>
-              数据集管理
+              {t('datasets.management')}
             </Typography>
             <Typography variant="body1" color="text.secondary">
-              共 {datasets.length} 个数据集，
-              已确认 {datasets.filter(d => d.confirmed).length} 个
-              （{datasets.length > 0
-                ? Math.round((datasets.filter(d => d.confirmed).length / datasets.length) * 100)
-                : 0}%）
+              {t('datasets.stats', {
+                total: datasets.length,
+                confirmed: datasets.filter(d => d.confirmed).length,
+                percentage: datasets.length > 0
+                  ? Math.round((datasets.filter(d => d.confirmed).length / datasets.length) * 100)
+                  : 0
+              })}
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 2 }}>
@@ -669,7 +671,7 @@ export default function DatasetsPage({ params }) {
               </IconButton>
               <InputBase
                 sx={{ ml: 1, flex: 1 }}
-                placeholder="搜索数据集..."
+                placeholder={t('datasets.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);

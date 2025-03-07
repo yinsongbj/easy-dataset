@@ -15,6 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import QuizIcon from '@mui/icons-material/Quiz';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 export default function ChunkCard({
   chunk,
@@ -25,6 +26,7 @@ export default function ChunkCard({
   onGenerateQuestions
 }) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   // 获取文本预览
   const getTextPreview = (content, maxLength = 150) => {
@@ -36,7 +38,7 @@ export default function ChunkCard({
 
   // 检查是否有已生成的问题
   const hasQuestions = chunk.questions && chunk.questions.length > 0;
-  
+
   return (
     <Card
       variant="outlined"
@@ -90,7 +92,7 @@ export default function ChunkCard({
               </Typography>
               <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                 <Chip
-                  label={`${chunk.fileName || '未知文件'}`}
+                  label={`${chunk.fileName || t('textSplit.unknownFile')}`}
                   size="small"
                   color="primary"
                   variant="outlined"
@@ -101,7 +103,7 @@ export default function ChunkCard({
                   }}
                 />
                 <Chip
-                  label={`${chunk.length || 0} 字符`}
+                  label={`${chunk.length || 0} ${t('textSplit.characters')}`}
                   size="small"
                   color="secondary"
                   variant="outlined"
@@ -112,7 +114,7 @@ export default function ChunkCard({
                   }}
                 />
                 {hasQuestions && (
-                  <Tooltip 
+                  <Tooltip
                     title={
                       <Box sx={{ p: 1 }}>
                         {chunk.questions.map((q, index) => (
@@ -126,7 +128,7 @@ export default function ChunkCard({
                     placement="top"
                   >
                     <Chip
-                      label={`已生成 ${chunk.questions.length} 个问题`}
+                      label={`${t('textSplit.generatedQuestions', { count: chunk.questions.length })}`}
                       size="small"
                       color="success"
                       variant="outlined"
@@ -170,7 +172,7 @@ export default function ChunkCard({
           }
         }}
       >
-        <Tooltip title="查看详情">
+        <Tooltip title={t('textSplit.viewDetails')}>
           <IconButton
             size="small"
             color="primary"
@@ -183,7 +185,7 @@ export default function ChunkCard({
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="生成问题">
+        <Tooltip title={t('textSplit.generateQuestions')}>
           <IconButton
             size="small"
             color="info"
@@ -196,7 +198,7 @@ export default function ChunkCard({
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="删除">
+        <Tooltip title={t('common.delete')}>
           <IconButton
             size="small"
             color="error"

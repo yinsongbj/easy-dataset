@@ -30,7 +30,8 @@
         "questionGenDescription": "设置生成问题的最大长度",
         "huggingfaceSettings": "Hugging Face 设置",
         "huggingfaceToken": "Hugging Face Token",
-        "huggingfaceNotImplemented": "Hugging Face 功能暂未实现"
+        "huggingfaceNotImplemented": "Hugging Face 功能暂未实现",
+        "characters": "字符"
     },
     "questions": {
         "title": "问题列表",
@@ -62,6 +63,7 @@
         "pleaseWait": "请耐心等待，正在处理中..."
     },
     "common": {
+        "unknownError": "未知错误",
         "create": "创建",
         "edit": "编辑",
         "delete": "删除",
@@ -84,7 +86,11 @@
         "failed": "失败",
         "success": "成功",
         "backToList": "返回列表",
-        "label": "标签"
+        "label": "标签",
+        "confirmDeleteDescription": "确认删除吗？此操作不可恢复。",
+        "fetchError": "获取数据出错",
+        "confirmDeleteQuestion": "确认删除此问题吗？此操作不可恢复。",
+        "deleteSuccess": "删除成功"
     },
     "home": {
         "title": "Easy Dataset",
@@ -101,9 +107,19 @@
         "createError": "创建项目出错",
         "createNew": "创建新项目",
         "name": "项目名称",
-        "description": "项目描述"
+        "description": "项目描述",
+        "questions": "问题",
+        "datasets": "数据集",
+        "lastUpdated": "最后更新",
+        "viewDetails": "查看详情"
     },
     "textSplit": {
+        "editTag": "编辑标签",
+        "deleteTag": "删除标签",
+        "addTag": "添加标签",
+        "selectedCount": "已选择 {{count}} 个文本块",
+        "batchGenerateQuestions": "批量生成问题",
+        "uploadedDocuments": "已上传的文档",
         "title": "文献处理",
         "uploadNewDocument": "上传新文献",
         "selectFile": "选择文件",
@@ -147,7 +163,10 @@
         "uploadFailed": "上传失败",
         "uploadSuccess": "成功上传 {{count}} 个文件",
         "deleteFailed": "删除文件失败",
-        "deleteSuccess": "文件 {{fileName}} 已成功删除"
+        "deleteSuccess": "文件 {{fileName}} 已成功删除",
+        "generatedQuestions": "{{count}} 个问题",
+        "viewDetails": "查看详情",
+        "generateQuestions": "生成问题"
     },
     "domain": {
         "title": "领域知识树",
@@ -195,6 +214,11 @@
         "confirmExport": "确认导出"
     },
     "datasets": {
+        "aiOptimizeAdvicePlaceholder": "请输入您对答案的改进建议，AI将根据您的建议优化答案和思维链",
+        "aiOptimizeAdvice": "请输入您对答案的改进建议，AI将根据您的建议优化答案和思维链",
+        "aiOptimize": "AI 智能优化",
+        "generating": "正在生成数据集",
+        "generateError": "生成数据集失败",
         "management": "数据集管理",
         "question": "问题",
         "createdAt": "创建时间",
@@ -266,5 +290,9 @@
     },
     "chunks": {
         "title": "文本块"
+    },
+    "models": {
+        "configNotFound": "模型配置未找到，请检查！",
+        "parseError": "解析模型配置出错，请检查！"
     }
 }

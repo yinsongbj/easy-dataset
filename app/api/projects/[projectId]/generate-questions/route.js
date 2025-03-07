@@ -50,7 +50,6 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: '没有找到有效的文本块' }, { status: 404 });
     }
 
-    // 创建LLM客户端
     const llmClient = new LLMClient({
       provider: model.provider,
       endpoint: model.endpoint,
@@ -58,7 +57,6 @@ export async function POST(request, { params }) {
       model: model.name,
     });
 
-    // 批量生成问题
     const results = [];
     const errors = [];
 
@@ -66,22 +64,22 @@ export async function POST(request, { params }) {
       try {
         // 根据文本长度自动计算问题数量
         const questionNumber = Math.floor(chunk.length / 240);
-        
+
         // 生成问题
         const prompt = getQuestionPrompt(chunk.content, questionNumber, language);
         const llmRes = await llmClient.chat(prompt);
-        
+
         const response = llmRes.choices?.[0]?.message?.content ||
           llmRes.response ||
           '';
-        
+
         // 从LLM输出中提取JSON格式的问题列表
         const questions = extractJsonFromLLMOutput(response);
-        
+
         if (questions && Array.isArray(questions)) {
           // 保存问题到数据库
           await addQuestionsForChunk(projectId, chunk.id, questions);
-          
+
           results.push({
             chunkId: chunk.id,
             success: true,
@@ -104,7 +102,7 @@ export async function POST(request, { params }) {
     }
 
     // 返回生成结果
-    return NextResponse.json({ 
+    return NextResponse.json({
       results,
       errors,
       totalSuccess: results.length,

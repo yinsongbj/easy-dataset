@@ -7,13 +7,15 @@ import {
   Button
 } from '@mui/material';
 import QuizIcon from '@mui/icons-material/Quiz';
+import { useTranslation } from 'react-i18next';
 
-export default function ChunkListHeader({ 
-  totalChunks, 
-  selectedChunks, 
-  onSelectAll, 
-  onBatchGenerateQuestions 
+export default function ChunkListHeader({
+  totalChunks,
+  selectedChunks,
+  onSelectAll,
+  onBatchGenerateQuestions
 }) {
+  const { t } = useTranslation();
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -23,7 +25,7 @@ export default function ChunkListHeader({
           onChange={onSelectAll}
         />
         <Typography variant="body1">
-          已选择 {selectedChunks.length} / {totalChunks} 个文本块
+          {t('textSplit.selectedCount', { count: selectedChunks.length })}
         </Typography>
       </Box>
 
@@ -34,7 +36,7 @@ export default function ChunkListHeader({
         disabled={selectedChunks.length === 0}
         onClick={onBatchGenerateQuestions}
       >
-        批量生成问题
+        {t('textSplit.batchGenerateQuestions')}
       </Button>
     </Box>
   );

@@ -22,21 +22,23 @@ import { DatasetSiteCard } from './DatasetSiteCard';
 import sites from '@/constant/sites.json';
 import { useTranslation } from 'react-i18next';
 
-// 定义类别
-const CATEGORIES = {
-  ALL: '全部',
-  POPULAR: '热门推荐',
-  CHINESE: '中文资源',
-  ENGLISH: '英文资源',
-  RESEARCH: '研究数据',
-  MULTIMODAL: '多模态'
-};
+
 
 export function DatasetSiteList() {
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState(CATEGORIES.ALL);
   const theme = useTheme();
   const { t } = useTranslation();
+
+  // 定义类别
+  const CATEGORIES = {
+    ALL: t('datasetSquare.categories.all'),
+    POPULAR: t('datasetSquare.categories.popular'),
+    CHINESE: t('datasetSquare.categories.chinese'),
+    ENGLISH: t('datasetSquare.categories.english'),
+    RESEARCH: t('datasetSquare.categories.research'),
+    MULTIMODAL: t('datasetSquare.categories.multimodal')
+  };
+  const [activeCategory, setActiveCategory] = useState(CATEGORIES.ALL);
 
   // 模拟加载效果
   useEffect(() => {
@@ -57,15 +59,15 @@ export function DatasetSiteList() {
     if (activeCategory === CATEGORIES.ALL) {
       return sites;
     } else if (activeCategory === CATEGORIES.POPULAR) {
-      return sites.filter(site => site.labels && site.labels.includes('热门推荐'));
+      return sites.filter(site => site.labels && site.labels.includes(t('datasetSquare.categories.popular')));
     } else if (activeCategory === CATEGORIES.CHINESE) {
-      return sites.filter(site => site.labels && site.labels.includes('中文资源'));
+      return sites.filter(site => site.labels && site.labels.includes(t('datasetSquare.categories.chinese')));
     } else if (activeCategory === CATEGORIES.ENGLISH) {
-      return sites.filter(site => site.labels && site.labels.includes('英文资源'));
+      return sites.filter(site => site.labels && site.labels.includes(t('datasetSquare.categories.english')));
     } else if (activeCategory === CATEGORIES.RESEARCH) {
-      return sites.filter(site => site.labels && site.labels.includes('研究数据'));
+      return sites.filter(site => site.labels && site.labels.includes(t('datasetSquare.categories.research')));
     } else if (activeCategory === CATEGORIES.MULTIMODAL) {
-      return sites.filter(site => site.labels && site.labels.includes('多模态'));
+      return sites.filter(site => site.labels && site.labels.includes(t('datasetSquare.categories.multimodal')));
     }
     return sites;
   };

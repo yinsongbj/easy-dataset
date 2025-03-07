@@ -13,8 +13,8 @@ import MemoryIcon from '@mui/icons-material/Memory';
 const mockModels = [
     { id: 'deepseek-r1', provider: 'Ollama', name: 'DeepSeek-R1' },
     { id: 'gpt-3.5-turbo-openai', provider: 'OpenAI', name: 'gpt-3.5-turbo' },
-    { id: 'gpt-3.5-turbo-guiji', provider: '硅基流动', name: 'gpt-3.5-turbo' },
-    { id: 'glm-4-flash', provider: '智谱AI', name: 'GLM-4-Flash' }
+    { id: 'gpt-3.5-turbo-guiji', provider: 'Guiji', name: 'gpt-3.5-turbo' },
+    { id: 'glm-4-flash', provider: 'Zhipu AI', name: 'GLM-4-Flash' }
 ];
 
 export default function StatsCard({ projects }) {
@@ -25,25 +25,25 @@ export default function StatsCard({ projects }) {
     const statsItems = [
         {
             value: projects.length,
-            label: '进行中的项目',
+            label: t('stats.ongoingProjects'),
             color: 'primary',
             icon: <FolderOpenIcon />
         },
         {
             value: projects.reduce((sum, project) => sum + (project.questionsCount || 0), 0),
-            label: '问题数量',
+            label: t('stats.questionCount'),
             color: 'secondary',
             icon: <QuestionAnswerIcon />
         },
         {
             value: projects.reduce((sum, project) => sum + (project.datasetsCount || 0), 0),
-            label: '生成的数据集',
+            label: t('stats.generatedDatasets'),
             color: 'success',
             icon: <StorageIcon />
         },
         {
             value: mockModels.length,
-            label: '支持的模型',
+            label: t('stats.supportedModels'),
             color: 'warning',
             icon: <MemoryIcon />
         }

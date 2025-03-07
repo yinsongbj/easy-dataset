@@ -1,5 +1,6 @@
 // ExportDatasetDialog.js 组件
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog,
     DialogTitle,
@@ -20,6 +21,7 @@ import {
 
 const ExportDatasetDialog = ({ open, onClose, onExport }) => {
     const theme = useTheme();
+    const { t } = useTranslation();
     const [formatType, setFormatType] = useState('alpaca');
     const [systemPrompt, setSystemPrompt] = useState('');
     const [confirmedOnly, setConfirmedOnly] = useState(true);
@@ -52,11 +54,11 @@ const ExportDatasetDialog = ({ open, onClose, onExport }) => {
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-            <DialogTitle>导出数据集</DialogTitle>
+            <DialogTitle>{t('export.title')}</DialogTitle>
             <DialogContent>
                 <Box sx={{ mb: 3 }}>
                     <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-                        文件格式
+                        {t('export.fileFormat')}
                     </Typography>
                     <FormControl component="fieldset">
                         <RadioGroup
@@ -74,7 +76,7 @@ const ExportDatasetDialog = ({ open, onClose, onExport }) => {
 
                 <Box sx={{ mb: 3 }}>
                     <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-                        数据集风格
+                        {t('export.format')}
                     </Typography>
                     <FormControl component="fieldset">
                         <RadioGroup
@@ -84,15 +86,15 @@ const ExportDatasetDialog = ({ open, onClose, onExport }) => {
                             onChange={handleFormatChange}
                             row
                         >
-                            <FormControlLabel value="alpaca" control={<Radio />} label="Alpaca 格式" />
-                            <FormControlLabel value="sharegpt" control={<Radio />} label="ShareGPT 格式" />
+                            <FormControlLabel value="alpaca" control={<Radio />} label="Alpaca" />
+                            <FormControlLabel value="sharegpt" control={<Radio />} label="ShareGPT" />
                         </RadioGroup>
                     </FormControl>
                 </Box>
 
                 <Box sx={{ mb: 3 }}>
                     <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-                        格式示例
+                        {t('export.example')}
                     </Typography>
                     <Paper
                         variant="outlined"
@@ -143,14 +145,14 @@ const ExportDatasetDialog = ({ open, onClose, onExport }) => {
 
                 <Box sx={{ mb: 3 }}>
                     <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-                        系统提示词（选填）
+                        {t('export.systemPrompt')}
                     </Typography>
                     <TextField
                         fullWidth
                         multiline
                         rows={3}
                         variant="outlined"
-                        placeholder="请输入系统提示词..."
+                        placeholder={t('export.systemPromptPlaceholder')}
                         value={systemPrompt}
                         onChange={handleSystemPromptChange}
                     />
@@ -164,14 +166,14 @@ const ExportDatasetDialog = ({ open, onClose, onExport }) => {
                                 onChange={handleConfirmedOnlyChange}
                             />
                         }
-                        label="只导出已确认的数据集"
+                        label={t('export.onlyConfirmed')}
                     />
                 </Box>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose}>取消</Button>
+                <Button onClick={onClose}>{t('common.cancel')}</Button>
                 <Button onClick={handleExport} variant="contained" color="primary">
-                    确认导出
+                    {t('export.confirmExport')}
                 </Button>
             </DialogActions>
         </Dialog>

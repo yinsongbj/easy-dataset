@@ -6,17 +6,17 @@ import { styles } from '@/styles/home';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DataObjectIcon from '@mui/icons-material/DataObject';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { motion } from 'framer-motion';
-import { alpha } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 export default function ProjectList({ projects, onCreateProject }) {
+    const { t } = useTranslation();
     return (
         <Grid container spacing={3}>
             {projects.length === 0 ? (
                 <Grid item xs={12}>
                     <Paper sx={{ p: 4, textAlign: 'center' }}>
                         <Typography variant="h6" color="text.secondary" gutterBottom>
-                            还没有创建任何项目
+                            {t('projects.noProjects')}
                         </Typography>
                         <Button
                             variant="contained"
@@ -24,7 +24,7 @@ export default function ProjectList({ projects, onCreateProject }) {
                             startIcon={<AddCircleOutlineIcon />}
                             sx={{ mt: 2 }}
                         >
-                            创建第一个项目
+                            {t('projects.createFirst')}
                         </Button>
                     </Paper>
                 </Grid>
@@ -69,13 +69,13 @@ export default function ProjectList({ projects, onCreateProject }) {
                                         <Box sx={{ display: 'flex', gap: 1 }}>
                                             <Chip
                                                 size="small"
-                                                label={`${project.questionsCount || 0} 问题`}
+                                                label={`${project.questionsCount || 0} ${t('projects.questions')}`}
                                                 color="primary"
                                                 variant="outlined"
                                             />
                                             <Chip
                                                 size="small"
-                                                label={`${project.datasetsCount || 0} 数据集`}
+                                                label={`${project.datasetsCount || 0} ${t('projects.datasets')}`}
                                                 color="secondary"
                                                 variant="outlined"
                                             />
@@ -94,14 +94,14 @@ export default function ProjectList({ projects, onCreateProject }) {
                                         alignItems: 'center'
                                     }}>
                                         <Typography variant="caption" color="text.secondary">
-                                            上次更新: {project.lastUpdated}
+                                            {t('projects.lastUpdated')}: {project.lastUpdated}
                                         </Typography>
                                         <Typography variant="body2" color="primary" sx={{
                                             display: 'flex',
                                             alignItems: 'center',
                                             gap: 0.5
                                         }}>
-                                            查看详情
+                                            {t('projects.viewDetails')}
                                             <ArrowForwardIcon fontSize="small" sx={{ fontSize: '16px' }} />
                                         </Typography>
                                     </Box>

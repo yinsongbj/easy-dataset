@@ -105,10 +105,11 @@ const OptimizeDialog = ({ open, onClose, onConfirm, loading }) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>AI智能优化</DialogTitle>
+      <DialogTitle>{t('datasets.aiOptimize')}</DialogTitle>
       <DialogContent>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          请输入您对答案的改进建议，AI将根据您的建议优化答案和思维链
+
+          {t('datasets.aiOptimizeAdvice')}
         </Typography>
         <TextField
           fullWidth
@@ -116,7 +117,7 @@ const OptimizeDialog = ({ open, onClose, onConfirm, loading }) => {
           rows={4}
           value={advice}
           onChange={(e) => setAdvice(e.target.value)}
-          placeholder="例如：答案需要更加详细，增加更多专业术语解释，使用更专业的语言等"
+          placeholder={t('datasets.aiOptimizeAdvicePlaceholder')}
           disabled={loading}
         />
       </DialogContent>

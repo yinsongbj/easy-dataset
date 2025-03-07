@@ -19,17 +19,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 
-/**
- * 问题列表视图组件
- * @param {Object} props
- * @param {Array} props.questions - 问题列表
- * @param {Array} props.chunks - 文本块列表
- * @param {Array} props.selectedQuestions - 已选择的问题ID列表
- * @param {Function} props.onSelectQuestion - 选择问题的回调函数
- * @param {Function} props.onDeleteQuestion - 删除问题的回调函数
- * @param {Function} props.onGenerateDataset - 生成数据集的回调函数
- * @param {string} props.projectId - 项目ID
- */
+
 export default function QuestionListView({
   questions = [],
   chunks = [],
@@ -104,7 +94,6 @@ export default function QuestionListView({
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
     } catch (error) {
-      console.error('生成数据集失败:', error);
       // 显示错误提示
       setSnackbarMessage(t('datasets.generateFailed', { error: error.message || t('common.unknownError') }));
       setSnackbarSeverity('error');

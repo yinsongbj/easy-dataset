@@ -53,6 +53,7 @@ function TreeNode({ node, level = 0, onEdit, onDelete, onAddChild }) {
   const hasChildren = node.child && node.child.length > 0;
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
+  const { t } = useTranslation();
 
   const handleClick = () => {
     if (hasChildren) {
@@ -134,16 +135,16 @@ function TreeNode({ node, level = 0, onEdit, onDelete, onAddChild }) {
         >
           <MenuItem onClick={handleEdit}>
             <EditIcon fontSize="small" sx={{ mr: 1 }} />
-            编辑标签
+            {t('textSplit.editTag')}
           </MenuItem>
           <MenuItem onClick={handleDelete}>
             <DeleteIcon fontSize="small" sx={{ mr: 1 }} />
-            删除标签
+            {t('textSplit.deleteTag')}
           </MenuItem>
           {level === 0 && (
             <MenuItem onClick={handleAddChild}>
               <AddIcon fontSize="small" sx={{ mr: 1 }} />
-              添加子标签
+              {t('textSplit.addTag')}
             </MenuItem>
           )}
         </Menu>
@@ -354,7 +355,6 @@ export default function DomainAnalysis({ projectId, toc = '', tags = [], loading
     handleCloseDialog();
   };
 
-  // 确认删除
   const handleConfirmDelete = async () => {
     if (!currentNode) return;
 

@@ -75,7 +75,7 @@ export default function QuestionsPage({ params }) {
       // 获取标签树
       const tagsResponse = await fetch(`/api/projects/${projectId}/tags`);
       if (!tagsResponse.ok) {
-        throw new Error(t('tags.fetchFailed'));
+        throw new Error(t('common.fetchError'));
       }
       const tagsData = await tagsResponse.json();
       setTags(tagsData.tags || []);
@@ -83,7 +83,7 @@ export default function QuestionsPage({ params }) {
       // 获取问题列表
       const questionsResponse = await fetch(`/api/projects/${projectId}/questions`);
       if (!questionsResponse.ok) {
-        throw new Error(t('questions.fetchFailed'));
+        throw new Error(t('common.fetchError'));
       }
       const questionsData = await questionsResponse.json();
       setQuestions(questionsData || []);
@@ -93,7 +93,7 @@ export default function QuestionsPage({ params }) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || t('chunks.fetchFailed'));
+        throw new Error(errorData.error || t('common.fetchError'));
       }
       const data = await response.json();
       setChunks(data.chunks || []);
@@ -182,7 +182,7 @@ export default function QuestionsPage({ params }) {
 
       return model;
     } catch (error) {
-      console.error(t('models.configError'), error);
+      console.error(t('models.configNotFound'), error);
       return null;
     }
   };
@@ -270,7 +270,6 @@ export default function QuestionsPage({ params }) {
     return Promise.all(results);
   };
 
-  // 批量生成数据集
   const handleBatchGenerateAnswers = async () => {
     if (selectedQuestions.length === 0) {
       setSnackbar({
@@ -471,8 +470,8 @@ export default function QuestionsPage({ params }) {
     // 显示确认对话框
     setConfirmDialog({
       open: true,
-      title: '确认删除问题',
-      content: `您确定要删除问题“${questionText.substring(0, 50)}${questionText.length > 50 ? '...' : ''}”吗？此操作不可恢复。`,
+      title: t('common.confirmDelete'),
+      content: t('common.confirmDeleteQuestion'),
       confirmAction: () => executeDeleteQuestion(questionId, chunkId)
     });
   };
@@ -483,7 +482,7 @@ export default function QuestionsPage({ params }) {
       // 显示删除中的提示
       setSnackbar({
         open: true,
-        message: '正在删除问题...',
+        message: t('common.deleting'),
         severity: 'info'
       });
 
@@ -511,7 +510,7 @@ export default function QuestionsPage({ params }) {
       // 显示成功提示
       setSnackbar({
         open: true,
-        message: '问题删除成功',
+        message: t('common.deleteSuccess'),
         severity: 'success'
       });
     } catch (error) {
@@ -740,7 +739,7 @@ export default function QuestionsPage({ params }) {
             onClick={handleBatchDeleteQuestions}
             disabled={selectedQuestions.length === 0}
           >
-            删除所选
+            {t('questions.deleteSelected')}
           </Button>
           <Button
             variant="contained"
@@ -748,7 +747,7 @@ export default function QuestionsPage({ params }) {
             onClick={handleBatchGenerateAnswers}
             disabled={selectedQuestions.length === 0}
           >
-            批量构造数据集
+            {t('questions.batchGenerate')}
           </Button>
         </Box>
       </Box>
@@ -764,8 +763,8 @@ export default function QuestionsPage({ params }) {
             borderColor: 'divider'
           }}
         >
-          <Tab label="列表视图" />
-          <Tab label="领域树视图" />
+          <Tab label={t('questions.listView')} />
+          <Tab label={t('questions.treeView')} />
         </Tabs>
 
         <Box sx={{ p: 2 }}>
@@ -782,17 +781,19 @@ export default function QuestionsPage({ params }) {
                 onChange={handleSelectAll}
               />
               <Typography variant="body2" sx={{ ml: 1 }}>
-                {selectedQuestions.length > 0 ? `已选择 ${selectedQuestions.length} 个问题` : '全选'}
-                （共 {questions.filter(question =>
-                  question.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                  (question.label && question.label.toLowerCase().includes(searchTerm.toLowerCase()))
-                ).length} 个问题）
+                {selectedQuestions.length > 0 ? t('questions.selectedCount', { count: selectedQuestions.length }) : t('questions.selectAll')}
+                ({t('questions.totalCount', {
+                  count: questions.filter(question =>
+                    question.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    (question.label && question.label.toLowerCase().includes(searchTerm.toLowerCase()))
+                  ).length
+                })})
               </Typography>
             </Box>
 
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <TextField
-                placeholder="搜索问题或标签..."
+                placeholder={t('questions.searchPlaceholder')}
                 variant="outlined"
                 size="small"
                 fullWidth
@@ -874,7 +875,7 @@ export default function QuestionsPage({ params }) {
             onClick={() => setConfirmDialog({ ...confirmDialog, open: false })}
             color="primary"
           >
-            取消
+            {t('common.cancel')}
           </Button>
           <Button
             onClick={() => {
@@ -887,7 +888,7 @@ export default function QuestionsPage({ params }) {
             variant="contained"
             autoFocus
           >
-            确认删除
+            {t('common.confirmDelete')}
           </Button>
         </DialogActions>
       </Dialog>

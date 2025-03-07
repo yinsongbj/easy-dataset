@@ -19,7 +19,7 @@ export async function GET(request) {
 
         return NextResponse.json(models);
     } catch (error) {
-        console.error('获取 Ollama 模型列表出错:', error);
-        return NextResponse.json({ error: '获取模型列表失败' }, { status: 500 });
+        console.error('fetch Ollama models error:', error);
+        return NextResponse.json({ error: 'fetch Models failed' }, { status: 500 });
     }
 }

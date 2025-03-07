@@ -62,6 +62,7 @@
         "pleaseWait": "Please wait, processing..."
     },
     "common": {
+        "unknownError": "Unknown Error",
         "visitGitHub": "Visit GitHub Repository",
         "create": "Create",
         "edit": "Edit",
@@ -82,7 +83,11 @@
         "failed": "Failed",
         "success": "Success",
         "backToList": "Back to List",
-        "label": "Label"
+        "label": "Label",
+        "confirmDeleteDescription": "Are you sure you want to delete this File? This action cannot be undone.",
+        "fetchError": "Fetching data failed",
+        "confirmDeleteQuestion": "Are you sure you want to delete this question? This action cannot be undone.",
+        "deleteSuccess": "Delete successful"
     },
     "home": {
         "title": "Easy Dataset",
@@ -99,9 +104,19 @@
         "createError": "Error creating project",
         "createNew": "Create New Project",
         "name": "Project Name",
-        "description": "Project Description"
+        "description": "Project Description",
+        "lastUpdated": "Last Updated",
+        "viewDetails": "View Details",
+        "questions": "Questions",
+        "datasets": "Datasets"
     },
     "textSplit": {
+        "editTag": "Edit Tag",
+        "deleteTag": "Delete Tag",
+        "addTag": "Add Tag",
+        "selectedCount": "Selected {{count}} text chunks",
+        "batchGenerateQuestions": "Batch Generate Questions",
+        "uploadedDocuments": "Uploaded Documents",
         "title": "Texts",
         "uploadNewDocument": "Upload New Document",
         "selectFile": "Select File",
@@ -144,7 +159,11 @@
         "uploadSuccess": "Successfully uploaded {{count}} files",
         "deleteFailed": "Failed to delete file",
         "deleteSuccess": "File {{fileName}} has been successfully deleted",
-        "chunkDetails": "Chunk Details: {{chunkId}}"
+        "chunkDetails": "Chunk Details: {{chunkId}}",
+        "characters": "Characters",
+        "generatedQuestions": "{{count}} Questions",
+        "viewDetails": "View Details",
+        "generateQuestions": "Generate Questions"
     },
     "domain": {
         "title": "Domain Knowledge Tree",
@@ -192,12 +211,17 @@
         "confirmExport": "Confirm Export"
     },
     "datasets": {
+        "aiOptimizeAdvicePlaceholder": "Please enter your suggestions for improving the answer, and AI will optimize the answer and reasoning chain based on your suggestions",
+        "aiOptimizeAdvice": "Please enter your suggestions for improving the answer, and AI will optimize the answer and reasoning chain based on your suggestions",
+        "aiOptimize": "AI Optimize",
+        "generating": "Generating Dataset",
+        "generateError": "Failed to generate dataset",
         "management": "Datasets",
         "question": "Question",
         "createdAt": "Created At",
         "model": "Model",
         "domainTag": "Domain Tag",
-        "cot": "Chain of Thought",
+        "cot": "COT",
         "answer": "Answer",
         "confirmed": "Confirmed",
         "noTag": "No Tag",
@@ -263,5 +287,9 @@
     },
     "chunks": {
         "title": "Text Chunk"
+    },
+    "models": {
+        "configNotFound": "Model config not found",
+        "parseError": "Failed to parse model config"
     }
 }
