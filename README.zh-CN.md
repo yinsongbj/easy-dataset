@@ -86,37 +86,51 @@ Easy Dataset 是一个专为创建大型语言模型（LLM）微调数据集而�
     </tr>
 </table>
 
-1. 在首页点击"创建项目"按钮
-2. 输入项目名称和描述
-3. 配置您首选的 LLM API 设置
+1. 在首页点击"创建项目"按钮；2. 输入项目名称和描述；3. 配置您首选的 LLM API 设置
 
 ### 处理文档
 
-1. 在"文本分割"部分上传您的 Markdown 文件
-2. 查看自动分割的文本片段
-3. 根据需要调整分段
+<table>
+    <tr>
+        <td><img src="./public/imgs/3.png"></td>
+        <td><img src="./public/imgs/4.png"></td>
+    </tr>
+</table>
+
+1. 在"文本分割"部分上传您的 Markdown 文件；2. 查看自动分割的文本片段；3. 根据需要调整分段
 
 ### 生成问题
 
-1. 导航到"问题"部分
-2. 选择要从中生成问题的文本片段
-3. 查看并编辑生成的问题
-4. 使用标签树组织问题
+<table>
+    <tr>
+        <td><img src="./public/imgs/5.png"></td>
+        <td><img src="./public/imgs/6.png"></td>
+    </tr>
+</table>
+
+1. 导航到"问题"部分；2. 选择要从中生成问题的文本片段；3. 查看并编辑生成的问题；4. 使用标签树组织问题
 
 ### 创建数据集
 
-1. 转到"数据集"部分
-2. 选择要包含在数据集中的问题
-3. 使用配置的 LLM 生成答案
-4. 查看并编辑生成的答案
+<table>
+    <tr>
+        <td><img src="./public/imgs/7.png"></td>
+        <td><img src="./public/imgs/8.png"></td>
+    </tr>
+</table>
+
+1. 转到"数据集"部分；2. 选择要包含在数据集中的问题；3. 使用配置的 LLM 生成答案；4. 查看并编辑生成的答案
 
 ### 导出数据集
 
-1. 在数据集部分点击"导出"按钮
-2. 选择您喜欢的格式（Alpaca 或 ShareGPT）
-3. 选择文件格式（JSON 或 JSONL）
-4. 根据需要添加自定义系统提示
-5. 导出您的数据集
+<table>
+    <tr>
+        <td><img src="./public/imgs/9.png"></td>
+        <td><img src="./public/imgs/10.png"></td>
+    </tr>
+</table>
+
+1. 在数据集部分点击"导出"按钮；2. 选择您喜欢的格式（Alpaca 或 ShareGPT）；3. 选择文件格式（JSON 或 JSONL）；4. 根据需要添加自定义系统提示；5. 导出您的数据集
 
 ## 项目结构
 

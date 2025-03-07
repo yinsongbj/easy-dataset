@@ -82,6 +82,13 @@ With Easy Dataset, you can transform your domain knowledge into structured datas
 
 ### Creating a Project
 
+<table>
+    <tr>
+        <td><img src="./public/imgs/1.png"></td>
+        <td><img src="./public/imgs/2.png"></td>
+    </tr>
+</table>
+
 
 1. Click the "Create Project" button on the home page
 2. Enter a project name and description
@@ -89,11 +96,25 @@ With Easy Dataset, you can transform your domain knowledge into structured datas
 
 ### Processing Documents
 
+<table>
+    <tr>
+        <td><img src="./public/imgs/3.png"></td>
+        <td><img src="./public/imgs/4.png"></td>
+    </tr>
+</table>
+
 1. Upload your Markdown files in the "Text Split" section
 2. Review the automatically split text segments
 3. Adjust the segmentation if needed
 
 ### Generating Questions
+
+<table>
+    <tr>
+        <td><img src="./public/imgs/5.png"></td>
+        <td><img src="./public/imgs/6.png"></td>
+    </tr>
+</table>
 
 1. Navigate to the "Questions" section
 2. Select text segments to generate questions from
@@ -102,12 +123,26 @@ With Easy Dataset, you can transform your domain knowledge into structured datas
 
 ### Creating Datasets
 
+<table>
+    <tr>
+        <td><img src="./public/imgs/7.png"></td>
+        <td><img src="./public/imgs/8.png"></td>
+    </tr>
+</table>
+
 1. Go to the "Datasets" section
 2. Select questions to include in your dataset
 3. Generate answers using your configured LLM
 4. Review and edit the generated answers
 
 ### Exporting Datasets
+
+<table>
+    <tr>
+        <td><img src="./public/imgs/9.png"></td>
+        <td><img src="./public/imgs/10.png"></td>
+    </tr>
+</table>
 
 1. Click the "Export" button in the Datasets section
 2. Select your preferred format (Alpaca or ShareGPT)
