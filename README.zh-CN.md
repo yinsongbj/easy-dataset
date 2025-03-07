@@ -22,6 +22,9 @@ Easy Dataset 是一个专为创建大型语言模型（LLM）微调数据集而�
 
 通过 Easy Dataset，您可以将领域知识转化为结构化数据集，兼容所有遵循 OpenAI 格式的 LLM API，使微调过程变得简单高效。
 
+
+![](./public/imgs/cn-arc.png)
+
 ## 功能特点
 
 - **智能文档处理**：上传 Markdown 文件并自动将其分割为有意义的片段

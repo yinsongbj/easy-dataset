@@ -1,6 +1,6 @@
 <div align="center">
 
-![](./public//imgs/bg2.png)
+![](./public/imgs/bg2.png)
 
 <img src="https://img.shields.io/badge/version-0.1.0-blue.svg" alt="version 0.1.0"/>
 <img src="https://img.shields.io/badge/license-Apache--2.0-green.svg" alt="Apache 2.0 License"/>
@@ -21,6 +21,8 @@
 Easy Dataset is a specialized application designed to streamline the creation of fine-tuning datasets for Large Language Models (LLMs). It offers an intuitive interface for uploading domain-specific files, intelligently splitting content, generating questions, and producing high-quality training data for model fine-tuning.
 
 With Easy Dataset, you can transform your domain knowledge into structured datasets compatible with all OpenAI-format compatible LLM APIs, making the fine-tuning process accessible and efficient.
+
+![](./public/imgs/en-arc.png)
 
 ## Features
 
