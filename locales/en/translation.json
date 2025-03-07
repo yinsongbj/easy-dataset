@@ -108,7 +108,13 @@
         "lastUpdated": "Last Updated",
         "viewDetails": "View Details",
         "questions": "Questions",
-        "datasets": "Datasets"
+        "datasets": "Datasets",
+        "createFirst": "Please create a project first",
+        "deleteSuccess": "Project deleted successfully",
+        "deleteFailed": "Failed to delete project",
+        "deleteConfirm": "Are you sure you want to delete this project? This action cannot be undone.",
+        "deleteConfirmTitle": "Confirm Delete",
+        "noProjects": "No projects found"
     },
     "textSplit": {
         "editTag": "Edit Tag",
