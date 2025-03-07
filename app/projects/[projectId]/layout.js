@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import { useState, useEffect } from 'react';
 import { Box, CircularProgress, Typography, Button } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 export default function ProjectLayout({ children, params }) {
   const router = useRouter();
@@ -13,6 +14,7 @@ export default function ProjectLayout({ children, params }) {
   const [models, setModels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [t] = useTranslation();
 
   // 定义获取数据的函数
   const fetchData = async () => {
@@ -20,9 +22,20 @@ export default function ProjectLayout({ children, params }) {
       setLoading(true);
 
       // 获取所有项目
-      const projectsResponse = await fetch('/api/projects');
+      // 从 localStorage 获取项目 ID 数组
+      const userProjectIds = JSON.parse(localStorage.getItem('userProjects') || '[]');
+
+      if (userProjectIds.length === 0) {
+        // 如果没有保存的项目，直接设置为空数组
+        setProjects([]);
+        setLoading(false);
+        return;
+      }
+
+      // 获取用户创建的项目详情
+      const projectsResponse = await fetch(`/api/projects?projectIds=${userProjectIds.join(',')}`);
       if (!projectsResponse.ok) {
-        throw new Error('获取项目列表失败');
+        throw new Error(t('projects.fetchFailed'));
       }
       const projectsData = await projectsResponse.json();
       setProjects(projectsData);
@@ -58,12 +71,12 @@ export default function ProjectLayout({ children, params }) {
           if (formattedModels.length > 0) {
             const selectedModelId = localStorage.getItem('selectedModelId');
             // 通知用户：如果之前选择的模型不在当前模型列表中，则使用第一个模型
-            const modelExists = selectedModelId && formattedModels.some(m => m.id === selectedModelId);
-            if (!modelExists) {
-              const defaultModel = formattedModels[0];
-              localStorage.setItem('selectedModelId', defaultModel.id);
-              localStorage.setItem('selectedModelInfo', JSON.stringify(defaultModel));
-            }
+            // const modelExists = selectedModelId && formattedModels.some(m => m.id === selectedModelId);
+            // if (!modelExists) {
+            //   const defaultModel = formattedModels[0];
+            //   localStorage.setItem('selectedModelId', defaultModel.id);
+            //   localStorage.setItem('selectedModelInfo', JSON.stringify(defaultModel));
+            // }
           }
         }
       } else {
@@ -144,13 +157,13 @@ export default function ProjectLayout({ children, params }) {
           const selectedModelId = localStorage.getItem('selectedModelId');
           const modelExists = selectedModelId && formattedModels.some(m => m.id === selectedModelId);
 
-          if (!modelExists) {
-            const defaultModel = formattedModels[0];
-            localStorage.setItem('selectedModelId', defaultModel.id);
-            localStorage.setItem('selectedModelInfo', JSON.stringify(defaultModel));
-            // 不设置 error 状态，避免触发重新渲染
-            console.log('之前选择的模型不存在，使用第一个模型');
-          }
+          // if (!modelExists) {
+          //   const defaultModel = formattedModels[0];
+          //   localStorage.setItem('selectedModelId', defaultModel.id);
+          //   localStorage.setItem('selectedModelInfo', JSON.stringify(defaultModel));
+          //   // 不设置 error 状态，避免触发重新渲染
+          //   console.log('之前选择的模型不存在，使用第一个模型');
+          // }
         }
       }
     } catch (error) {
@@ -171,9 +184,9 @@ export default function ProjectLayout({ children, params }) {
   if (error) {
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-        <Typography color="error">出错了: {error}</Typography>
+        <Typography color="error">{t('projects.fetchFailed')}: {error}</Typography>
         <Button variant="contained" onClick={() => router.push('/')} sx={{ mt: 2 }}>
-          返回首页
+          {t('projects.backToHome')}
         </Button>
       </Box>
     );

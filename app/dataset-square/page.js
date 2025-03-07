@@ -18,8 +18,18 @@ export default function DatasetSquarePage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        // 获取项目列表
-        const projectsResponse = await fetch('/api/projects');
+        // 从 localStorage 获取项目 ID 数组
+        const userProjectIds = JSON.parse(localStorage.getItem('userProjects') || '[]');
+
+        if (userProjectIds.length === 0) {
+          // 如果没有保存的项目，直接设置为空数组
+          setProjects([]);
+          setLoading(false);
+          return;
+        }
+
+        // 获取用户创建的项目详情
+        const response = await fetch(`/api/projects?projectIds=${userProjectIds.join(',')}`);
         if (projectsResponse.ok) {
           const projectsData = await projectsResponse.json();
           setProjects(projectsData);

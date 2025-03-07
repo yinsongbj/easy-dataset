@@ -117,9 +117,12 @@
         "createProject": "创建项目",
         "deleteConfirm": "确认删除项目吗？此操作不可恢复。",
         "deleteSuccess": "项目删除成功",
-        "deleteFailed": "删除项目失败"
+        "deleteFailed": "删除项目失败",
+        "backToHome": "返回首页"
     },
     "textSplit": {
+        "noChunks": "暂无文本块",
+        "noFilesUploaded": "暂未上传文件",
         "editTag": "编辑标签",
         "deleteTag": "删除标签",
         "addTag": "添加标签",
@@ -299,6 +302,17 @@
     },
     "models": {
         "configNotFound": "模型配置未找到，请检查！",
-        "parseError": "解析模型配置出错，请检查！"
+        "parseError": "解析模型配置出错，请检查！",
+        "title": "模型管理",
+        "add": "添加模型",
+        "unselectedModel": "未选择模型",
+        "unconfiguredAPIKey": "未配置 API Key",
+        "saveAllModels": "保存所有模型配置",
+        "edit": "编辑",
+        "delete": "删除",
+        "modelName": "模型名称",
+        "endpoint": "接口地址",
+        "apiKey": "API密钥",
+        "provider": "提供商"
     }
 }
