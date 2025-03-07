@@ -64,6 +64,20 @@ With Easy Dataset, you can transform your domain knowledge into structured datas
 
 4. Open your browser and navigate to `http://localhost:3000`
 
+### Using Docker
+
+1. Pull the image:
+   ```bash
+   docker pull conardli17/easy-dataset:latest
+   ```
+
+2. Run the container:
+   ```bash
+   docker run -d -p 3000:3000 -v /path/to/local-db:/app/local-db --name easy-dataset conardli17/easy-dataset:latest
+   ```
+
+3. Open your browser and navigate to `http://localhost:3000`
+
 ## Usage
 
 ### Creating a Project
