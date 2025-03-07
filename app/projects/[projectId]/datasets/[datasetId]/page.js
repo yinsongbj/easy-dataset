@@ -15,12 +15,17 @@ import {
   Chip,
   Divider,
   alpha,
-  useTheme
+  useTheme,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -33,7 +38,8 @@ const EditableField = ({
   onEdit,
   onChange,
   onSave,
-  onCancel
+  onCancel,
+  onOptimize
 }) => {
   const { t } = useTranslation();
 
@@ -44,9 +50,16 @@ const EditableField = ({
           {label}
         </Typography>
         {!editing && (
-          <IconButton size="small" onClick={onEdit}>
-            <EditIcon fontSize="small" />
-          </IconButton>
+          <>
+            <IconButton size="small" onClick={onEdit}>
+              <EditIcon fontSize="small" />
+            </IconButton>
+            {onOptimize && (
+              <IconButton size="small" onClick={onOptimize} color="primary">
+                <AutoFixHighIcon fontSize="small" />
+              </IconButton>
+            )}
+          </>
         )}
       </Box>
       {editing ? (
@@ -81,6 +94,47 @@ const EditableField = ({
   );
 };
 
+// AI优化对话框组件
+const OptimizeDialog = ({ open, onClose, onConfirm, loading }) => {
+  const [advice, setAdvice] = useState('');
+  const { t } = useTranslation();
+
+  const handleConfirm = () => {
+    onConfirm(advice);
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+      <DialogTitle>AI智能优化</DialogTitle>
+      <DialogContent>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          请输入您对答案的改进建议，AI将根据您的建议优化答案和思维链
+        </Typography>
+        <TextField
+          fullWidth
+          multiline
+          rows={4}
+          value={advice}
+          onChange={(e) => setAdvice(e.target.value)}
+          placeholder="例如：答案需要更加详细，增加更多专业术语解释，使用更专业的语言等"
+          disabled={loading}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} disabled={loading}>取消</Button>
+        <Button
+          onClick={handleConfirm}
+          variant="contained"
+          disabled={!advice.trim() || loading}
+          startIcon={loading ? <CircularProgress size={20} /> : null}
+        >
+          {loading ? '优化中...' : '确认优化'}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
 export default function DatasetDetailsPage({ params }) {
   const { projectId, datasetId } = params;
   const router = useRouter();
@@ -96,10 +150,47 @@ export default function DatasetDetailsPage({ params }) {
     severity: 'success'
   });
   const [confirming, setConfirming] = useState(false);
+  const [optimizeDialog, setOptimizeDialog] = useState({
+    open: false,
+    loading: false
+  });
   const theme = useTheme();
   // 获取数据集列表（用于导航）
   const [datasets, setDatasets] = useState([]);
   const { t } = useTranslation();
+
+  // 从本地存储获取模型参数
+  const getModelFromLocalStorage = () => {
+    if (typeof window === 'undefined') return null;
+
+    try {
+      // 从 localStorage 获取当前选择的模型信息
+      const selectedModelId = localStorage.getItem('selectedModelId');
+      let model = null;
+
+      // 尝试从 localStorage 获取完整的模型信息
+      const modelInfoStr = localStorage.getItem('selectedModelInfo');
+
+      if (modelInfoStr) {
+        try {
+          model = JSON.parse(modelInfoStr);
+        } catch (e) {
+          console.error('解析模型信息失败', e);
+          return null;
+        }
+      }
+
+      // 如果没有模型 ID 或模型信息，返回 null
+      if (!selectedModelId || !model) {
+        return null;
+      }
+
+      return model;
+    } catch (error) {
+      console.error('获取模型配置失败', error);
+      return null;
+    }
+  };
 
   // 获取所有数据集
   const fetchDatasets = async () => {
@@ -261,6 +352,82 @@ export default function DatasetDetailsPage({ params }) {
     }
   };
 
+  // 打开优化对话框
+  const handleOpenOptimizeDialog = () => {
+    setOptimizeDialog({
+      open: true,
+      loading: false
+    });
+  };
+
+  // 关闭优化对话框
+  const handleCloseOptimizeDialog = () => {
+    if (optimizeDialog.loading) return;
+    setOptimizeDialog({
+      open: false,
+      loading: false
+    });
+  };
+
+  // 提交优化请求
+  const handleOptimize = async (advice) => {
+    const model = getModelFromLocalStorage();
+    if (!model) {
+      setSnackbar({
+        open: true,
+        message: '请先选择模型，可以在顶部导航栏选择',
+        severity: 'error'
+      });
+      setOptimizeDialog(prev => ({ ...prev, open: false }));
+      return;
+    }
+
+    try {
+      setOptimizeDialog(prev => ({ ...prev, loading: true }));
+
+      const response = await fetch(`/api/projects/${projectId}/datasets/optimize`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          datasetId,
+          model,
+          advice
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || '优化失败');
+      }
+
+      const data = await response.json();
+
+      // 更新数据集
+      setDataset(data.dataset);
+      setAnswerValue(data.dataset.answer);
+      setCotValue(data.dataset.cot || '');
+
+      setSnackbar({
+        open: true,
+        message: 'AI智能优化成功',
+        severity: 'success'
+      });
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: error.message || '优化失败',
+        severity: 'error'
+      });
+    } finally {
+      setOptimizeDialog({
+        open: false,
+        loading: false
+      });
+    }
+  };
+
   if (loading) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4 }}>
@@ -348,6 +515,7 @@ export default function DatasetDetailsPage({ params }) {
             setEditingAnswer(false);
             setAnswerValue(dataset.answer);
           }}
+          onOptimize={handleOpenOptimizeDialog}
         />
 
         <EditableField
@@ -403,10 +571,22 @@ export default function DatasetDetailsPage({ params }) {
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert severity={snackbar.severity} onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}>
+        <Alert
+          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
           {snackbar.message}
         </Alert>
       </Snackbar>
+
+      {/* AI优化对话框 */}
+      <OptimizeDialog
+        open={optimizeDialog.open}
+        onClose={handleCloseOptimizeDialog}
+        onConfirm={handleOptimize}
+        loading={optimizeDialog.loading}
+      />
     </Container>
   );
 }
