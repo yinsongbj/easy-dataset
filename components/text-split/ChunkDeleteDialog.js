@@ -28,13 +28,13 @@ export default function ChunkDeleteDialog({
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="delete-dialog-description">
-          您确定要删除这个文本块吗？此操作无法撤销。
+          {t('common.confirmDelete')}?
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>取消</Button>
+        <Button onClick={onClose}>{t('common.cancel')}</Button>
         <Button onClick={onConfirm} color="error" variant="contained">
-          删除
+          {t('common.confirm')}
         </Button>
       </DialogActions>
     </Dialog>

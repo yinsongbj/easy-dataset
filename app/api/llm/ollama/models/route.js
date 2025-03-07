@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import OllamaAPI from '@/lib/llm/core/ollama';
 
+// 设置为强制动态路由，防止静态生成
+export const dynamic = 'force-dynamic';
+
 export async function GET(request) {
     try {
         // 从查询参数中获取 host 和 port

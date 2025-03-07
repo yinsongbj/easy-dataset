@@ -94,7 +94,6 @@ export default function CreateProjectDialog({ open, onClose }) {
         <DialogContent>
           <Box sx={{ mb: 3 }}>
             <TextField
-              autoFocus
               name="name"
               label={t('projects.name')}
               fullWidth
