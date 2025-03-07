@@ -16,7 +16,13 @@
         "confirmDeleteProject": "确认删除项目吗？",
         "saving": "保存中...",
         "deleting": "删除中...",
-        "actions": "操作"
+        "actions": "操作",
+        "confirmDeleteDataSet": "确认删除数据集吗？操作不可撤销！",
+        "noData": "无",
+        "failed": "失败",
+        "success": "成功",
+        "backToList": "返回列表",
+        "label": "标签"
     },
     "home": {
         "title": "Easy Dataset",
@@ -147,7 +153,10 @@
         "loading": "加载数据集...",
         "stats": "共 {{total}} 个数据集，已确认 {{confirmed}} 个（{{percentage}}%）",
         "searchPlaceholder": "搜索数据集...",
-        "viewDetails": "查看详情"
+        "viewDetails": "查看详情",
+        "datasetDetail": "数据集详情",
+        "metadata": "元数据",
+        "confirmSave": "确认保留"
     },
     "datasetSquare": {
         "title": "数据集广场",

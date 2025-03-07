@@ -327,11 +327,11 @@ const DeleteConfirmDialog = ({ open, dataset, onClose, onConfirm }) => {
       }}
     >
       <DialogTitle sx={{ pb: 1 }}>
-        <Typography variant="h6" fontWeight="bold">确认删除</Typography>
+        <Typography variant="h6" fontWeight="bold">{t('common.confirmDelete')}</Typography>
       </DialogTitle>
       <DialogContent sx={{ pb: 2, pt: 1 }}>
         <Typography variant="body1" sx={{ mb: 2 }}>
-          确定要删除这个数据集吗？这个操作不可撤销。
+          {t('common.confirmDeleteDataSet')}
         </Typography>
         <Paper
           variant="outlined"
@@ -342,7 +342,7 @@ const DeleteConfirmDialog = ({ open, dataset, onClose, onConfirm }) => {
           }}
         >
           <Typography variant="subtitle2" color="text.secondary" fontWeight="bold">
-            问题：
+            {t('datasets.question')}：
           </Typography>
           <Typography variant="body2">
             {dataset?.question}

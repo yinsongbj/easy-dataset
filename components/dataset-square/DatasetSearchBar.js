@@ -13,7 +13,6 @@ import {
   Typography,
   ClickAwayListener,
   Fade,
-  Chip,
   Avatar,
   useTheme,
   alpha
@@ -114,12 +113,6 @@ export function DatasetSearchBar() {
       window.open(searchUrl, '_blank');
     }
     setShowSuggestions(false);
-  };
-
-  // 处理点击最近搜索
-  const handleRecentSearchClick = (query) => {
-    setSearchQuery(query);
-    setShowSuggestions(true);
   };
 
   // 处理点击外部关闭建议

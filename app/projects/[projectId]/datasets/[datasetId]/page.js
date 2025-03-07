@@ -22,6 +22,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 // 编辑区域组件
 const EditableField = ({
@@ -34,6 +35,7 @@ const EditableField = ({
   onSave,
   onCancel
 }) => {
+  const { t } = useTranslation();
 
   return (
     <Box sx={{ mb: 3 }}>
@@ -58,8 +60,8 @@ const EditableField = ({
             sx={{ mb: 1 }}
           />
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-            <Button size="small" onClick={onCancel}>取消</Button>
-            <Button size="small" variant="contained" onClick={onSave}>保存</Button>
+            <Button size="small" onClick={onCancel}>{t('common.cancel')}</Button>
+            <Button size="small" variant="contained" onClick={onSave}>{t('common.save')}</Button>
           </Box>
         </Box>
       ) : (
@@ -72,7 +74,7 @@ const EditableField = ({
             borderRadius: 1
           }}
         >
-          {value || '无'}
+          {value || t('common.noData')}
         </Typography>
       )}
     </Box>
@@ -97,12 +99,13 @@ export default function DatasetDetailsPage({ params }) {
   const theme = useTheme();
   // 获取数据集列表（用于导航）
   const [datasets, setDatasets] = useState([]);
+  const { t } = useTranslation();
 
   // 获取所有数据集
   const fetchDatasets = async () => {
     try {
       const response = await fetch(`/api/projects/${projectId}/datasets`);
-      if (!response.ok) throw new Error('获取数据集列表失败');
+      if (!response.ok) throw new Error(t('datasets.fetchFailed'));
       const data = await response.json();
       setDatasets(data);
 
@@ -138,14 +141,14 @@ export default function DatasetDetailsPage({ params }) {
       });
 
       if (!response.ok) {
-        throw new Error('确认保留失败');
+        throw new Error(t('common.failed'));
       }
 
       setDataset(prev => ({ ...prev, confirmed: true }));
 
       setSnackbar({
         open: true,
-        message: '已确认保留',
+        message: t('common.success'),
         severity: 'success'
       });
 
@@ -154,7 +157,7 @@ export default function DatasetDetailsPage({ params }) {
     } catch (error) {
       setSnackbar({
         open: true,
-        message: error.message || '确认保留失败',
+        message: error.message || t('common.failed'),
         severity: 'error'
       });
     } finally {
@@ -193,7 +196,7 @@ export default function DatasetDetailsPage({ params }) {
       });
 
       if (!response.ok) {
-        throw new Error('保存失败');
+        throw new Error(t('common.failed'));
       }
 
       const data = await response.json();
@@ -201,7 +204,7 @@ export default function DatasetDetailsPage({ params }) {
 
       setSnackbar({
         open: true,
-        message: '保存成功',
+        message: t('common.success'),
         severity: 'success'
       });
 
@@ -211,7 +214,7 @@ export default function DatasetDetailsPage({ params }) {
     } catch (error) {
       setSnackbar({
         open: true,
-        message: error.message || '保存失败',
+        message: error.message || t('common.failed'),
         severity: 'error'
       });
     }
@@ -219,7 +222,7 @@ export default function DatasetDetailsPage({ params }) {
 
   // 删除数据集
   const handleDelete = async () => {
-    if (!confirm('确定要删除这个数据集吗？')) return;
+    if (!confirm(t('datasets.confirmDeleteMessage'))) return;
 
     try {
       const response = await fetch(`/api/projects/${projectId}/datasets?id=${datasetId}`, {
@@ -227,7 +230,7 @@ export default function DatasetDetailsPage({ params }) {
       });
 
       if (!response.ok) {
-        throw new Error('删除失败');
+        throw new Error(t('common.failed'));
       }
 
       // 找到当前数据集的索引
@@ -252,7 +255,7 @@ export default function DatasetDetailsPage({ params }) {
     } catch (error) {
       setSnackbar({
         open: true,
-        message: error.message || '删除失败',
+        message: error.message || t('common.failed'),
         severity: 'error'
       });
     }
@@ -271,7 +274,7 @@ export default function DatasetDetailsPage({ params }) {
   if (!dataset) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Alert severity="error">数据集不存在</Alert>
+        <Alert severity="error">{t('datasets.noData')}</Alert>
       </Container>
     );
   }
@@ -286,12 +289,12 @@ export default function DatasetDetailsPage({ params }) {
               startIcon={<NavigateBeforeIcon />}
               onClick={() => router.push(`/projects/${projectId}/datasets`)}
             >
-              返回列表
+              {t('common.backToList')}
             </Button>
             <Divider orientation="vertical" flexItem />
-            <Typography variant="h6">数据集详情</Typography>
+            <Typography variant="h6">{t('datasets.datasetDetail')}</Typography>
             <Typography variant="body2" color="text.secondary">
-              （共 {datasets.length} 个，当前第 {datasets.findIndex(d => d.id === datasetId) + 1} 个）
+              {t('datasets.stats', { total: datasets.length, confirmed: datasets.filter(d => d.confirmed).length, percentage: Math.round((datasets.filter(d => d.confirmed).length / datasets.length) * 100) })}
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 1 }}>
@@ -309,7 +312,7 @@ export default function DatasetDetailsPage({ params }) {
               onClick={handleConfirm}
               sx={{ mr: 1 }}
             >
-              {confirming ? <CircularProgress size={24} /> : dataset.confirmed ? '已确认' : '确认保留'}
+              {confirming ? <CircularProgress size={24} /> : dataset.confirmed ? t('datasets.confirmed') : t('datasets.confirmSave')}
             </Button>
             <Button
               variant="outlined"
@@ -317,7 +320,7 @@ export default function DatasetDetailsPage({ params }) {
               startIcon={<DeleteIcon />}
               onClick={handleDelete}
             >
-              删除
+              {t('common.delete')}
             </Button>
           </Box>
         </Box>
@@ -327,7 +330,7 @@ export default function DatasetDetailsPage({ params }) {
       <Paper sx={{ p: 3 }}>
         <Box sx={{ mb: 3 }}>
           <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 1 }}>
-            问题
+            {t('datasets.question')}
           </Typography>
           <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
             {dataset.question}
@@ -335,7 +338,7 @@ export default function DatasetDetailsPage({ params }) {
         </Box>
 
         <EditableField
-          label="回答"
+          label={t('datasets.answer')}
           value={answerValue}
           editing={editingAnswer}
           onEdit={() => setEditingAnswer(true)}
@@ -348,7 +351,7 @@ export default function DatasetDetailsPage({ params }) {
         />
 
         <EditableField
-          label="思维链"
+          label={t('datasets.cot')}
           value={cotValue}
           editing={editingCot}
           onEdit={() => setEditingCot(true)}
@@ -362,27 +365,27 @@ export default function DatasetDetailsPage({ params }) {
 
         <Box sx={{ mb: 3 }}>
           <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 1 }}>
-            元数据
+            {t('datasets.metadata')}
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
             <Chip
-              label={`使用模型: ${dataset.model}`}
+              label={`${t('datasets.model')}: ${dataset.model}`}
               variant="outlined"
             />
             {dataset.questionLabel && (
               <Chip
-                label={`标签: ${dataset.questionLabel}`}
+                label={`${t('common.label')}: ${dataset.questionLabel}`}
                 color="primary"
                 variant="outlined"
               />
             )}
             <Chip
-              label={`创建时间: ${new Date(dataset.createdAt).toLocaleString('zh-CN')}`}
+              label={`${t('datasets.createdAt')}: ${new Date(dataset.createdAt).toLocaleString('zh-CN')}`}
               variant="outlined"
             />
             {dataset.confirmed && (
               <Chip
-                label={'已确认'}
+                label={t('datasets.confirmed')}
                 sx={{
                   backgroundColor: alpha(theme.palette.success.main, 0.1),
                   color: theme.palette.success.dark,

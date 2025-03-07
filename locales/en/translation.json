@@ -13,7 +13,13 @@
         "deleting": "Deleting...",
         "actions": "Actions",
         "yes": "Yes",
-        "no": "No"
+        "no": "No",
+        "confirmDeleteDataSet": "Are you sure you want to delete this dataset? This action cannot be undone.",
+        "noData": "None",
+        "failed": "Failed",
+        "success": "Success",
+        "backToList": "Back to List",
+        "label": "Label"
     },
     "home": {
         "title": "Easy Dataset",
@@ -144,7 +150,10 @@
         "loading": "Loading datasets...",
         "stats": "Total {{total}} datasets, {{confirmed}} confirmed ({{percentage}}%)",
         "searchPlaceholder": "Search datasets...",
-        "viewDetails": "View Details"
+        "viewDetails": "View Details",
+        "datasetDetail": "Dataset Details",
+        "metadata": "Metadata",
+        "confirmSave": "Confirm Save"
     },
     "datasetSquare": {
         "title": "Dataset Square",
