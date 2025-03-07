@@ -37,7 +37,7 @@ export default function FileList({
       ) : files.length === 0 ? (
         <Box sx={{ p: 4, textAlign: 'center' }}>
           <Typography variant="body2" color="textSecondary">
-            暂无上传文件
+            {t('textSplit.noFilesUploaded')}
           </Typography>
         </Box>
       ) : (

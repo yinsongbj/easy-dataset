@@ -10,14 +10,10 @@ import {
   Card,
   CardContent,
   IconButton,
-  List,
-  ListItem,
-  ListItemText,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Divider,
   FormControl,
   Alert,
   Snackbar,
@@ -65,7 +61,7 @@ export default function ModelSettings({ projectId }) {
       const response = await fetch(`/api/llm/ollama/models?host=${host}&port=${port}`);
 
       if (!response.ok) {
-        throw new Error(t('models.fetchOllamaFailed'));
+        throw new Error(t('common.fetchError'));
       }
 
       const data = await response.json();
@@ -360,9 +356,9 @@ export default function ModelSettings({ projectId }) {
           const modelExists = models.some(m => m.id === selectedModelId);
           if (!modelExists && models.length > 0) {
             // 如果选中的模型不存在了，选择第一个模型
-            const defaultModel = models[0];
-            localStorage.setItem('selectedModelId', defaultModel.id);
-            localStorage.setItem('selectedModelInfo', JSON.stringify(defaultModel));
+            // const defaultModel = models[0];
+            // localStorage.setItem('selectedModelId', defaultModel.id);
+            // localStorage.setItem('selectedModelInfo', JSON.stringify(defaultModel));
           }
         }
       });
@@ -411,7 +407,7 @@ export default function ModelSettings({ projectId }) {
   };
 
   if (loading) {
-    return <Typography>加载中...</Typography>;
+    return <Typography>{t('textSplit.loading')}</Typography>;
   }
 
   return (
@@ -419,7 +415,7 @@ export default function ModelSettings({ projectId }) {
       <CardContent>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h6" fontWeight="bold">
-            模型配置
+            {t('models.title')}
           </Typography>
           <Button
             variant="contained"
@@ -428,7 +424,7 @@ export default function ModelSettings({ projectId }) {
             onClick={() => handleOpenModelDialog()}
             size="small"
           >
-            添加模型
+            {t('models.add')}
           </Button>
         </Box>
 
@@ -464,7 +460,7 @@ export default function ModelSettings({ projectId }) {
 
                   <Box>
                     <Typography variant="subtitle1" fontWeight="bold">
-                      {model.name ? model.name : "（未选择模型）"}
+                      {model.name ? model.name : t('models.unselectedModel')}
                     </Typography>
                     <Typography
                       variant="body2"
@@ -487,7 +483,7 @@ export default function ModelSettings({ projectId }) {
                   <Tooltip title={getModelStatusInfo(model).text}>
                     <Chip
                       icon={getModelStatusInfo(model).icon}
-                      label={model.endpoint.replace(/^https?:\/\//, '') + (model.provider !== 'Ollama' && !model.apiKey ? " (未配置API Key)" : "")}
+                      label={model.endpoint.replace(/^https?:\/\//, '') + (model.provider !== 'Ollama' && !model.apiKey ? " (" + t('models.unconfiguredAPIKey') + ")" : "")}
                       size="small"
                       color={getModelStatusInfo(model).color}
                       variant="outlined"
@@ -522,7 +518,7 @@ export default function ModelSettings({ projectId }) {
             onClick={saveAllModels}
             color="primary"
           >
-            保存所有模型配置
+            {t('models.saveAllModels')}
           </Button>
         </Box>
       </CardContent>
@@ -530,7 +526,7 @@ export default function ModelSettings({ projectId }) {
       {/* 模型表单对话框 */}
       <Dialog open={openModelDialog} onClose={handleCloseModelDialog} maxWidth="sm" fullWidth>
         <DialogTitle>
-          {editingModel ? '编辑模型' : '添加模型'}
+          {editingModel ? t('models.edit') : t('models.add')}
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 0.5 }}>
@@ -574,7 +570,7 @@ export default function ModelSettings({ projectId }) {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="模型提供商"
+                      label={t('models.provider')}
                       onChange={(e) => {
                         // 当用户手动输入时，更新 provider 字段
                         setModelForm(prev => ({
@@ -604,7 +600,7 @@ export default function ModelSettings({ projectId }) {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="模型名称"
+                      label={t('models.modelName')}
                       onChange={(e) => {
                         setModelForm(prev => ({
                           ...prev,
@@ -619,7 +615,7 @@ export default function ModelSettings({ projectId }) {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="API 端点"
+                label={t('models.endpoint')}
                 name="endpoint"
                 value={modelForm.endpoint}
                 onChange={handleModelFormChange}
@@ -629,7 +625,7 @@ export default function ModelSettings({ projectId }) {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="API 密钥"
+                label={t('models.apiKey')}
                 name="apiKey"
                 type="password"
                 value={modelForm.apiKey}
@@ -640,13 +636,13 @@ export default function ModelSettings({ projectId }) {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModelDialog}>取消</Button>
+          <Button onClick={handleCloseModelDialog}>{t('common.cancel')}</Button>
           <Button
             onClick={handleSaveModel}
             variant="contained"
             disabled={!modelForm.provider || !modelForm.name || !modelForm.endpoint}
           >
-            保存
+            {t('common.save')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -658,7 +654,7 @@ export default function ModelSettings({ projectId }) {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
         <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
-          模型配置已成功保存
+          {t('settings.saveSuccess')}
         </Alert>
       </Snackbar>
 

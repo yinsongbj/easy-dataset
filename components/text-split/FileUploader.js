@@ -68,9 +68,17 @@ export default function FileUploader({ projectId, onUploadSuccess, onProcessStar
     }
     const selectedFiles = Array.from(event.target.files);
 
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+    const oversizedFiles = selectedFiles.filter(file => file.size > MAX_FILE_SIZE);
+
+    if (oversizedFiles.length > 0) {
+      setError(`Max 10MB: ${oversizedFiles.map(f => f.name).join(', ')}`);
+      return;
+    }
+
     // 检查文件类型
-    const validFiles = selectedFiles.filter(file => file.name.endsWith('.md'));
-    const invalidFiles = selectedFiles.filter(file => !file.name.endsWith('.md'));
+    const validFiles = selectedFiles.filter(file => file.name.endsWith('.md') || file.name.endsWith('.txt'));
+    const invalidFiles = selectedFiles.filter(file => !file.name.endsWith('.md') && !file.name.endsWith('.txt'));
 
     if (invalidFiles.length > 0) {
       setError(t('textSplit.unsupportedFormat', { files: invalidFiles.map(f => f.name).join(', ') }));
