@@ -144,20 +144,9 @@ easy-dataset/
 │   ├── home/                           # Home page components
 │   ├── projects/                       # Project management components
 │   ├── questions/                      # Question management components
-│   │   ├── QuestionListView.js         # Question list view
-│   │   └── QuestionTreeView.js         # Question tree view
 │   └── text-split/                     # Text processing components
-│       ├── ChunkList.js                # Text chunk list
-│       ├── DomainAnalysis.js           # Domain analysis component
-│       └── FileUploader.js             # File upload component
 ├── lib/                                # Core libraries and utilities
 │   ├── db/                             # Database operations
-│   │   ├── base.js                     # Base file operations
-│   │   ├── datasets.js                 # Dataset CRUD operations
-│   │   ├── projects.js                 # Project management
-│   │   ├── questions.js                # Question management
-│   │   ├── tags.js                     # Tag management
-│   │   └── texts.js                    # Text processing
 │   ├── i18n/                           # Internationalization
 │   ├── llm/                            # LLM integration
 │   │   ├── common/                     # Common LLM utilities

@@ -124,7 +124,6 @@ easy-dataset/
 │   │   │   ├── [projectId]/            # 项目特定操作
 │   │   │   │   ├── chunks/             # 文本块操作
 │   │   │   │   ├── datasets/           # 数据集生成和管理
-│   │   │   │   │   └── optimize/       # 数据集优化 API
 │   │   │   │   ├── generate-questions/ # 批量问题生成
 │   │   │   │   ├── questions/          # 问题管理
 │   │   │   │   └── split/              # 文本分割操作
@@ -141,20 +140,9 @@ easy-dataset/
 │   ├── home/                           # 主页组件
 │   ├── projects/                       # 项目管理组件
 │   ├── questions/                      # 问题管理组件
-│   │   ├── QuestionListView.js         # 问题列表视图
-│   │   └── QuestionTreeView.js         # 问题树视图
 │   └── text-split/                     # 文本处理组件
-│       ├── ChunkList.js                # 文本块列表
-│       ├── DomainAnalysis.js           # 领域分析组件
-│       └── FileUploader.js             # 文件上传组件
 ├── lib/                                # 核心库和工具
 │   ├── db/                             # 数据库操作
-│   │   ├── base.js                     # 基础文件操作
-│   │   ├── datasets.js                 # 数据集 CRUD 操作
-│   │   ├── projects.js                 # 项目管理
-│   │   ├── questions.js                # 问题管理
-│   │   ├── tags.js                     # 标签管理
-│   │   └── texts.js                    # 文本处理
 │   ├── i18n/                           # 国际化
 │   ├── llm/                            # LLM 集成
 │   │   ├── common/                     # 通用 LLM 工具
