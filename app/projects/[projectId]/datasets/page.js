@@ -36,7 +36,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { useRouter } from 'next/navigation';
 import ExportDatasetDialog from '@/components/ExportDatasetDialog';
-
+import { useTranslation } from 'react-i18next';
 
 // 数据集列表组件
 const DatasetList = ({
@@ -50,6 +50,7 @@ const DatasetList = ({
   total
 }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const bgColor = theme.palette.mode === 'dark'
     ? theme.palette.primary.dark
@@ -57,6 +58,7 @@ const DatasetList = ({
   const color = theme.palette.mode === 'dark'
     ? theme.palette.getContrastText(theme.palette.primary.main)
     : theme.palette.getContrastText(theme.palette.primary.contrastText)
+
 
   return (
     <Card elevation={2}>
@@ -73,7 +75,7 @@ const DatasetList = ({
                   borderBottom: `2px solid ${theme.palette.divider}`,
                 }}
               >
-                问题
+                {t('datasets.question')}
               </TableCell>
               <TableCell
                 sx={{
@@ -84,7 +86,7 @@ const DatasetList = ({
                   borderBottom: `2px solid ${theme.palette.divider}`,
                 }}
               >
-                创建时间
+                {t('datasets.createdAt')}
               </TableCell>
               <TableCell
                 sx={{
@@ -95,7 +97,7 @@ const DatasetList = ({
                   borderBottom: `2px solid ${theme.palette.divider}`,
                 }}
               >
-                使用模型
+                {t('datasets.model')}
               </TableCell>
               <TableCell
                 sx={{
@@ -106,7 +108,7 @@ const DatasetList = ({
                   borderBottom: `2px solid ${theme.palette.divider}`,
                 }}
               >
-                领域标签
+                {t('datasets.domainTag')}
               </TableCell>
               <TableCell
                 sx={{
@@ -117,7 +119,7 @@ const DatasetList = ({
                   borderBottom: `2px solid ${theme.palette.divider}`,
                 }}
               >
-                思维链
+                {t('datasets.cot')}
               </TableCell>
               <TableCell
                 sx={{
@@ -128,7 +130,7 @@ const DatasetList = ({
                   borderBottom: `2px solid ${theme.palette.divider}`,
                 }}
               >
-                回答
+                {t('datasets.answer')}
               </TableCell>
               <TableCell
                 sx={{
@@ -139,7 +141,7 @@ const DatasetList = ({
                   borderBottom: `2px solid ${theme.palette.divider}`,
                 }}
               >
-                操作
+                {t('common.actions')}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -167,7 +169,7 @@ const DatasetList = ({
 
                     {dataset.confirmed && (
                       <Chip
-                        label={'已确认'}
+                        label={t('datasets.confirmed')}
                         size="small"
                         sx={{
                           backgroundColor: alpha(theme.palette.success.main, 0.1),
@@ -209,12 +211,12 @@ const DatasetList = ({
                       }}
                     />
                   ) : (
-                    <Typography variant="body2" color="text.disabled">无标签</Typography>
+                    <Typography variant="body2" color="text.disabled">{t('datasets.noTag')}</Typography>
                   )}
                 </TableCell>
                 <TableCell>
                   <Chip
-                    label={dataset.cot ? '有' : '无'}
+                    label={dataset.cot ? t('common.yes') : t('common.no')}
                     size="small"
                     sx={{
                       backgroundColor: dataset.cot
@@ -243,7 +245,7 @@ const DatasetList = ({
                 </TableCell>
                 <TableCell sx={{ width: 120 }}>
                   <Box sx={{ display: 'flex' }}>
-                    <Tooltip title="查看详情">
+                    <Tooltip title={t('datasets.viewDetails')}>
                       <IconButton
                         size="small"
                         onClick={(e) => {
@@ -258,7 +260,7 @@ const DatasetList = ({
                         <VisibilityIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="删除">
+                    <Tooltip title={t('common.delete')}>
                       <IconButton
                         size="small"
                         onClick={(e) => {
@@ -281,7 +283,7 @@ const DatasetList = ({
               <TableRow>
                 <TableCell colSpan={7} align="center" sx={{ py: 6 }}>
                   <Typography variant="body1" color="text.secondary">
-                    暂无数据
+                    {t('datasets.noData')}
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -297,8 +299,8 @@ const DatasetList = ({
         onPageChange={onPageChange}
         rowsPerPage={rowsPerPage}
         onRowsPerPageChange={onRowsPerPageChange}
-        labelRowsPerPage="每页行数"
-        labelDisplayedRows={({ from, to, count }) => `${from}-${to} 共 ${count}`}
+        labelRowsPerPage={t('datasets.rowsPerPage')}
+        labelDisplayedRows={({ from, to, count }) => t('datasets.pagination', { from, to, count })}
         sx={{
           borderTop: `1px solid ${theme.palette.divider}`,
           '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows': {
@@ -313,6 +315,7 @@ const DatasetList = ({
 // 删除确认对话框
 const DeleteConfirmDialog = ({ open, dataset, onClose, onConfirm }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Dialog
@@ -352,7 +355,7 @@ const DeleteConfirmDialog = ({ open, dataset, onClose, onConfirm }) => {
           variant="outlined"
           sx={{ borderRadius: 2 }}
         >
-          取消
+          {t('common.cancel')}
         </Button>
         <Button
           onClick={onConfirm}
@@ -360,7 +363,7 @@ const DeleteConfirmDialog = ({ open, dataset, onClose, onConfirm }) => {
           variant="contained"
           sx={{ borderRadius: 2 }}
         >
-          删除
+          {t('common.delete')}
         </Button>
       </DialogActions>
     </Dialog>
@@ -387,6 +390,7 @@ export default function DatasetsPage({ params }) {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState('');
   const [exportDialog, setExportDialog] = useState({ open: false });
+  const { t } = useTranslation();
 
 
   // 3. 添加打开导出对话框的处理函数
@@ -679,7 +683,7 @@ export default function DatasetsPage({ params }) {
               sx={{ borderRadius: 2 }}
               onClick={handleOpenExportDialog}
             >
-              导出数据集
+              {t('export.title')}
             </Button>
           </Box>
         </Box>

@@ -15,7 +15,8 @@
         "confirmDelete": "确认删除吗？",
         "confirmDeleteProject": "确认删除项目吗？",
         "saving": "保存中...",
-        "deleting": "删除中..."
+        "deleting": "删除中...",
+        "actions": "操作"
     },
     "home": {
         "title": "Easy Dataset",
@@ -115,11 +116,38 @@
     },
     "export": {
         "title": "导出数据集",
-        "format": "格式",
+        "format": "数据集风格",
         "fileFormat": "文件格式",
         "systemPrompt": "系统提示词",
+        "systemPromptPlaceholder": "请输入系统提示词...",
         "onlyConfirmed": "仅导出已确认数据",
-        "example": "格式示例"
+        "example": "格式示例",
+        "confirmExport": "确认导出"
+    },
+    "datasets": {
+        "management": "数据集管理",
+        "question": "问题",
+        "createdAt": "创建时间",
+        "model": "使用模型",
+        "domainTag": "领域标签",
+        "cot": "思维链",
+        "answer": "回答",
+        "confirmed": "已确认",
+        "noTag": "无标签",
+        "noData": "暂无数据",
+        "rowsPerPage": "每页行数",
+        "pagination": "{{from}}-{{to}} 共 {{count}}",
+        "confirmDeleteMessage": "确定要删除这个数据集吗？这个操作不可撤销。",
+        "questionLabel": "问题",
+        "fetchFailed": "获取数据集失败",
+        "deleteFailed": "删除数据集失败",
+        "deleteSuccess": "删除成功",
+        "exportSuccess": "数据集导出成功",
+        "exportFailed": "导出失败",
+        "loading": "加载数据集...",
+        "stats": "共 {{total}} 个数据集，已确认 {{confirmed}} 个（{{percentage}}%）",
+        "searchPlaceholder": "搜索数据集...",
+        "viewDetails": "查看详情"
     },
     "datasetSquare": {
         "title": "数据集广场",
