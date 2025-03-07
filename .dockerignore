@@ -11,6 +11,4 @@ README.zh-CN.md
 .env.production.local
 /test
 /local-db
-
-
-
+/video

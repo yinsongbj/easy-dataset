@@ -82,6 +82,7 @@ With Easy Dataset, you can transform your domain knowledge into structured datas
 
 ### Creating a Project
 
+
 1. Click the "Create Project" button on the home page
 2. Enter a project name and description
 3. Configure your preferred LLM API settings

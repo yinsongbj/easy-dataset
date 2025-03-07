@@ -79,6 +79,13 @@ Easy Dataset 是一个专为创建大型语言模型（LLM）微调数据集而�
 
 ### 创建项目
 
+<table>
+    <tr>
+        <td><img src="./public/imgs/1.png"></td>
+        <td><img src="./public/imgs/2.png"></td>
+    </tr>
+</table>
+
 1. 在首页点击"创建项目"按钮
 2. 输入项目名称和描述
 3. 配置您首选的 LLM API 设置
