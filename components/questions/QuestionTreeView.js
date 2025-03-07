@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Typography,
@@ -43,6 +44,7 @@ export default function QuestionTreeView({
   onDeleteQuestion,
   onGenerateDataset
 }) {
+  const { t } = useTranslation();
   const [expandedTags, setExpandedTags] = useState({});
   const [questionsByTag, setQuestionsByTag] = useState({});
   const [processingQuestions, setProcessingQuestions] = useState({});
@@ -215,7 +217,7 @@ export default function QuestionTreeView({
                 {question.question}
                 {question.dataSites && question.dataSites.length > 0 && (
                   <Chip
-                    label={question.dataSites.length + '个答案'}
+                    label={t('datasets.answerCount', { count: question.dataSites.length })}
                     size="small"
                     color="primary"
                     variant="outlined"
@@ -226,12 +228,12 @@ export default function QuestionTreeView({
             }
             secondary={
               <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-                来源: {chunks.find(c => c.id === question.chunkId)?.title || question.chunkId}
+                {t('datasets.source')}: {chunks.find(c => c.id === question.chunkId)?.title || question.chunkId}
               </Typography>
             }
           />
           <Box>
-            <Tooltip title="生成数据集">
+            <Tooltip title={t('datasets.generateDataset')}>
               <IconButton
                 size="small"
                 sx={{ mr: 1 }}
@@ -245,7 +247,7 @@ export default function QuestionTreeView({
                 )}
               </IconButton>
             </Tooltip>
-            <Tooltip title="删除问题">
+            <Tooltip title={t('common.delete')}>
               <IconButton
                 size="small"
                 onClick={() => onDeleteQuestion(question.question, question.chunkId)}
@@ -319,7 +321,7 @@ export default function QuestionTreeView({
                 </Typography>
                 {totalQuestions > 0 && (
                   <Chip
-                    label={`${totalQuestions} 个问题`}
+                    label={t('datasets.questionCount', { count: totalQuestions })}
                     size="small"
                     color={level === 0 ? 'default' : 'primary'}
                     variant={level === 0 ? 'default' : 'outlined'}
@@ -391,10 +393,10 @@ export default function QuestionTreeView({
                   variant="body1"
                   sx={{ fontWeight: 600, fontSize: '1rem' }}
                 >
-                  未分类问题
+                  {t('datasets.uncategorized')}
                 </Typography>
                 <Chip
-                  label={`${uncategorizedQuestions.length} 个问题`}
+                  label={t('datasets.questionCount', { count: uncategorizedQuestions.length })}
                   size="small"
                   sx={{ ml: 1, height: 20, fontSize: '0.7rem', color: '#fff', backgroundColor: '#333' }}
                 />
@@ -422,7 +424,7 @@ export default function QuestionTreeView({
     return (
       <Box sx={{ p: 4, textAlign: 'center' }}>
         <Typography variant="body1" color="text.secondary">
-          暂无领域标签和问题数据
+          {t('datasets.noTagsAndQuestions')}
         </Typography>
       </Box>
     );

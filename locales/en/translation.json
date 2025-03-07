@@ -10,10 +10,36 @@
         "switchToDark": "Switch to Dark Mode"
     },
     "settings": {
-        "title": "Project Settings"
+        "title": "Settings"
     },
     "questions": {
-        "title": "Question List"
+        "title": "Questions",
+        "confirmDeleteTitle": "Confirm Delete Question",
+        "confirmDeleteContent": "Are you sure you want to delete the question \"{{question}}\"? This action cannot be undone.",
+        "deleting": "Deleting question...",
+        "batchDeleteTitle": "Confirm Batch Delete",
+        "batchDeleteContent": "Are you sure you want to delete {{count}} selected questions? This action cannot be undone.",
+        "batchDeleting": "Deleting {{count}} questions...",
+        "deleteSuccess": "Question deleted successfully",
+        "deleteFailed": "Failed to delete question",
+        "batchDeleteSuccess": "Successfully deleted {{count}} questions",
+        "batchDeletePartial": "Delete completed, success: {{success}}, failed: {{failed}}",
+        "batchDeleteFailed": "Failed to batch delete questions",
+        "noQuestionsSelected": "Please select questions first",
+        "batchGenerateStart": "Starting to generate datasets for {{count}} questions",
+        "invalidQuestionKey": "Invalid question key",
+        "listView": "List View",
+        "treeView": "Domain Tree View",
+        "selectAll": "Select All",
+        "selectedCount": "Selected {{count}} questions",
+        "totalCount": "Total {{count}} questions",
+        "searchPlaceholder": "Search questions or tags...",
+        "deleteSelected": "Delete Selected",
+        "batchGenerate": "Batch Generate Datasets",
+        "generating": "Generating Dataset",
+        "generatingProgress": "Completed: {{completed}}/{{total}}",
+        "generatedCount": "Generated: {{count}}",
+        "pleaseWait": "Please wait, processing..."
     },
     "common": {
         "visitGitHub": "Visit GitHub Repository",
@@ -56,7 +82,7 @@
         "description": "Project Description"
     },
     "textSplit": {
-        "title": "Text Splitting",
+        "title": "Texts",
         "uploadNewDocument": "Upload New Document",
         "selectFile": "Select File",
         "markdownOnly": "Currently only supports Markdown (.md) format files",
@@ -146,7 +172,7 @@
         "confirmExport": "Confirm Export"
     },
     "datasets": {
-        "management": "Dataset Management",
+        "management": "Datasets",
         "question": "Question",
         "createdAt": "Created At",
         "model": "Model",
@@ -171,7 +197,16 @@
         "viewDetails": "View Details",
         "datasetDetail": "Dataset Details",
         "metadata": "Metadata",
-        "confirmSave": "Confirm Save"
+        "confirmSave": "Confirm Save",
+        "uncategorized": "Uncategorized",
+        "questionCount": "{{count}} Questions",
+        "source": "Source",
+        "generateDataset": "Generate Dataset",
+        "generateNotImplemented": "Dataset generation is not implemented",
+        "generateSuccess": "Successfully generated dataset for: {{question}}",
+        "generateFailed": "Failed to generate dataset: {{error}}",
+        "noTagsAndQuestions": "No tags and questions available",
+        "answerCount": "{{count}} Answers"
     },
     "datasetSquare": {
         "title": "Dataset Square",
@@ -205,5 +240,8 @@
         "streamingOutput": "Streaming Output",
         "clearConversation": "Clear Conversation",
         "selectModelMax3": "Please select up to 3 models to test"
+    },
+    "chunks": {
+        "title": "Text Chunk"
     }
 }

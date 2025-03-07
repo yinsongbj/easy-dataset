@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Container,
   Typography,
@@ -33,6 +34,7 @@ import QuestionTreeView from '@/components/questions/QuestionTreeView';
 import TabPanel from '@/components/text-split/components/TabPanel';
 
 export default function QuestionsPage({ params }) {
+  const { t } = useTranslation();
   const { projectId } = params;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -73,7 +75,7 @@ export default function QuestionsPage({ params }) {
       // 获取标签树
       const tagsResponse = await fetch(`/api/projects/${projectId}/tags`);
       if (!tagsResponse.ok) {
-        throw new Error('获取标签树失败');
+        throw new Error(t('tags.fetchFailed'));
       }
       const tagsData = await tagsResponse.json();
       setTags(tagsData.tags || []);
@@ -81,7 +83,7 @@ export default function QuestionsPage({ params }) {
       // 获取问题列表
       const questionsResponse = await fetch(`/api/projects/${projectId}/questions`);
       if (!questionsResponse.ok) {
-        throw new Error('获取问题列表失败');
+        throw new Error(t('questions.fetchFailed'));
       }
       const questionsData = await questionsResponse.json();
       setQuestions(questionsData || []);
@@ -91,18 +93,19 @@ export default function QuestionsPage({ params }) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || '获取文本块失败');
+        throw new Error(errorData.error || t('chunks.fetchFailed'));
       }
       const data = await response.json();
       setChunks(data.chunks || []);
 
-      // 如果传入了当前页码，则保持该页码状态
-      // if (typeof currentPage !== 'undefined') {
-      //   setPage(currentPage);
-      // }
     } catch (error) {
-      console.error('获取数据失败:', error);
+      console.error(t('common.fetchError'), error);
       setError(error.message);
+      setSnackbar({
+        open: true,
+        message: error.message,
+        severity: 'error'
+      });
     } finally {
       if (!currentPage) {
         setLoading(false);
@@ -167,7 +170,7 @@ export default function QuestionsPage({ params }) {
         try {
           model = JSON.parse(modelInfoStr);
         } catch (e) {
-          console.error('解析模型信息出错:', e);
+          console.error(t('models.parseError'), e);
           return null;
         }
       }
@@ -179,7 +182,7 @@ export default function QuestionsPage({ params }) {
 
       return model;
     } catch (error) {
-      console.error('获取模型配置失败:', error);
+      console.error(t('models.configError'), error);
       return null;
     }
   };
@@ -192,7 +195,7 @@ export default function QuestionsPage({ params }) {
       if (!model) {
         setSnackbar({
           open: true,
-          message: '未找到模型配置，请先在设置中配置模型',
+          message: t('models.configNotFound'),
           severity: 'error'
         });
         return null;
@@ -201,7 +204,7 @@ export default function QuestionsPage({ params }) {
       // 显示处理中提示
       setSnackbar({
         open: true,
-        message: '正在生成数据集...',
+        message: t('datasets.generating'),
         severity: 'info',
       });
 
@@ -220,7 +223,7 @@ export default function QuestionsPage({ params }) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || '生成数据集失败');
+        throw new Error(errorData.error || t('datasets.generateFailed'));
       }
 
       const result = await response.json();
@@ -230,10 +233,10 @@ export default function QuestionsPage({ params }) {
       fetchData(1);
       return result.dataset;
     } catch (error) {
-      console.error('生成数据集失败:', error);
+      console.error(t('datasets.generateError'), error);
       setSnackbar({
         open: true,
-        message: error.message || '生成数据集失败',
+        message: error.message || t('datasets.generateFailed'),
         severity: 'error'
       });
       return null;
@@ -272,7 +275,7 @@ export default function QuestionsPage({ params }) {
     if (selectedQuestions.length === 0) {
       setSnackbar({
         open: true,
-        message: '请先选择问题',
+        message: t('questions.noQuestionsSelected'),
         severity: 'warning'
       });
       return;
@@ -283,14 +286,13 @@ export default function QuestionsPage({ params }) {
     if (!model) {
       setSnackbar({
         open: true,
-        message: '未找到模型配置，请先在设置中配置模型',
+        message: t('models.configNotFound'),
         severity: 'error'
       });
       return;
     }
 
     try {
-      // 先重置进度状态
       setProgress({
         total: selectedQuestions.length,
         completed: 0,
@@ -303,7 +305,7 @@ export default function QuestionsPage({ params }) {
 
       setSnackbar({
         open: true,
-        message: `已选择 ${selectedQuestions.length} 个问题，准备生成数据集`,
+        message: t('questions.batchGenerateStart', { count: selectedQuestions.length }),
         severity: 'info'
       });
 
@@ -313,7 +315,7 @@ export default function QuestionsPage({ params }) {
           // 从问题键中提取 chunkId 和 questionId
           const lastDashIndex = key.lastIndexOf('-');
           if (lastDashIndex === -1) {
-            console.error('无法解析问题键:', key);
+            console.error(t('questions.invalidQuestionKey'), key);
 
             // 更新进度状态（即使失败也计入已处理）
             setProgress(prev => {
@@ -327,7 +329,7 @@ export default function QuestionsPage({ params }) {
               };
             });
 
-            return { success: false, key, error: '无法解析问题键' };
+            return { success: false, key, error: t('questions.invalidQuestionKey') };
           }
 
           const chunkId = key.substring(0, lastDashIndex);
@@ -350,7 +352,7 @@ export default function QuestionsPage({ params }) {
 
           if (!response.ok) {
             const errorData = await response.json();
-            console.error(`生成数据集失败:`, errorData.error || '生成数据集失败');
+            console.error(t('datasets.generateError'), errorData.error || t('datasets.generateFailed'));
 
             // 更新进度状态（即使失败也计入已处理）
             setProgress(prev => {
@@ -364,7 +366,7 @@ export default function QuestionsPage({ params }) {
               };
             });
 
-            return { success: false, key, error: errorData.error || '生成数据集失败' };
+            return { success: false, key, error: errorData.error || t('datasets.generateFailed') };
           }
 
           const data = await response.json();
@@ -417,13 +419,17 @@ export default function QuestionsPage({ params }) {
       if (failCount > 0) {
         setSnackbar({
           open: true,
-          message: `部分问题生成数据集成功 (${successCount}/${selectedQuestions.length})，${failCount} 个问题失败`,
+          message: t('datasets.partialSuccess', {
+            successCount,
+            total: selectedQuestions.length,
+            failCount
+          }),
           severity: 'warning'
         });
       } else {
         setSnackbar({
           open: true,
-          message: `成功为 ${successCount} 个问题生成了数据集`,
+          message: t('datasets.allSuccess', { successCount }),
           severity: 'success'
         });
       }
@@ -724,7 +730,7 @@ export default function QuestionsPage({ params }) {
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4">
-          问题列表 ({totalQuestions})
+          {t('questions.title')} ({totalQuestions})
         </Typography>
         <Box sx={{ display: 'flex', gap: 2 }}>
           <Button

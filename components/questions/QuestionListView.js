@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Typography,
@@ -38,6 +39,7 @@ export default function QuestionListView({
   onGenerateDataset,
   projectId
 }) {
+  const { t } = useTranslation();
   // 分页状态
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
@@ -53,7 +55,7 @@ export default function QuestionListView({
   // 获取文本块的标题
   const getChunkTitle = (chunkId) => {
     const chunk = chunks.find(c => c.id === chunkId);
-    if (!chunk) return `文本块 ${chunkId}`;
+    if (!chunk) return t('chunks.defaultTitle', { id: chunkId });
 
     // 尝试从内容中提取标题
     const content = chunk.content || '';
@@ -64,7 +66,7 @@ export default function QuestionListView({
       return firstLine.length > 200 ? firstLine.substring(0, 200) + '...' : firstLine;
     }
 
-    return `文本块 ${chunkId}`;
+    return t('chunks.defaultTitle', { id: chunkId });
   };
 
   // 检查问题是否被选中
@@ -82,7 +84,7 @@ export default function QuestionListView({
   const handleGenerateDataset = async (questionId, chunkId) => {
     // 如果没有提供回调函数，则显示提示
     if (!onGenerateDataset) {
-      setSnackbarMessage('生成数据集功能尚未实现');
+      setSnackbarMessage(t('datasets.generateNotImplemented'));
       setSnackbarSeverity('warning');
       setSnackbarOpen(true);
       return;
@@ -97,15 +99,14 @@ export default function QuestionListView({
     try {
       // 调用回调函数生成数据集
       const result = await onGenerateDataset(questionId, chunkId);
-
       // 显示成功提示
-      setSnackbarMessage(`成功生成数据集: ${result.question}`);
+      setSnackbarMessage(t('datasets.generateSuccess', { question: result.question }));
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
     } catch (error) {
       console.error('生成数据集失败:', error);
       // 显示错误提示
-      setSnackbarMessage(`生成数据集失败: ${error.message || '未知错误'}`);
+      setSnackbarMessage(t('datasets.generateFailed', { error: error.message || t('common.unknownError') }));
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
     } finally {
@@ -129,8 +130,6 @@ export default function QuestionListView({
 
   return (
     <Box style={{ padding: '20px' }}>
-
-
       {/* 问题列表 */}
       <Paper
         elevation={0}
@@ -142,17 +141,17 @@ export default function QuestionListView({
       >
         <Box sx={{ px: 2, py: 1, display: 'flex', alignItems: 'center', bgcolor: 'background.paper' }}>
           <Typography variant="body2" sx={{ fontWeight: 500, ml: 1 }}>
-            问题内容
+            {t('datasets.question')}
           </Typography>
           <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
             <Typography variant="body2" sx={{ fontWeight: 500, mr: 2, display: { xs: 'none', sm: 'block' } }}>
-              标签
+              {t('common.label')}
             </Typography>
             <Typography variant="body2" sx={{ fontWeight: 500, width: 150, mr: 2, display: { xs: 'none', md: 'block' } }}>
-              文本块
+              {t('chunks.title')}
             </Typography>
             <Typography variant="body2" sx={{ fontWeight: 500, width: 100, textAlign: 'center' }}>
-              操作
+              {t('common.actions')}
             </Typography>
           </Box>
         </Box>
@@ -160,7 +159,6 @@ export default function QuestionListView({
         <Divider />
 
         {currentQuestions.map((question, index) => {
-          // 明确计算每个问题的选中状态
           const isSelected = isQuestionSelected(question.question, question.chunkId);
 
           return (
@@ -189,7 +187,7 @@ export default function QuestionListView({
                     {
                       question.dataSites && question.dataSites.length > 0 ? (
                         <Chip
-                          label={question.dataSites.length + '个答案'}
+                          label={t('datasets.answerCount', { count: question.dataSites.length })}
                           size="small"
                           color="primary"
                           variant="outlined"
@@ -199,7 +197,7 @@ export default function QuestionListView({
                     }
                   </Typography>
                   <Typography variant="caption" color="text.secondary" sx={{ display: { xs: 'block', sm: 'none' } }}>
-                    {question.label || '无标签'} • ID: {(question.question || '').substring(0, 8)}
+                    {question.label || t('datasets.noTag')} • ID: {(question.question || '').substring(0, 8)}
                   </Typography>
                 </Box>
 
@@ -213,7 +211,7 @@ export default function QuestionListView({
                       sx={{ fontSize: '0.75rem', maxWidth: 150 }}
                     />
                   ) : (
-                    <Typography variant="caption" color="text.disabled">无标签</Typography>
+                    <Typography variant="caption" color="text.disabled">{t('datasets.noTag')}</Typography>
                   )}
                 </Box>
 
@@ -234,7 +232,7 @@ export default function QuestionListView({
                 </Box>
 
                 <Box sx={{ width: 100, display: 'flex', justifyContent: 'center' }}>
-                  <Tooltip title="生成数据集">
+                  <Tooltip title={t('datasets.generateDataset')}>
                     <IconButton
                       size="small"
                       color="primary"
@@ -248,7 +246,7 @@ export default function QuestionListView({
                       )}
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="删除问题">
+                  <Tooltip title={t('common.delete')}>
                     <IconButton
                       size="small"
                       color="error"

@@ -13,7 +13,33 @@
         "title": "项目设置"
     },
     "questions": {
-        "title": "问题列表"
+        "title": "问题列表",
+        "confirmDeleteTitle": "确认删除问题",
+        "confirmDeleteContent": "您确定要删除问题\"{{question}}\"吗？此操作不可恢复。",
+        "deleting": "正在删除问题...",
+        "batchDeleteTitle": "确认批量删除问题",
+        "batchDeleteContent": "您确定要删除选中的 {{count}} 个问题吗？此操作不可恢复。",
+        "batchDeleting": "正在删除 {{count}} 个问题...",
+        "deleteSuccess": "问题删除成功",
+        "deleteFailed": "删除问题失败",
+        "batchDeleteSuccess": "成功删除 {{count}} 个问题",
+        "batchDeletePartial": "删除完成，成功: {{success}}, 失败: {{failed}}",
+        "batchDeleteFailed": "批量删除问题失败",
+        "noQuestionsSelected": "请先选择问题",
+        "batchGenerateStart": "开始生成 {{count}} 个问题的数据集",
+        "invalidQuestionKey": "无效的问题键",
+        "listView": "列表视图",
+        "treeView": "领域树视图",
+        "selectAll": "全选",
+        "selectedCount": "已选择 {{count}} 个问题",
+        "totalCount": "共 {{count}} 个问题",
+        "searchPlaceholder": "搜索问题或标签...",
+        "deleteSelected": "删除所选",
+        "batchGenerate": "批量构造数据集",
+        "generating": "正在生成数据集",
+        "generatingProgress": "已完成: {{completed}}/{{total}}",
+        "generatedCount": "已生成: {{count}}",
+        "pleaseWait": "请耐心等待，正在处理中..."
     },
     "common": {
         "create": "创建",
@@ -174,7 +200,16 @@
         "viewDetails": "查看详情",
         "datasetDetail": "数据集详情",
         "metadata": "元数据",
-        "confirmSave": "确认保留"
+        "confirmSave": "确认保留",
+        "uncategorized": "未分类",
+        "questionCount": "{{count}} 个问题",
+        "source": "来源",
+        "generateDataset": "生成数据集",
+        "generateNotImplemented": "生成数据集功能未实现",
+        "generateSuccess": "成功生成数据集：{{question}}",
+        "generateFailed": "生成数据集失败：{{error}}",
+        "noTagsAndQuestions": "暂无标签和问题",
+        "answerCount": "{{count}} 个答案"
     },
     "datasetSquare": {
         "title": "数据集广场",
@@ -208,5 +243,8 @@
         "streamingOutput": "流式输出",
         "clearConversation": "清空对话",
         "selectModelMax3": "选择模型（最多3个）"
+    },
+    "chunks": {
+        "title": "文本块"
     }
 }
