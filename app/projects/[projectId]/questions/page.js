@@ -27,7 +27,7 @@ import {
 } from '@mui/material';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import i18n from '@/lib/i18n';
 import SearchIcon from '@mui/icons-material/Search';
 import QuestionListView from '@/components/questions/QuestionListView';
 import QuestionTreeView from '@/components/questions/QuestionTreeView';
@@ -209,6 +209,7 @@ export default function QuestionsPage({ params }) {
       });
 
       // 调用API生成数据集
+      const currentLanguage = i18n.language === 'zh-CN' ? '中文' : 'en';
       const response = await fetch(`/api/projects/${projectId}/datasets`, {
         method: 'POST',
         headers: {
@@ -217,7 +218,8 @@ export default function QuestionsPage({ params }) {
         body: JSON.stringify({
           questionId,
           chunkId,
-          model
+          model,
+          language: currentLanguage
         })
       });
 
@@ -336,6 +338,7 @@ export default function QuestionsPage({ params }) {
 
           console.log('开始生成数据集:', { chunkId, questionId });
 
+          const language = i18n.language === 'zh-CN' ? '中文' : 'en';
           // 调用API生成数据集
           const response = await fetch(`/api/projects/${projectId}/datasets`, {
             method: 'POST',
@@ -345,7 +348,8 @@ export default function QuestionsPage({ params }) {
             body: JSON.stringify({
               questionId,
               chunkId,
-              model
+              model,
+              language
             })
           });
 
@@ -428,7 +432,7 @@ export default function QuestionsPage({ params }) {
       } else {
         setSnackbar({
           open: true,
-          message: t('datasets.allSuccess', { successCount }),
+          message: t('common.success', { successCount }),
           severity: 'success'
         });
       }
@@ -690,7 +694,7 @@ export default function QuestionsPage({ params }) {
             }}
           >
             <Typography variant="h6" sx={{ mb: 2, color: 'primary.main', fontWeight: 'bold' }}>
-              正在生成数据集
+              {t('datasets.generatingDataset')}
             </Typography>
 
             <Box sx={{ mb: 3 }}>
@@ -710,10 +714,10 @@ export default function QuestionsPage({ params }) {
 
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
                 <Typography variant="body2">
-                  已完成: {progress.completed}/{progress.total}
+                  {t('questions.generatingProgress', { completed: progress.completed, total: progress.total })}
                 </Typography>
                 <Typography variant="body2" color="success.main" sx={{ fontWeight: 'medium' }}>
-                  已生成: {progress.datasetCount}
+                  {t('questions.generatedCount', { count: progress.datasetCount })}
                 </Typography>
               </Box>
             </Box>
@@ -721,7 +725,7 @@ export default function QuestionsPage({ params }) {
             <CircularProgress size={60} thickness={4} sx={{ mb: 2 }} />
 
             <Typography variant="body2" color="text.secondary">
-              请耐心等待，正在处理中...
+              {t('questions.pleaseWait')}
             </Typography>
           </Paper>
         </Box>

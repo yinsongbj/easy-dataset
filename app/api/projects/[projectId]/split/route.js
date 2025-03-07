@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { splitProjectFile, getProjectChunks } from '@/lib/text-splitter';
 import LLMClient from '@/lib/llm/core/index';
 import getLabelPrompt from '@/lib/llm/prompts/label';
+import getLabelEnPrompt from '@/lib/llm/prompts/labelEn';
 import { deleteFile } from '@/lib/db/texts';
 import { getProject, updateProject } from '@/lib/db/projects';
 import { saveTags, getTags } from '@/lib/db/tags';
@@ -18,7 +19,7 @@ export async function POST(request, { params }) {
     }
 
     // 获取请求体
-    const { fileName, model } = await request.json();
+    const { fileName, model, language } = await request.json();
 
     if (!model) {
       return NextResponse.json({ error: '请选择模型' }, { status: 400 });
@@ -41,7 +42,7 @@ export async function POST(request, { params }) {
     });
     // 生成领域树
     console.log(projectId, fileName, '分割完成，开始构建领域树');
-    const llmRes = await llmClient.chat(getLabelPrompt(toc));
+    const llmRes = await llmClient.chat(language === 'en' ? getLabelEnPrompt(toc) : getLabelPrompt(toc));
     const response = llmRes.choices?.[0]?.message?.content ||
       llmRes.response ||
       '';

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import i18n from '@/lib/i18n';
 import {
   Container,
   Typography,
@@ -94,13 +95,13 @@ export default function TextSplitPage({ params }) {
   const handleSplitText = async (fileName, model) => {
     try {
       setProcessing(true);
-
+      const language = i18n.language === 'zh-CN' ? '中文' : 'en';
       const response = await fetch(`/api/projects/${projectId}/split`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ fileName, model })
+        body: JSON.stringify({ fileName, model, language })
       });
 
       if (!response.ok) {
@@ -226,12 +227,15 @@ export default function TextSplitPage({ params }) {
       // 如果是单个文本块，直接调用单个生成接口
       if (chunkIds.length === 1) {
         const chunkId = chunkIds[0];
+        // 获取当前语言环境
+        const currentLanguage = i18n.language === 'zh-CN' ? '中文' : 'en';
+
         const response = await fetch(`/api/projects/${projectId}/chunks/${chunkId}/questions`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ model })
+          body: JSON.stringify({ model, language: currentLanguage })
         });
 
         if (!response.ok) {
@@ -251,12 +255,15 @@ export default function TextSplitPage({ params }) {
         // 单个文本块处理函数
         const processChunk = async (chunkId) => {
           try {
+            // 获取当前语言环境
+            const currentLanguage = i18n.language === 'zh-CN' ? '中文' : 'en';
+
             const response = await fetch(`/api/projects/${projectId}/chunks/${chunkId}/questions`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
               },
-              body: JSON.stringify({ model })
+              body: JSON.stringify({ model, language: currentLanguage })
             });
 
             if (!response.ok) {

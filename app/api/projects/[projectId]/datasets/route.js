@@ -3,6 +3,8 @@ import { getTextChunk } from '@/lib/db/texts';
 import { getQuestionsForChunk } from '@/lib/db/questions';
 import { getDatasets, saveDatasets } from '@/lib/db/datasets';
 import getAnswerPrompt from '@/lib/llm/prompts/answer';
+import getAnswerEnPrompt from '@/lib/llm/prompts/answerEn';
+
 
 const LLMClient = require('@/lib/llm/core');
 
@@ -12,7 +14,7 @@ const LLMClient = require('@/lib/llm/core');
 export async function POST(request, { params }) {
   try {
     const { projectId } = params;
-    const { questionId, chunkId, model } = await request.json();
+    const { questionId, chunkId, model, language } = await request.json();
 
     // 验证参数
     if (!projectId || !questionId || !chunkId || !model) {
@@ -47,7 +49,7 @@ export async function POST(request, { params }) {
     });
 
     // 生成答案的提示词
-    const prompt = getAnswerPrompt(chunk.content, question.question);
+    const prompt = language === 'en' ? getAnswerEnPrompt(chunk.content, question.question) : getAnswerPrompt(chunk.content, question.question);
 
     // console.log(prompt);
     // 调用大模型生成答案

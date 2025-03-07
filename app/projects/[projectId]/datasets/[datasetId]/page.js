@@ -28,6 +28,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+import i18n from '@/lib/i18n';
 
 // 编辑区域组件
 const EditableField = ({
@@ -122,14 +123,14 @@ const OptimizeDialog = ({ open, onClose, onConfirm, loading }) => {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} disabled={loading}>取消</Button>
+        <Button onClick={onClose} disabled={loading}>{t('common.cancel')}</Button>
         <Button
           onClick={handleConfirm}
           variant="contained"
           disabled={!advice.trim() || loading}
           startIcon={loading ? <CircularProgress size={20} /> : null}
         >
-          {loading ? '优化中...' : '确认优化'}
+          {loading ? t('common.loading') : t('common.confirm')}
         </Button>
       </DialogActions>
     </Dialog>
@@ -385,7 +386,7 @@ export default function DatasetDetailsPage({ params }) {
 
     try {
       setOptimizeDialog(prev => ({ ...prev, loading: true }));
-
+      const language = i18n.language === 'zh-CN' ? '中文' : 'en';
       const response = await fetch(`/api/projects/${projectId}/datasets/optimize`, {
         method: 'POST',
         headers: {
@@ -394,7 +395,8 @@ export default function DatasetDetailsPage({ params }) {
         body: JSON.stringify({
           datasetId,
           model,
-          advice
+          advice,
+          language
         })
       });
 

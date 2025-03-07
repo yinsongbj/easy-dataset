@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getDataset, updateDataset } from '@/lib/db/datasets';
 import LLMClient from '@/lib/llm/core/index';
 import getNewAnswerPrompt from '@/lib/llm/prompts/newAnswer';
+import getNewAnswerEnPrompt from '@/lib/llm/prompts/newAnswerEn';
+
 import { extractJsonFromLLMOutput } from '@/lib/llm/common/util';
 
 // 优化数据集答案
@@ -15,7 +17,7 @@ export async function POST(request, { params }) {
     }
 
     // 获取请求体
-    const { datasetId, model, advice } = await request.json();
+    const { datasetId, model, advice, language } = await request.json();
 
     if (!datasetId) {
       return NextResponse.json({ error: '数据集ID不能为空' }, { status: 400 });
@@ -44,13 +46,18 @@ export async function POST(request, { params }) {
     });
 
     // 生成优化后的答案和思维链
-    const prompt = getNewAnswerPrompt(
-      dataset.question, 
-      dataset.answer || '', 
-      dataset.cot || '', 
+    const prompt = language === 'en' ? getNewAnswerEnPrompt(
+      dataset.question,
+      dataset.answer || '',
+      dataset.cot || '',
+      advice
+    ) : getNewAnswerPrompt(
+      dataset.question,
+      dataset.answer || '',
+      dataset.cot || '',
       advice
     );
-    
+
     const llmRes = await llmClient.chat(prompt);
 
     const response = llmRes.choices?.[0]?.message?.content ||

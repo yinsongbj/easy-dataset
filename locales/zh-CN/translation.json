@@ -223,6 +223,7 @@
         "confirmExport": "确认导出"
     },
     "datasets": {
+        "generatingDataset": "正在生成数据集",
         "aiOptimizeAdvicePlaceholder": "请输入您对答案的改进建议，AI将根据您的建议优化答案和思维链",
         "aiOptimizeAdvice": "请输入您对答案的改进建议，AI将根据您的建议优化答案和思维链",
         "aiOptimize": "AI 智能优化",

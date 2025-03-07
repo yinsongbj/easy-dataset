@@ -59,6 +59,7 @@
         "generating": "Generating Dataset",
         "generatingProgress": "Completed: {{completed}}/{{total}}",
         "generatedCount": "Generated: {{count}}",
+        "completedCount": "Completed: {{count}}",
         "pleaseWait": "Please wait, processing..."
     },
     "common": {
@@ -221,6 +222,7 @@
         "confirmExport": "Confirm Export"
     },
     "datasets": {
+        "generatingDataset": "Generating Dataset",
         "aiOptimizeAdvicePlaceholder": "Please enter your suggestions for improving the answer, and AI will optimize the answer and reasoning chain based on your suggestions",
         "aiOptimizeAdvice": "Please enter your suggestions for improving the answer, and AI will optimize the answer and reasoning chain based on your suggestions",
         "aiOptimize": "AI Optimize",
