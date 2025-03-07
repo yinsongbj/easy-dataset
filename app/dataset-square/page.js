@@ -6,11 +6,13 @@ import StorageIcon from '@mui/icons-material/Storage';
 import Navbar from '@/components/Navbar';
 import { DatasetSearchBar } from '@/components/dataset-square/DatasetSearchBar';
 import { DatasetSiteList } from '@/components/dataset-square/DatasetSiteList';
+import { useTranslation } from 'react-i18next';
 
 export default function DatasetSquarePage() {
   const [projects, setProjects] = useState([]);
   const [models, setModels] = useState([]);
   const theme = useTheme();
+  const { t } = useTranslation();
 
   // 获取项目列表和模型列表
   useEffect(() => {
@@ -124,7 +126,7 @@ export default function DatasetSquarePage() {
                 textFillColor: 'transparent'
               }}
             >
-              数据集广场
+              {t('datasetSquare.title')}
             </Typography>
           </Box>
           <Typography
@@ -140,7 +142,7 @@ export default function DatasetSquarePage() {
               textShadow: '0 1px 3px rgba(0,0,0,0.1)'
             }}
           >
-            发现和探索各种公开数据集资源，助力您的模型训练和研究
+            {t('datasetSquare.subtitle')}
           </Typography>
 
           {/* 搜索栏组件 */}

@@ -1,48 +1,49 @@
 'use client';
 
-import { 
-  Card, 
-  CardActionArea, 
-  CardContent, 
-  CardMedia, 
-  Typography, 
+import {
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  Typography,
   Box,
   Chip,
   useTheme,
   alpha
 } from '@mui/material';
-import Image from 'next/image';
 import LaunchIcon from '@mui/icons-material/Launch';
 import StorageIcon from '@mui/icons-material/Storage';
+import { useTranslation } from 'react-i18next';
 
 export function DatasetSiteCard({ site }) {
   const { name, link, description, image, labels } = site;
   const theme = useTheme();
-  
+
   // 处理图片路径，如果没有图片则使用默认图片
   const imageUrl = image || `/imgs/default-dataset.png`;
-  
+  const { t } = useTranslation();
+
   // 处理卡片点击
   const handleCardClick = () => {
     window.open(link, '_blank');
   };
-  
+
   return (
-    <Card 
-      sx={{ 
-        height: '100%', 
-        display: 'flex', 
+    <Card
+      sx={{
+        height: '100%',
+        display: 'flex',
         flexDirection: 'column',
         transition: 'all 0.3s ease',
         borderRadius: 2,
         overflow: 'hidden',
-        boxShadow: theme.palette.mode === 'dark' 
-          ? '0 4px 20px rgba(0,0,0,0.3)' 
+        boxShadow: theme.palette.mode === 'dark'
+          ? '0 4px 20px rgba(0,0,0,0.3)'
           : '0 4px 20px rgba(0,0,0,0.1)',
         '&:hover': {
           transform: 'translateY(-6px)',
-          boxShadow: theme.palette.mode === 'dark' 
-            ? '0 8px 30px rgba(0,0,0,0.4)' 
+          boxShadow: theme.palette.mode === 'dark'
+            ? '0 8px 30px rgba(0,0,0,0.4)'
             : '0 8px 30px rgba(0,0,0,0.15)',
           '& .MuiCardMedia-root': {
             transform: 'scale(1.05)',
@@ -50,18 +51,18 @@ export function DatasetSiteCard({ site }) {
         }
       }}
     >
-      <CardActionArea 
+      <CardActionArea
         onClick={handleCardClick}
-        sx={{ 
-          flexGrow: 1, 
-          display: 'flex', 
-          flexDirection: 'column', 
+        sx={{
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
           alignItems: 'stretch',
           height: '100%',
           '&:hover': {
             '& .card-content': {
-              background: theme.palette.mode === 'dark' 
-                ? alpha(theme.palette.primary.dark, 0.1) 
+              background: theme.palette.mode === 'dark'
+                ? alpha(theme.palette.primary.dark, 0.1)
                 : alpha(theme.palette.primary.light, 0.1),
             }
           }
@@ -74,7 +75,7 @@ export function DatasetSiteCard({ site }) {
             height="160"
             image={imageUrl}
             alt={name}
-            sx={{ 
+            sx={{
               objectFit: 'cover',
               bgcolor: theme.palette.mode === 'dark' ? 'grey.900' : 'grey.100',
               transition: 'transform 0.5s ease',
@@ -93,7 +94,7 @@ export function DatasetSiteCard({ site }) {
           />
           <Chip
             icon={<StorageIcon fontSize="small" />}
-            label="数据集"
+            label={t('datasetSquare.dataset')}
             size="small"
             sx={{
               position: 'absolute',
@@ -109,22 +110,22 @@ export function DatasetSiteCard({ site }) {
             }}
           />
         </Box>
-        
+
         {/* 网站信息 */}
-        <CardContent 
+        <CardContent
           className="card-content"
-          sx={{ 
-            flexGrow: 1, 
-            display: 'flex', 
+          sx={{
+            flexGrow: 1,
+            display: 'flex',
             flexDirection: 'column',
             transition: 'background 0.3s ease',
             p: 2.5
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 1.5 }}>
-            <Typography 
-              variant="h6" 
-              component="div" 
+            <Typography
+              variant="h6"
+              component="div"
               sx={{
                 fontWeight: 600,
                 lineHeight: 1.3,
@@ -135,18 +136,18 @@ export function DatasetSiteCard({ site }) {
             >
               {name}
             </Typography>
-            <LaunchIcon 
-              fontSize="small" 
-              sx={{ 
+            <LaunchIcon
+              fontSize="small"
+              sx={{
                 color: theme.palette.mode === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
                 opacity: 0.8,
                 mt: 0.5
-              }} 
+              }}
             />
           </Box>
-          
-          <Typography 
-            variant="body2" 
+
+          <Typography
+            variant="body2"
             sx={{
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -160,7 +161,7 @@ export function DatasetSiteCard({ site }) {
           >
             {description}
           </Typography>
-          
+
           <Box sx={{ mt: 'auto', pt: 1.5 }}>
             {/* 标签显示 */}
             {labels && labels.length > 0 && (
@@ -184,14 +185,14 @@ export function DatasetSiteCard({ site }) {
                 ))}
               </Box>
             )}
-            
+
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Chip 
-                label="查看数据集" 
-                size="small" 
-                color="primary" 
+              <Chip
+                label={t('datasetSquare.viewDataset')}
+                size="small"
+                color="primary"
                 variant="outlined"
-                sx={{ 
+                sx={{
                   borderRadius: 1,
                   height: 24,
                   fontSize: '0.75rem',

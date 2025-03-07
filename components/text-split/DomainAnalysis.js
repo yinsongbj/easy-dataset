@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Paper,
@@ -187,6 +188,7 @@ function DomainTree({ tags, onEdit, onDelete, onAddChild }) {
 
 export default function DomainAnalysis({ projectId, toc = '', tags = [], loading = false, onTagsUpdate }) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
   const [editingTags, setEditingTags] = useState([...tags]);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -302,7 +304,7 @@ export default function DomainAnalysis({ projectId, toc = '', tags = [], loading
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || '保存标签失败');
+        throw new Error(errorData.error || t('domain.errors.saveFailed'));
       }
 
       const data = await response.json();
@@ -312,7 +314,7 @@ export default function DomainAnalysis({ projectId, toc = '', tags = [], loading
       }
       setSnackbar({
         open: true,
-        message: '标签更新成功',
+        message: t('domain.messages.updateSuccess'),
         severity: 'success'
       });
     } catch (error) {
@@ -380,7 +382,7 @@ export default function DomainAnalysis({ projectId, toc = '', tags = [], loading
         }}
       >
         <Typography variant="body1" color="textSecondary">
-          暂无目录结构，请先上传并处理文献
+          {t('domain.noToc')}
         </Typography>
       </Paper>
     );
@@ -410,8 +412,8 @@ export default function DomainAnalysis({ projectId, toc = '', tags = [], loading
             borderTopRightRadius: 2
           }}
         >
-          <Tab label="领域树" />
-          <Tab label="目录结构" />
+          <Tab label={t('domain.tabs.tree')} />
+          <Tab label={t('domain.tabs.structure')} />
         </Tabs>
 
         <Box sx={{
@@ -425,7 +427,7 @@ export default function DomainAnalysis({ projectId, toc = '', tags = [], loading
             <Box>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h6">
-                  领域知识树
+                  {t('domain.tabs.tree')}
                 </Typography>
                 <Tooltip title="添加一级标签">
                   <Button
@@ -434,7 +436,7 @@ export default function DomainAnalysis({ projectId, toc = '', tags = [], loading
                     startIcon={<AddIcon />}
                     onClick={handleAddTag}
                   >
-                    添加一级标签
+                    {t('domain.addRootTag')}
                   </Button>
                 </Tooltip>
               </Box>
@@ -456,7 +458,7 @@ export default function DomainAnalysis({ projectId, toc = '', tags = [], loading
                 ) : (
                   <Box sx={{ textAlign: 'center', py: 4 }}>
                     <Typography variant="body2" color="textSecondary" gutterBottom>
-                      暂无领域标签树数据
+                      {t('domain.noTags')}
                     </Typography>
                     <Button
                       variant="outlined"
@@ -465,7 +467,7 @@ export default function DomainAnalysis({ projectId, toc = '', tags = [], loading
                       onClick={handleAddTag}
                       sx={{ mt: 1 }}
                     >
-                      添加第一个标签
+                      {t('domain.addFirstTag')}
                     </Button>
                   </Box>
                 )}
@@ -475,7 +477,7 @@ export default function DomainAnalysis({ projectId, toc = '', tags = [], loading
           <TabPanel value={activeTab} index={1}>
             <Box>
               <Typography variant="h6" gutterBottom>
-                文档目录结构
+                {t('domain.docStructure')}
               </Typography>
               <Divider sx={{ mb: 2 }} />
               <Box sx={{
@@ -509,19 +511,19 @@ export default function DomainAnalysis({ projectId, toc = '', tags = [], loading
       {/* 添加/编辑标签对话框 */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
         <DialogTitle>
-          {dialogMode === 'add' ? '添加标签' :
-            dialogMode === 'edit' ? '编辑标签' : '添加子标签'}
+          {dialogMode === 'add' ? t('domain.dialog.addTitle') :
+            dialogMode === 'edit' ? t('domain.dialog.editTitle') : t('domain.dialog.addChildTitle')}
         </DialogTitle>
         <DialogContent>
           <DialogContentText sx={{ mb: 2 }}>
-            {dialogMode === 'add' ? '请输入新的一级标签名称' :
-              dialogMode === 'edit' ? '请编辑标签名称' :
-                `请为"${parentNode?.label}"添加子标签`}
+            {dialogMode === 'add' ? t('domain.dialog.inputRoot') :
+              dialogMode === 'edit' ? t('domain.dialog.inputEdit') :
+                t('domain.dialog.inputChild', { label: parentNode?.label })}
           </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
-            label="标签名称"
+            label={t('domain.dialog.labelName')}
             type="text"
             fullWidth
             variant="outlined"
@@ -530,34 +532,36 @@ export default function DomainAnalysis({ projectId, toc = '', tags = [], loading
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>取消</Button>
+          <Button onClick={handleCloseDialog}>
+            {t('common.cancel')}
+          </Button>
           <Button
             onClick={handleSubmit}
             variant="contained"
             disabled={saving || !labelValue.trim()}
           >
-            {saving ? '保存中...' : '保存'}
+            {saving ? t('common.saving') : t('common.save')}
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* 删除确认对话框 */}
       <Dialog open={deleteDialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>确认删除</DialogTitle>
+        <DialogTitle>{t('common.confirmDelete')}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            确定要删除标签"{currentNode?.label}"吗？
+            {t('domain.dialog.deleteConfirm', { label: currentNode?.label })}
             {currentNode?.child && currentNode.child.length > 0 &&
-              "此操作将同时删除所有子标签，且无法恢复。"}
+              t('domain.dialog.deleteWarning')}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>取消</Button>
+          <Button onClick={handleCloseDialog}>{t('common.cancel')}</Button>
           <Button onClick={handleConfirmDelete} color="error" variant="contained">
-            {saving ? '删除中...' : '删除'}
+            {saving ? t('common.deleting') : t('common.delete')}
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </Box >
   );
 }

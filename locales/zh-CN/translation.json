@@ -1,64 +1,145 @@
 {
-  "common": {
-    "create": "创建",
-    "edit": "编辑",
-    "delete": "删除",
-    "save": "保存",
-    "cancel": "取消",
-    "confirm": "确认"
-  },
-  "home": {
-    "title": "Easy Dataset",
-    "subtitle": "一个强大的大型语言模型微调数据集创建工具",
-    "createProject": "创建项目",
-    "searchDataset": "搜索公开数据集"
-  },
-  "projects": {
-    "fetchFailed": "获取项目列表失败",
-    "fetchError": "获取项目列表出错",
-    "loading": "正在加载您的项目...",
-    "createFailed": "创建项目失败",
-    "createError": "创建项目出错",
-    "createNew": "创建新项目",
-    "name": "项目名称",
-    "description": "项目描述"
-  },
-  "textSplit": {
-    "fetchChunksFailed": "获取文本块失败",
-    "fetchChunksError": "获取文本块出错",
-    "fileResultReceived": "获取到文件结果",
-    "fileUploadSuccess": "文件上传成功",
-    "splitTextFailed": "文本分割失败",
-    "splitTextError": "文本分割出错",
-    "deleteChunkFailed": "删除文本块失败",
-    "deleteChunkError": "删除文本块出错",
-    "selectModelFirst": "请先选择一个模型，可以在顶部导航栏选择",
-    "modelNotAvailable": "选择的模型不可用，请重新选择",
-    "generateQuestionsFailed": "为文本块 {{chunkId}} 生成问题失败",
-    "questionsGenerated": "已生成 {{total}} 个问题",
-    "questionsGeneratedSuccess": "成功为文本块生成了 {{total}} 个问题",
-    "generateQuestionsForChunkFailed": "为文本块 {{chunkId}} 生成问题失败",
-    "generateQuestionsForChunkError": "为文本块 {{chunkId}} 生成问题出错",
-    "generateQuestionsError": "生成问题出错",
-    "partialSuccess": "部分文本块生成问题成功 ({{successCount}}/{{total}})，{{errorCount}} 个文本块失败",
-    "allSuccess": "成功为 {{successCount}} 个文本块生成了 {{totalQuestions}} 个问题",
-    "fileDeleted": "文件 {{fileName}} 已删除，刷新文本块列表",
-    "tabs": {
-      "smartSplit": "智能分割",
-      "domainAnalysis": "领域分析"
+    "common": {
+        "create": "创建",
+        "edit": "编辑",
+        "delete": "删除",
+        "save": "保存",
+        "cancel": "取消",
+        "confirm": "确认",
+        "close": "关闭",
+        "add": "添加",
+        "remove": "删除",
+        "loading": "加载中...",
+        "yes": "是",
+        "no": "否",
+        "confirmDelete": "确认删除吗？",
+        "confirmDeleteProject": "确认删除项目吗？",
+        "saving": "保存中...",
+        "deleting": "删除中..."
     },
-    "loading": "加载中...",
-    "fetchingDocuments": "正在获取文献数据",
-    "processing": "处理中...",
-    "progressStatus": "已选择 {{total}} 个文本块，已处理完成 {{completed}} 个",
-    "processingPleaseWait": "正在努力处理中，请稍候！"
-  },
-  "export": {
-    "title": "导出数据集",
-    "format": "格式",
-    "fileFormat": "文件格式",
-    "systemPrompt": "系统提示词",
-    "onlyConfirmed": "仅导出已确认数据",
-    "example": "格式示例"
-  }
+    "home": {
+        "title": "Easy Dataset",
+        "subtitle": "一个强大的大型语言模型微调数据集创建工具",
+        "createProject": "创建项目",
+        "searchDataset": "搜索公开数据集"
+    },
+    "projects": {
+        "fetchFailed": "获取项目列表失败",
+        "fetchError": "获取项目列表出错",
+        "loading": "正在加载您的项目...",
+        "createFailed": "创建项目失败",
+        "createError": "创建项目出错",
+        "createNew": "创建新项目",
+        "name": "项目名称",
+        "description": "项目描述"
+    },
+    "textSplit": {
+        "uploadNewDocument": "上传新文献",
+        "selectFile": "选择文件",
+        "markdownOnly": "目前仅支持上传 Markdown (.md) 格式文件",
+        "uploadAndProcess": "上传并处理文件",
+        "selectedFiles": "已选择文件（{{count}}）",
+        "oneFileMessage": "一个项目限制处理一个文件，如需上传新文件请先删除现有文件",
+        "noChunks": "暂无文本块，请先上传并处理文献",
+        "chunkDetails": "文本块详情: {{chunkId}}",
+        "fetchChunksFailed": "获取文本块失败",
+        "fetchChunksError": "获取文本块出错",
+        "fileResultReceived": "获取到文件结果",
+        "fileUploadSuccess": "文件上传成功",
+        "splitTextFailed": "文本分割失败",
+        "splitTextError": "文本分割出错",
+        "deleteChunkFailed": "删除文本块失败",
+        "deleteChunkError": "删除文本块出错",
+        "selectModelFirst": "请先选择一个模型，可以在顶部导航栏选择",
+        "modelNotAvailable": "选择的模型不可用，请重新选择",
+        "generateQuestionsFailed": "为文本块 {{chunkId}} 生成问题失败",
+        "questionsGenerated": "已生成 {{total}} 个问题",
+        "questionsGeneratedSuccess": "成功为文本块生成了 {{total}} 个问题",
+        "generateQuestionsForChunkFailed": "为文本块 {{chunkId}} 生成问题失败",
+        "generateQuestionsForChunkError": "为文本块 {{chunkId}} 生成问题出错",
+        "generateQuestionsError": "生成问题出错",
+        "partialSuccess": "部分文本块生成问题成功 ({{successCount}}/{{total}})，{{errorCount}} 个文本块失败",
+        "allSuccess": "成功为 {{successCount}} 个文本块生成了 {{totalQuestions}} 个问题",
+        "fileDeleted": "文件 {{fileName}} 已删除，刷新文本块列表",
+        "tabs": {
+            "smartSplit": "智能分割",
+            "domainAnalysis": "领域分析"
+        },
+        "loading": "加载中...",
+        "fetchingDocuments": "正在获取文献数据",
+        "processing": "处理中...",
+        "progressStatus": "已选择 {{total}} 个文本块，已处理完成 {{completed}} 个",
+        "processingPleaseWait": "正在努力处理中，请稍候！",
+        "oneFileLimit": "已有上传文件，不允许选择新文件",
+        "unsupportedFormat": "不支持的文件格式: {{files}}",
+        "modelInfoParseError": "解析模型信息失败",
+        "uploadFailed": "上传失败",
+        "uploadSuccess": "成功上传 {{count}} 个文件",
+        "deleteFailed": "删除文件失败",
+        "deleteSuccess": "文件 {{fileName}} 已成功删除"
+    },
+    "domain": {
+        "title": "领域知识树",
+        "addRootTag": "添加一级标签",
+        "addFirstTag": "添加第一个标签",
+        "noTags": "暂无领域标签树数据",
+        "docStructure": "文档目录结构",
+        "noToc": "暂无目录结构，请先上传并处理文献",
+        "editTag": "编辑标签",
+        "deleteTag": "删除标签",
+        "addChildTag": "添加子标签",
+        "dialog": {
+            "addTitle": "添加标签",
+            "editTitle": "编辑标签",
+            "addChildTitle": "添加子标签",
+            "inputRoot": "请输入新的一级标签名称",
+            "inputEdit": "请编辑标签名称",
+            "inputChild": "请为\"{label}\"添加子标签",
+            "labelName": "标签名称",
+            "saving": "保存中...",
+            "save": "保存",
+            "deleteConfirm": "确定要删除标签\"{label}\"吗？",
+            "deleteWarning": "此操作将同时删除所有子标签，且无法恢复。",
+            "emptyLabel": "标签名称不能为空"
+        },
+        "tabs": {
+            "tree": "领域树",
+            "structure": "目录结构"
+        },
+        "errors": {
+            "saveFailed": "保存标签失败"
+        },
+        "messages": {
+            "updateSuccess": "标签更新成功"
+        }
+    },
+    "export": {
+        "title": "导出数据集",
+        "format": "格式",
+        "fileFormat": "文件格式",
+        "systemPrompt": "系统提示词",
+        "onlyConfirmed": "仅导出已确认数据",
+        "example": "格式示例"
+    },
+    "datasetSquare": {
+        "title": "数据集广场",
+        "subtitle": "发现和探索各种公开数据集资源，助力您的模型训练和研究",
+        "searchPlaceholder": "搜索数据集关键词...",
+        "searchVia": "通过",
+        "categoryTitle": "数据集分类",
+        "categories": {
+            "all": "全部",
+            "popular": "热门推荐",
+            "chinese": "中文资源",
+            "english": "英文资源",
+            "research": "研究数据",
+            "multimodal": "多模态"
+        },
+        "foundResources": "找到 {{count}} 个数据集资源",
+        "currentFilter": "当前筛选: {{category}}",
+        "noDatasets": "没有找到符合条件的数据集",
+        "tryOtherCategories": "请尝试其他分类或返回全部数据集查看",
+        "dataset": "数据集",
+        "viewDataset": "查看数据集"
+    }
 }

@@ -50,12 +50,14 @@ With Easy Dataset, you can transform your domain knowledge into structured datas
 
 2. Install dependencies:
    ```bash
-   pnpm install
+   npm install
    ```
 
 3. Start the development server:
    ```bash
-   pnpm dev
+   npm run build
+
+   npm run start
    ```
 
 4. Open your browser and navigate to `http://localhost:3000`

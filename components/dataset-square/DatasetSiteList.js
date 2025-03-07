@@ -1,15 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { 
-  Grid, 
-  Box, 
-  Typography, 
-  Skeleton, 
-  Divider, 
-  Tabs, 
-  Tab, 
-  Fade, 
+import {
+  Grid,
+  Box,
+  Typography,
+  Skeleton,
+  Divider,
+  Tabs,
+  Tab,
+  Fade,
   Chip,
   useTheme,
   alpha,
@@ -20,9 +20,10 @@ import CategoryIcon from '@mui/icons-material/Category';
 import StarIcon from '@mui/icons-material/Star';
 import { DatasetSiteCard } from './DatasetSiteCard';
 import sites from '@/constant/sites.json';
+import { useTranslation } from 'react-i18next';
 
 // 定义类别
- const CATEGORIES = {
+const CATEGORIES = {
   ALL: '全部',
   POPULAR: '热门推荐',
   CHINESE: '中文资源',
@@ -35,21 +36,22 @@ export function DatasetSiteList() {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState(CATEGORIES.ALL);
   const theme = useTheme();
-  
+  const { t } = useTranslation();
+
   // 模拟加载效果
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 800);
-    
+
     return () => clearTimeout(timer);
   }, []);
-  
+
   // 处理类别切换
   const handleCategoryChange = (event, newValue) => {
     setActiveCategory(newValue);
   };
-  
+
   // 根据当前选中的类别过滤网站
   const getFilteredSites = () => {
     if (activeCategory === CATEGORIES.ALL) {
@@ -67,9 +69,9 @@ export function DatasetSiteList() {
     }
     return sites;
   };
-  
+
   const filteredSites = getFilteredSites();
-  
+
   return (
     <Box sx={{ mt: 4 }}>
       {/* 类别选择器 */}
@@ -77,21 +79,21 @@ export function DatasetSiteList() {
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
           <CategoryIcon sx={{ mr: 1, color: 'primary.main' }} />
           <Typography variant="h5" component="h2" fontWeight={600}>
-            数据集分类
+            {t('datasetSquare.categoryTitle')}
           </Typography>
         </Box>
-        
-        <Paper 
-          elevation={0} 
-          sx={{ 
-            borderRadius: 2, 
-            p: 0.5, 
+
+        <Paper
+          elevation={0}
+          sx={{
+            borderRadius: 2,
+            p: 0.5,
             bgcolor: theme.palette.mode === 'dark' ? alpha(theme.palette.primary.dark, 0.1) : alpha(theme.palette.primary.light, 0.1),
             border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
             overflow: 'auto'
           }}
         >
-          <Tabs 
+          <Tabs
             value={activeCategory}
             onChange={handleCategoryChange}
             variant="scrollable"
@@ -114,16 +116,16 @@ export function DatasetSiteList() {
               }
             }}
           >
-            <Tab 
-              value={CATEGORIES.ALL} 
-              label={CATEGORIES.ALL} 
-              icon={<StorageIcon fontSize="small" />} 
+            <Tab
+              value={CATEGORIES.ALL}
+              label={CATEGORIES.ALL}
+              icon={<StorageIcon fontSize="small" />}
               iconPosition="start"
             />
-            <Tab 
-              value={CATEGORIES.POPULAR} 
-              label={CATEGORIES.POPULAR} 
-              icon={<StarIcon fontSize="small" />} 
+            <Tab
+              value={CATEGORIES.POPULAR}
+              label={CATEGORIES.POPULAR}
+              icon={<StarIcon fontSize="small" />}
               iconPosition="start"
             />
             <Tab value={CATEGORIES.CHINESE} label={CATEGORIES.CHINESE} />
@@ -133,7 +135,7 @@ export function DatasetSiteList() {
           </Tabs>
         </Paper>
       </Box>
-      
+
       {/* 数据集网站列表 */}
       <Box sx={{ position: 'relative', minHeight: 300 }}>
         {loading ? (
@@ -159,24 +161,24 @@ export function DatasetSiteList() {
               {/* 结果数量提示 */}
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="subtitle1" color="text.secondary">
-                  找到 <Chip 
-                    label={filteredSites.length} 
-                    size="small" 
-                    color="primary" 
-                    sx={{ mx: 0.5, height: 20, fontSize: '0.75rem' }} 
-                  /> 个数据集资源
+                  {t('datasetSquare.foundResources', { count: filteredSites.length })} <Chip
+                    label={filteredSites.length}
+                    size="small"
+                    color="primary"
+                    sx={{ mx: 0.5, height: 20, fontSize: '0.75rem' }}
+                  />
                 </Typography>
-                
+
                 {activeCategory !== CATEGORIES.ALL && (
-                  <Chip 
-                    label={`当前筛选: ${activeCategory}`} 
+                  <Chip
+                    label={t('datasetSquare.currentFilter', { category: activeCategory })}
                     size="small"
                     onDelete={() => setActiveCategory(CATEGORIES.ALL)}
                     sx={{ borderRadius: 1.5 }}
                   />
                 )}
               </Box>
-              
+
               {filteredSites.length > 0 ? (
                 <Grid container spacing={3}>
                   {filteredSites.map((site, index) => (
@@ -186,20 +188,20 @@ export function DatasetSiteList() {
                   ))}
                 </Grid>
               ) : (
-                <Box sx={{ 
-                  py: 10, 
-                  display: 'flex', 
-                  flexDirection: 'column', 
+                <Box sx={{
+                  py: 10,
+                  display: 'flex',
+                  flexDirection: 'column',
                   alignItems: 'center',
                   bgcolor: theme.palette.mode === 'dark' ? alpha(theme.palette.background.paper, 0.2) : alpha(theme.palette.grey[100], 0.5),
                   borderRadius: 2
                 }}>
                   <StorageIcon sx={{ fontSize: 60, color: 'text.disabled', mb: 2 }} />
                   <Typography variant="h6" color="text.secondary" gutterBottom>
-                    没有找到符合条件的数据集
+                    {t('datasetSquare.noDatasets')}
                   </Typography>
                   <Typography variant="body2" color="text.disabled">
-                    请尝试其他分类或返回全部数据集查看
+                    {t('datasetSquare.tryOtherCategories')}
                   </Typography>
                 </Box>
               )}

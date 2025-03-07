@@ -10,12 +10,14 @@ import {
   CircularProgress
 } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
+import { useTranslation } from 'react-i18next';
 
 export default function ChunkViewDialog({
   open,
   chunk,
   onClose
 }) {
+  const { t } = useTranslation();
   return (
     <Dialog
       open={open}
@@ -24,7 +26,7 @@ export default function ChunkViewDialog({
       fullWidth
     >
       <DialogTitle>
-        文本块详情: {chunk?.id}
+        {t('textSplit.chunkDetails', { chunkId: chunk?.id })}
       </DialogTitle>
       <DialogContent dividers>
         {chunk ? (
@@ -40,7 +42,7 @@ export default function ChunkViewDialog({
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>关闭</Button>
+        <Button onClick={onClose}>{t('common.close')}</Button>
       </DialogActions>
     </Dialog>
   );

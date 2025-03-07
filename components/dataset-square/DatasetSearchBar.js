@@ -22,6 +22,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import LaunchIcon from '@mui/icons-material/Launch';
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
 import sites from '@/constant/sites.json';
+import { useTranslation } from 'react-i18next';
 
 export function DatasetSearchBar() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -30,6 +31,7 @@ export function DatasetSearchBar() {
   const searchRef = useRef(null);
   const suggestionsRef = useRef(null);
   const theme = useTheme();
+  const { t } = useTranslation();
 
   // 从 localStorage 加载最近搜索
   useEffect(() => {
@@ -133,7 +135,7 @@ export function DatasetSearchBar() {
       <Box sx={{ position: 'relative', width: '100%', zIndex: 1300 }} ref={searchRef}>
         <TextField
           fullWidth
-          placeholder="搜索数据集关键词..."
+          placeholder={t('datasetSquare.searchPlaceholder')}
           value={searchQuery}
           onChange={handleSearchChange}
           onKeyDown={handleSearchSubmit}
@@ -240,7 +242,7 @@ export function DatasetSearchBar() {
                                   <TravelExploreIcon fontSize="small" />
                                 </Avatar>
                                 <Typography>
-                                  通过 <strong>{site.name}</strong> 搜索
+                                  {t('datasetSquare.searchVia')} <strong>{site.name}</strong> Search
                                 </Typography>
                               </Box>
                               <Box sx={{ display: 'flex', alignItems: 'center' }}>

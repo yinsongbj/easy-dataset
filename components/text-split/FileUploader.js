@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Paper,
   Alert,
@@ -21,6 +22,7 @@ import DeleteConfirmDialog from './components/DeleteConfirmDialog';
  */
 export default function FileUploader({ projectId, onUploadSuccess, onProcessStart, onFileDeleted }) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [files, setFiles] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
@@ -44,7 +46,7 @@ export default function FileUploader({ projectId, onUploadSuccess, onProcessStar
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || '获取文件列表失败');
+        throw new Error(errorData.error || t('textSplit.fetchFilesFailed'));
       }
 
       const data = await response.json();
@@ -61,7 +63,7 @@ export default function FileUploader({ projectId, onUploadSuccess, onProcessStar
   const handleFileSelect = (event) => {
     // 如果已有上传文件，不允许选择新文件
     if (uploadedFiles.length > 0) {
-      setError("一个项目限制处理一个文件，如需上传新文件请先删除现有文件");
+      setError(t('textSplit.oneFileLimit'));
       return;
     }
     const selectedFiles = Array.from(event.target.files);
@@ -71,7 +73,7 @@ export default function FileUploader({ projectId, onUploadSuccess, onProcessStar
     const invalidFiles = selectedFiles.filter(file => !file.name.endsWith('.md'));
 
     if (invalidFiles.length > 0) {
-      setError(`不支持的文件格式: ${invalidFiles.map(f => f.name).join(', ')}。目前仅支持Markdown文件。`);
+      setError(t('textSplit.unsupportedFormat', { files: invalidFiles.map(f => f.name).join(', ') }));
     }
 
     if (validFiles.length > 0) {
@@ -103,7 +105,7 @@ export default function FileUploader({ projectId, onUploadSuccess, onProcessStar
       let selectedModelInfo = null;
 
       if (!selectedModelId) {
-        throw new Error('未选择模型，请先在顶部导航栏选择一个模型');
+        throw new Error(t('textSplit.selectModelFirst'));
       }
 
       // 尝试从 localStorage 获取完整的模型信息
@@ -113,7 +115,7 @@ export default function FileUploader({ projectId, onUploadSuccess, onProcessStar
         try {
           selectedModelInfo = JSON.parse(modelInfoStr);
         } catch (e) {
-          throw new Error('解析模型信息出错!');
+          throw new Error(t('textSplit.modelInfoParseError'));
         }
       }
 
@@ -130,14 +132,14 @@ export default function FileUploader({ projectId, onUploadSuccess, onProcessStar
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || '上传文件失败');
+          throw new Error(errorData.error || t('textSplit.uploadFailed'));
         }
 
         const data = await response.json();
         uploadedFileNames.push(data.fileName);
       }
 
-      setSuccessMessage(`成功上传 ${files.length} 个文件`);
+      setSuccessMessage(t('textSplit.uploadSuccess', { count: files.length }));
       setSuccess(true);
       setFiles([]);
 
@@ -148,7 +150,7 @@ export default function FileUploader({ projectId, onUploadSuccess, onProcessStar
         onUploadSuccess(uploadedFileNames, selectedModelInfo);
       }
     } catch (err) {
-      setError(err.message || '上传文件失败');
+      setError(err.message || t('textSplit.uploadFailed'));
     } finally {
       setUploading(false);
     }
@@ -180,7 +182,7 @@ export default function FileUploader({ projectId, onUploadSuccess, onProcessStar
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || '删除文件失败');
+        throw new Error(errorData.error || t('textSplit.deleteFailed'));
       }
 
       // 刷新文件列表
@@ -191,7 +193,7 @@ export default function FileUploader({ projectId, onUploadSuccess, onProcessStar
         onFileDeleted(fileToDelete);
       }
 
-      setSuccessMessage(`成功删除文件 ${fileToDelete}`);
+      setSuccessMessage(t('textSplit.deleteSuccess', { fileName: fileToDelete }));
       setSuccess(true);
       location.reload();
     } catch (error) {
@@ -259,8 +261,6 @@ export default function FileUploader({ projectId, onUploadSuccess, onProcessStar
           {successMessage}
         </Alert>
       </Snackbar>
-
-      {/* 删除模型选择对话框，直接从 localStorage 获取模型信息 */}
 
       <DeleteConfirmDialog
         open={deleteConfirmOpen}

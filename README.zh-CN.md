@@ -50,12 +50,14 @@ Easy Dataset 是一个专为创建大型语言模型（LLM）微调数据集而�
 
 2. 安装依赖：
    ```bash
-   pnpm install
+   npm install
    ```
 
 3. 启动开发服务器：
    ```bash
-   pnpm dev
+   npm run build
+
+   npm run start
    ```
 
 4. 打开浏览器并访问 `http://localhost:3000`
