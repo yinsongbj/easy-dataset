@@ -42,7 +42,7 @@ With Easy Dataset, you can transform your domain knowledge into structured datas
 - Node.js 18.x or higher
 - pnpm (recommended) or npm
 
-### Installation
+### Using npm
 
 1. Clone the repository:
    ```bash
@@ -118,30 +118,66 @@ With Easy Dataset, you can transform your domain knowledge into structured datas
 
 ```
 easy-dataset/
-├── app/                      # Next.js application directory
-│   ├── api/                  # API routes
-│   │   └── projects/         # Project-related APIs
-│   ├── projects/             # Project-related pages
-│   │   ├── [projectId]/      # Project detail pages
-│   └── page.js               # Home page
-├── components/               # React components
-│   ├── home/                 # Home page components
-│   │   ├── HeroSection.js
-│   │   ├── ProjectList.js
-│   │   └── StatsCard.js
-│   ├── Navbar.js             # Navigation bar component
-│   └── CreateProjectDialog.js
-├── lib/                      # Utility libraries
-│   └── db/                   # Database modules
-│       ├── base.js           # Base utility functions
-│       ├── projects.js       # Project management
-│       ├── texts.js          # Text processing
-│       ├── datasets.js       # Dataset management
-│       └── index.js          # Module exports
-├── styles/                   # Style files
-│   └── home.js               # Home page styles
-└── local-db/                 # Local database directory
+├── app/                                # Next.js application directory
+│   ├── api/                            # API routes
+│   │   ├── llm/                        # LLM API integration
+│   │   │   ├── ollama/                 # Ollama API integration
+│   │   │   └── openai/                 # OpenAI API integration
+│   │   ├── projects/                   # Project management APIs
+│   │   │   ├── [projectId]/            # Project-specific operations
+│   │   │   │   ├── chunks/             # Text chunk operations
+│   │   │   │   ├── datasets/           # Dataset generation and management
+│   │   │   │   │   └── optimize/       # Dataset optimization API
+│   │   │   │   ├── generate-questions/ # Batch question generation
+│   │   │   │   ├── questions/          # Question management
+│   │   │   │   └── split/              # Text splitting operations
+│   │   │   └── user/                   # User-specific project operations
+│   ├── projects/                       # Front-end project pages
+│   │   └── [projectId]/                # Project-specific pages
+│   │       ├── datasets/               # Dataset management UI
+│   │       ├── questions/              # Question management UI
+│   │       ├── settings/               # Project settings UI
+│   │       └── text-split/             # Text processing UI
+│   └── page.js                         # Home page
+├── components/                         # React components
+│   ├── datasets/                       # Dataset-related components
+│   ├── home/                           # Home page components
+│   ├── projects/                       # Project management components
+│   ├── questions/                      # Question management components
+│   │   ├── QuestionListView.js         # Question list view
+│   │   └── QuestionTreeView.js         # Question tree view
+│   └── text-split/                     # Text processing components
+│       ├── ChunkList.js                # Text chunk list
+│       ├── DomainAnalysis.js           # Domain analysis component
+│       └── FileUploader.js             # File upload component
+├── lib/                                # Core libraries and utilities
+│   ├── db/                             # Database operations
+│   │   ├── base.js                     # Base file operations
+│   │   ├── datasets.js                 # Dataset CRUD operations
+│   │   ├── projects.js                 # Project management
+│   │   ├── questions.js                # Question management
+│   │   ├── tags.js                     # Tag management
+│   │   └── texts.js                    # Text processing
+│   ├── i18n/                           # Internationalization
+│   ├── llm/                            # LLM integration
+│   │   ├── common/                     # Common LLM utilities
+│   │   ├── core/                       # Core LLM client
+│   │   └── prompts/                    # Prompt templates
+│   │       ├── answer.js               # Answer generation prompts (Chinese)
+│   │       ├── answerEn.js             # Answer generation prompts (English)
+│   │       ├── question.js             # Question generation prompts (Chinese)
+│   │       ├── questionEn.js           # Question generation prompts (English)
+│   │       └── ... other prompts
+│   └── text-splitter/                  # Text splitting utilities
+├── locales/                            # Internationalization resources
+│   ├── en/                             # English translations
+│   └── zh-CN/                          # Chinese translations
+├── public/                             # Static assets
+│   └── imgs/                           # Image resources
+└── local-db/                           # Local file-based database
+    └── projects/                       # Project data storage
 ```
+
 
 ## Documentation
 
