@@ -70,8 +70,10 @@ Easy Dataset 是一个专为创建大型语言模型（LLM）微调数据集而�
 
 2. 运行容器：
    ```bash
-   docker run -d -p 3000:3000 -v /path/to/local-db:/app/local-db --name easy-dataset conardli17/easy-dataset:latest
+   docker run -d -p 3000:3000 -v {YOUR_LOCAL_DB_PATH}:/app/local-db --name easy-dataset conardli17/easy-dataset:latest
    ```
+
+注意：为了防止数据丢失，YOUR_LOCAL_DB_PATH 应替换为你希望存储本地数据库的路径。
 
 3. 打开浏览器并访问 `http://localhost:3000`
 
