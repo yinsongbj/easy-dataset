@@ -22,38 +22,42 @@ Easy Dataset 是一个专为创建大型语言模型（LLM）微调数据集而�
 
 通过 Easy Dataset，您可以将领域知识转化为结构化数据集，兼容所有遵循 OpenAI 格式的 LLM API，使微调过程变得简单高效。
 
-
 ![](./public/imgs/cn-arc.png)
 
 ## 功能特点
 
-- **智能文档处理**：上传 Markdown 文件并自动将其分割为有意义的片段
-- **智能问题生成**：从每个文本片段中提取相关问题
-- **答案生成**：使用 LLM API 为每个问题生成全面的答案
-- **灵活编辑**：在流程的任何阶段编辑问题、答案和数据集
-- **多种导出格式**：以各种格式（Alpaca、ShareGPT）和文件类型（JSON、JSONL）导出数据集
-- **广泛的模型支持**：兼容所有遵循 OpenAI 格式的 LLM API
-- **用户友好界面**：为技术和非技术用户设计的直观 UI
-- **自定义系统提示**：添加自定义系统提示以引导模型响应
+* **智能文档处理**：上传 Markdown 文件并自动将其分割为有意义的片段
+* **智能问题生成**：从每个文本片段中提取相关问题
+* **答案生成**：使用 LLM API 为每个问题生成全面的答案
+* **灵活编辑**：在流程的任何阶段编辑问题、答案和数据集
+* **多种导出格式**：以各种格式（Alpaca、ShareGPT）和文件类型（JSON、JSONL）导出数据集
+* **广泛的模型支持**：兼容所有遵循 OpenAI 格式的 LLM API
+* **用户友好界面**：为技术和非技术用户设计的直观 UI
+* **自定义系统提示**：添加自定义系统提示以引导模型响应
 
 ## 本地运行
-
 
 ### 使用 NPM 安装
 
 1. 克隆仓库：
-   ```bash
+   
+
+```bash
    git clone https://github.com/ConardLi/easy-dataset.git
    cd easy-dataset
    ```
 
 2. 安装依赖：
-   ```bash
+   
+
+```bash
    npm install
    ```
 
 3. 启动开发服务器：
-   ```bash
+   
+
+```bash
    npm run build
 
    npm run start
@@ -64,16 +68,20 @@ Easy Dataset 是一个专为创建大型语言模型（LLM）微调数据集而�
 ### 使用 Docker
 
 1. 拉取镜像：
-   ```bash
+   
+
+```bash
    docker pull conardli17/easy-dataset:latest
    ```
 
 2. 运行容器：
-   ```bash
+   
+
+```bash
    docker run -d -p 3000:3000 -v {YOUR_LOCAL_DB_PATH}:/app/local-db --name easy-dataset conardli17/easy-dataset:latest
    ```
 
-注意：为了防止数据丢失，YOUR_LOCAL_DB_PATH 应替换为你希望存储本地数据库的路径。
+> 注意：为了防止数据丢失，YOUR_LOCAL_DB_PATH 应替换为你希望存储本地数据库的路径。
 
 3. 打开浏览器并访问 `http://localhost:3000`
 
@@ -82,10 +90,12 @@ Easy Dataset 是一个专为创建大型语言模型（LLM）微调数据集而�
 ### 创建项目
 
 <table>
+
     <tr>
         <td><img src="./public/imgs/1.png"></td>
         <td><img src="./public/imgs/2.png"></td>
     </tr>
+
 </table>
 
 1. 在首页点击"创建项目"按钮；
@@ -95,10 +105,12 @@ Easy Dataset 是一个专为创建大型语言模型（LLM）微调数据集而�
 ### 处理文档
 
 <table>
+
     <tr>
         <td><img src="./public/imgs/3.png"></td>
         <td><img src="./public/imgs/4.png"></td>
     </tr>
+
 </table>
 
 1. 在"文本分割"部分上传您的 Markdown 文件；
@@ -108,10 +120,12 @@ Easy Dataset 是一个专为创建大型语言模型（LLM）微调数据集而�
 ### 生成问题
 
 <table>
+
     <tr>
         <td><img src="./public/imgs/5.png"></td>
         <td><img src="./public/imgs/6.png"></td>
     </tr>
+
 </table>
 
 1. 导航到"问题"部分；
@@ -122,10 +136,12 @@ Easy Dataset 是一个专为创建大型语言模型（LLM）微调数据集而�
 ### 创建数据集
 
 <table>
+
     <tr>
         <td><img src="./public/imgs/7.png"></td>
         <td><img src="./public/imgs/8.png"></td>
     </tr>
+
 </table>
 
 1. 转到"数据集"部分；
@@ -136,10 +152,12 @@ Easy Dataset 是一个专为创建大型语言模型（LLM）微调数据集而�
 ### 导出数据集
 
 <table>
+
     <tr>
         <td><img src="./public/imgs/9.png"></td>
         <td><img src="./public/imgs/10.png"></td>
     </tr>
+
 </table>
 
 1. 在数据集部分点击"导出"按钮；

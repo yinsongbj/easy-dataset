@@ -76,7 +76,7 @@ With Easy Dataset, you can transform your domain knowledge into structured datas
    docker run -d -p 3000:3000 -v {YOUR_LOCAL_DB_PATH}:/app/local-db --name easy-dataset conardli17/easy-dataset:latest
    ```
 
-Note: To prevent data loss, replace YOUR_LOCAL_DB_PATH with the path where you want to store the local database.
+> Note: To prevent data loss, replace YOUR_LOCAL_DB_PATH with the path where you want to store the local database.
 
 
 3. Open your browser and navigate to `http://localhost:3000`
