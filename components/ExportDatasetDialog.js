@@ -16,7 +16,9 @@ import {
     Typography,
     Box,
     Paper,
-    useTheme
+    useTheme,
+    Grid,
+    Divider
 } from '@mui/material';
 
 const ExportDatasetDialog = ({ open, onClose, onExport }) => {
@@ -26,6 +28,13 @@ const ExportDatasetDialog = ({ open, onClose, onExport }) => {
     const [systemPrompt, setSystemPrompt] = useState('');
     const [confirmedOnly, setConfirmedOnly] = useState(true);
     const [fileFormat, setFileFormat] = useState('json');
+    // 新增状态
+    const [includeCOT, setIncludeCOT] = useState(true);
+    const [customFields, setCustomFields] = useState({
+        questionField: 'instruction',
+        answerField: 'output',
+        includeLabels: false
+    });
 
     const handleFileFormatChange = (event) => {
         setFileFormat(event.target.value);
@@ -33,6 +42,22 @@ const ExportDatasetDialog = ({ open, onClose, onExport }) => {
 
     const handleFormatChange = (event) => {
         setFormatType(event.target.value);
+        // 根据格式类型设置默认字段名
+        if (event.target.value === 'alpaca') {
+            setCustomFields({
+                ...customFields,
+                questionField: 'instruction',
+                answerField: 'output'
+            });
+        } else if (event.target.value === 'sharegpt') {
+            setCustomFields({
+                ...customFields,
+                questionField: 'content',
+                answerField: 'content'
+            });
+        } else if (event.target.value === 'custom') {
+            // 自定义格式保持当前值
+        }
     };
 
     const handleSystemPromptChange = (event) => {
@@ -43,13 +68,51 @@ const ExportDatasetDialog = ({ open, onClose, onExport }) => {
         setConfirmedOnly(event.target.checked);
     };
 
+    // 新增处理函数
+    const handleIncludeCOTChange = (event) => {
+        setIncludeCOT(event.target.checked);
+    };
+
+    const handleCustomFieldChange = (field) => (event) => {
+        setCustomFields({
+            ...customFields,
+            [field]: event.target.value
+        });
+    };
+
+    const handleIncludeLabelsChange = (event) => {
+        setCustomFields({
+            ...customFields,
+            includeLabels: event.target.checked
+        });
+    };
+
     const handleExport = () => {
         onExport({
             formatType,
             systemPrompt,
             confirmedOnly,
-            fileFormat
+            fileFormat,
+            includeCOT,
+            customFields: formatType === 'custom' ? customFields : undefined
         });
+    };
+
+    // 自定义格式的示例
+    const getCustomFormatExample = () => {
+        const { questionField, answerField, includeLabels } = customFields;
+        const example = {
+            [questionField]: "问题内容",
+            [answerField]: "答案内容"
+        };
+
+        if (includeLabels) {
+            example.labels = ["标签1", "标签2"];
+        }
+
+        return fileFormat === 'json'
+            ? JSON.stringify([example], null, 2)
+            : JSON.stringify(example);
     };
 
     return (
@@ -88,9 +151,51 @@ const ExportDatasetDialog = ({ open, onClose, onExport }) => {
                         >
                             <FormControlLabel value="alpaca" control={<Radio />} label="Alpaca" />
                             <FormControlLabel value="sharegpt" control={<Radio />} label="ShareGPT" />
+                            <FormControlLabel value="custom" control={<Radio />} label={t('export.customFormat')} />
                         </RadioGroup>
                     </FormControl>
                 </Box>
+
+                {/* 自定义格式选项 */}
+                {formatType === 'custom' && (
+                    <Box sx={{ mb: 3, pl: 2, borderLeft: `1px solid ${theme.palette.divider}` }}>
+                        <Typography variant="subtitle2" gutterBottom>
+                            {t('export.customFormatSettings')}
+                        </Typography>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label={t('export.questionFieldName')}
+                                    value={customFields.questionField}
+                                    onChange={handleCustomFieldChange('questionField')}
+                                    margin="normal"
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label={t('export.answerFieldName')}
+                                    value={customFields.answerField}
+                                    onChange={handleCustomFieldChange('answerField')}
+                                    margin="normal"
+                                />
+                            </Grid>
+                        </Grid>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={customFields.includeLabels}
+                                    onChange={handleIncludeLabelsChange}
+                                    size="small"
+                                />
+                            }
+                            label={t('export.includeLabels')}
+                        />
+                    </Box>
+                )}
 
                 <Box sx={{ mb: 3 }}>
                     <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
@@ -107,37 +212,40 @@ const ExportDatasetDialog = ({ open, onClose, onExport }) => {
                         }}
                     >
                         <pre style={{ margin: 0 }}>
-                            {formatType === 'alpaca'
-                                ? (fileFormat === 'json'
-                                    ? JSON.stringify([
-                                        {
-                                            "instruction": "人类指令（必填）",  // 映射到 question 字段
-                                            "input": "人类输入（选填）",
-                                            "output": "模型回答（必填）", // 映射到 cot+answer 字段
-                                            "system": "系统提示词（选填）"
-                                        }
-                                    ], null, 2)
-                                    : '{"instruction": "人类指令（必填）", "input": "人类输入（选填）", "output": "模型回答（必填）", "system": "系统提示词（选填）"}\n{"instruction": "第二个指令", "input": "", "output": "第二个回答", "system": "系统提示词"}')
-                                : (fileFormat === 'json'
-                                    ? JSON.stringify([
-                                        {
-                                            "messages": [
-                                                {
-                                                    "role": "system",
-                                                    "content": "系统提示词（选填）"
-                                                },
-                                                {
-                                                    "role": "user",
-                                                    "content": "人类指令" // 映射到 question 字段
-                                                },
-                                                {
-                                                    "role": "assistant",
-                                                    "content": "模型回答" // 映射到 cot+answer 字段
-                                                }
-                                            ]
-                                        }
-                                    ], null, 2)
-                                    : '{"messages": [{"role": "system", "content": "系统提示词（选填）"}, {"role": "user", "content": "人类指令"}, {"role": "assistant", "content": "模型回答"}]}\n{"messages": [{"role": "user", "content": "第二个问题"}, {"role": "assistant", "content": "第二个回答"}]}')
+                            {formatType === 'custom'
+                                ? getCustomFormatExample()
+                                : (formatType === 'alpaca'
+                                    ? (fileFormat === 'json'
+                                        ? JSON.stringify([
+                                            {
+                                                "instruction": "人类指令（必填）",  // 映射到 question 字段
+                                                "input": "人类输入（选填）",
+                                                "output": "模型回答（必填）", // 映射到 cot+answer 字段
+                                                "system": "系统提示词（选填）"
+                                            }
+                                        ], null, 2)
+                                        : '{"instruction": "人类指令（必填）", "input": "人类输入（选填）", "output": "模型回答（必填）", "system": "系统提示词（选填）"}\n{"instruction": "第二个指令", "input": "", "output": "第二个回答", "system": "系统提示词"}')
+                                    : (fileFormat === 'json'
+                                        ? JSON.stringify([
+                                            {
+                                                "messages": [
+                                                    {
+                                                        "role": "system",
+                                                        "content": "系统提示词（选填）"
+                                                    },
+                                                    {
+                                                        "role": "user",
+                                                        "content": "人类指令" // 映射到 question 字段
+                                                    },
+                                                    {
+                                                        "role": "assistant",
+                                                        "content": "模型回答" // 映射到 cot+answer 字段
+                                                    }
+                                                ]
+                                            }
+                                        ], null, 2)
+                                        : '{"messages": [{"role": "system", "content": "系统提示词（选填）"}, {"role": "user", "content": "人类指令"}, {"role": "assistant", "content": "模型回答"}]}\n{"messages": [{"role": "user", "content": "第二个问题"}, {"role": "assistant", "content": "第二个回答"}]}')
+                                )
                             }
                         </pre>
                     </Paper>
@@ -158,7 +266,7 @@ const ExportDatasetDialog = ({ open, onClose, onExport }) => {
                     />
                 </Box>
 
-                <Box>
+                <Box sx={{ mb: 2 }}>
                     <FormControlLabel
                         control={
                             <Checkbox
@@ -168,6 +276,24 @@ const ExportDatasetDialog = ({ open, onClose, onExport }) => {
                         }
                         label={t('export.onlyConfirmed')}
                     />
+                </Box>
+
+                {/* 新增 COT 拼接选项 */}
+                <Box>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={includeCOT}
+                                onChange={handleIncludeCOTChange}
+                            />
+                        }
+                        label={t('export.includeCOT')}
+                    />
+                    {includeCOT && (
+                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', ml: 4 }}>
+                            {t('export.cotDescription')}
+                        </Typography>
+                    )}
                 </Box>
             </DialogContent>
             <DialogActions>

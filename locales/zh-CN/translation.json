@@ -220,7 +220,14 @@
         "systemPromptPlaceholder": "请输入系统提示词...",
         "onlyConfirmed": "仅导出已确认数据",
         "example": "格式示例",
-        "confirmExport": "确认导出"
+        "confirmExport": "确认导出",
+        "includeCOT": "包含思维链",
+        "cotDescription": "包含最终答案前的推理过程",
+        "customFormat": "自定义格式",
+        "customFormatSettings": "自定义格式设置",
+        "questionFieldName": "问题字段名",
+        "answerFieldName": "答案字段名",
+        "includeLabels": "包含标签"
     },
     "datasets": {
         "generatingDataset": "正在生成数据集",

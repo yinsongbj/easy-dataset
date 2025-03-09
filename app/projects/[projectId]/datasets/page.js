@@ -515,7 +515,7 @@ export default function DatasetsPage({ params }) {
         formattedData = dataToExport.map(({ question, answer, cot }) => ({
           instruction: question,
           input: "",
-          output: cot ? `<Thinking>${cot}</Thinking>\n${answer}` : answer,
+          output: (cot && exportOptions.includeCOT) ? `<Thinking>${cot}</Thinking>\n${answer}` : answer,
           system: exportOptions.systemPrompt || ""
         }));
       } else if (exportOptions.formatType === 'sharegpt') {
@@ -539,10 +539,27 @@ export default function DatasetsPage({ params }) {
           // 添加助手回答
           messages.push({
             role: "assistant",
-            content: cot ? `<Thinking>${cot}</Thinking>\n${answer}` : answer
+            content: (cot && exportOptions.includeCOT) ? `<Thinking>${cot}</Thinking>\n${answer}` : answer
           });
 
           return { messages };
+        });
+      } else if (exportOptions.formatType === 'custom') {
+        // 处理自定义格式
+        const { questionField, answerField, includeLabels } = exportOptions.customFields;
+
+        formattedData = dataToExport.map(({ question, answer, cot, questionLabel: labels }) => {
+          const item = {
+            [questionField]: question,
+            [answerField]: (cot && exportOptions.includeCOT) ? `<Thinking>${cot}</Thinking>\n${answer}` : answer
+          };
+
+          // 如果需要包含标签
+          if (includeLabels && labels && labels.length > 0) {
+            item.label = labels.split(' ')[1];
+          }
+
+          return item;
         });
       }
 

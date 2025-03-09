@@ -219,7 +219,14 @@
         "systemPromptPlaceholder": "Please enter system prompt...",
         "onlyConfirmed": "Only export confirmed data",
         "example": "Format Example",
-        "confirmExport": "Confirm Export"
+        "confirmExport": "Confirm Export",
+        "includeCOT": "Include Chain of Thought",
+        "cotDescription": "Includes the reasoning process before the final answer",
+        "customFormat": "Custom Format",
+        "customFormatSettings": "Custom Format Settings",
+        "questionFieldName": "Question Field Name",
+        "answerFieldName": "Answer Field Name",
+        "includeLabels": "Include Labels"
     },
     "datasets": {
         "generatingDataset": "Generating Dataset",
