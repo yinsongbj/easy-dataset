@@ -90,12 +90,10 @@ Easy Dataset 是一个专为创建大型语言模型（LLM）微调数据集而�
 ### 创建项目
 
 <table>
-
     <tr>
         <td><img src="./public/imgs/1.png"></td>
         <td><img src="./public/imgs/2.png"></td>
     </tr>
-
 </table>
 
 1. 在首页点击"创建项目"按钮；
@@ -105,12 +103,10 @@ Easy Dataset 是一个专为创建大型语言模型（LLM）微调数据集而�
 ### 处理文档
 
 <table>
-
     <tr>
         <td><img src="./public/imgs/3.png"></td>
         <td><img src="./public/imgs/4.png"></td>
     </tr>
-
 </table>
 
 1. 在"文本分割"部分上传您的 Markdown 文件；
@@ -120,12 +116,10 @@ Easy Dataset 是一个专为创建大型语言模型（LLM）微调数据集而�
 ### 生成问题
 
 <table>
-
     <tr>
         <td><img src="./public/imgs/5.png"></td>
         <td><img src="./public/imgs/6.png"></td>
     </tr>
-
 </table>
 
 1. 导航到"问题"部分；
@@ -136,12 +130,10 @@ Easy Dataset 是一个专为创建大型语言模型（LLM）微调数据集而�
 ### 创建数据集
 
 <table>
-
     <tr>
         <td><img src="./public/imgs/7.png"></td>
         <td><img src="./public/imgs/8.png"></td>
     </tr>
-
 </table>
 
 1. 转到"数据集"部分；
@@ -152,12 +144,10 @@ Easy Dataset 是一个专为创建大型语言模型（LLM）微调数据集而�
 ### 导出数据集
 
 <table>
-
     <tr>
         <td><img src="./public/imgs/9.png"></td>
         <td><img src="./public/imgs/10.png"></td>
     </tr>
-
 </table>
 
 1. 在数据集部分点击"导出"按钮；
