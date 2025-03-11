@@ -26,7 +26,7 @@
         "maxLength": "最大长度",
         "textSplitDescription": "设置文本分割的最小和最大长度范围",
         "questionGenSettings": "问题生成设置",
-        "questionGenLength": "问题生成长度：{{length}}",
+        "questionGenLength": "{{length}} 个字符生成一个问题",
         "questionGenDescription": "设置生成问题的最大长度",
         "huggingfaceSettings": "Hugging Face 设置",
         "huggingfaceToken": "Hugging Face Token",
@@ -34,7 +34,7 @@
         "characters": "字符"
     },
     "questions": {
-        "title": "问题列表",
+        "title": "问题管理",
         "confirmDeleteTitle": "确认删除问题",
         "confirmDeleteContent": "您确定要删除问题\"{{question}}\"吗？此操作不可恢复。",
         "deleting": "正在删除问题...",
@@ -295,7 +295,7 @@
     },
     "playground": {
         "title": "模型测试",
-        "selectModelFirst": "请选择至少一个模型开始测试",
+        "selectModelFirst": "请选择至少一个模型",
         "sendFirstMessage": "发送第一条消息开始测试",
         "inputMessage": "输入消息...",
         "send": "发送",
