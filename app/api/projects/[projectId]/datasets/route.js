@@ -57,7 +57,8 @@ export async function POST(request, { params }) {
     const answer = llmRes.choices?.[0]?.message?.content ||
       llmRes.response ||
       '';
-    const cot = llmRes.choices?.[0]?.message?.reasoning_content || '';
+
+    const cot = llmRes.choices?.[0]?.message?.reasoning_content || llmRes.choices?.[0]?.message?.reasoning || '';
 
     console.log(questionId, 'answer:', answer, cot);
     // 获取现有数据集
