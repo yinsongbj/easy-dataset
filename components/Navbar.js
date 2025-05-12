@@ -99,8 +99,8 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
           >
             <Box
               component="img"
-              src="/imgs/logo.svg"
-              alt="Easy Dataset Logo"
+              src="/imgs/sud.png"
+              alt="上鼎天询数据集 Logo"
               sx={{
                 width: 28,
                 height: 28,
@@ -118,7 +118,7 @@ export default function Navbar({ projects = [], currentProject, models = [] }) {
               className={theme.palette.mode === 'dark' ? 'gradient-text' : ''}
               color={theme.palette.mode === 'dark' ? 'inherit' : 'white'}
             >
-              Easy DataSet
+              上鼎天询数据集
             </Typography>
           </Box>
 

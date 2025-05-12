@@ -47,8 +47,12 @@ export async function POST(request, { params }) {
     // 生成领域树
     console.log(projectId, fileName, 'Text split completed, starting to build domain tree');
     const promptFunc = language === 'en' ? getLabelEnPrompt : getLabelPrompt;
+    console.log(promptFunc)
+    console.log( globalPrompt, domainTreePrompt)
+
     const prompt = promptFunc({ text: toc, globalPrompt, domainTreePrompt });
     const response = await llmClient.getResponse(prompt);
+    console.log(response)
     const tags = extractJsonFromLLMOutput(response);
 
     if (!response || !tags) {

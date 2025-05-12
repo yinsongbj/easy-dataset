@@ -20,9 +20,9 @@ If you like this project, please leave a Star ⭐️ for it. Or you can buy the 
 
 ## Overview
 
-Easy Dataset is a specialized application designed to streamline the creation of fine-tuning datasets for Large Language Models (LLMs). It offers an intuitive interface for uploading domain-specific files, intelligently splitting content, generating questions, and producing high-quality training data for model fine-tuning.
+上鼎天询数据集 is a specialized application designed to streamline the creation of fine-tuning datasets for Large Language Models (LLMs). It offers an intuitive interface for uploading domain-specific files, intelligently splitting content, generating questions, and producing high-quality training data for model fine-tuning.
 
-With Easy Dataset, you can transform your domain knowledge into structured datasets compatible with all OpenAI-format compatible LLM APIs, making the fine-tuning process accessible and efficient.
+With 上鼎天询数据集, you can transform your domain knowledge into structured datasets compatible with all OpenAI-format compatible LLM APIs, making the fine-tuning process accessible and efficient.
 
 ![](./public/imgs/en-arc.png)
 
@@ -261,7 +261,7 @@ For detailed documentation on all features and APIs, please visit our [Documenta
 
 ## Contributing
 
-We welcome contributions from the community! If you'd like to contribute to Easy Dataset, please follow these steps:
+We welcome contributions from the community! If you'd like to contribute to 上鼎天询数据集, please follow these steps:
 
 1. Fork the repository
 2. Create a new branch (`git checkout -b feature/amazing-feature`)

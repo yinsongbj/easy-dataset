@@ -51,6 +51,7 @@ export async function POST(request, { params }) {
 
     // 获取问题
     const questions = await getQuestionsForChunk(projectId, chunkId);
+    console.log(questions)
     const question = questions.find(q => q.question === questionId);
     if (!question) {
       return NextResponse.json(

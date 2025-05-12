@@ -57,7 +57,7 @@ function createWindow() {
   });
 
   // 设置窗口标题
-  mainWindow.setTitle(`Easy Dataset v${getAppVersion()}`);
+  mainWindow.setTitle(`上鼎天询数据集 v${getAppVersion()}`);
   const loadingPath = url.format({
     pathname: path.join(__dirname, 'loading.html'),
     protocol: 'file:',
@@ -182,8 +182,8 @@ function createMenu() {
           label: '关于',
           click: () => {
             dialog.showMessageBox(mainWindow, {
-              title: '关于 Easy Dataset',
-              message: `Easy Dataset v${getAppVersion()}`,
+              title: '关于 上鼎天询数据集',
+              message: `上鼎天询数据集 v${getAppVersion()}`,
               detail: '一个用于创建大模型微调数据集的应用程序。',
               buttons: ['确定']
             });
@@ -205,7 +205,7 @@ function createMenu() {
 
 // 启动 Next.js 服务
 async function startNextServer() {
-  console.log(`Easy Dataset 客户端启动中，当前版本: ${getAppVersion()}`);
+  console.log(`上鼎天询数据集 客户端启动中，当前版本: ${getAppVersion()}`);
 
   // 检查端口是否被占用
   const isPortBusy = await checkPort(port);

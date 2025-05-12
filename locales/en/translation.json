@@ -130,7 +130,7 @@
     "copied": "Copied"
   },
   "home": {
-    "title": "Easy Dataset",
+    "title": "上鼎天询数据集",
     "subtitle": "A powerful tool for creating fine-tuning datasets for Large Language Models",
     "createProject": "Create Project",
     "searchDataset": "Search Public Datasets"

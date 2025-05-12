@@ -89,7 +89,7 @@
   "description": "一个用于创建大模型微调数据集的应用程序",
   "build": {
     "appId": "com.easydataset.app",
-    "productName": "Easy Dataset",
+    "productName": "上鼎天询数据集",
     "files": [
       ".next/**/*",
       "!.next/cache/**/*",
